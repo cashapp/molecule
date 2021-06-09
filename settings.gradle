@@ -1,0 +1,5 @@
+rootProject.name = 'molecule-root'
+
+include ':molecule'
+include ':molecule-rx2'
+include ':molecule-rx3'

@@ -1,0 +1,22 @@
+import org.jetbrains.kotlin.gradle.plugin.KotlinPluginKt
+
+apply plugin: 'com.android.library'
+apply plugin: 'org.jetbrains.kotlin.android'
+apply plugin: 'com.vanniktech.maven.publish'
+
+dependencies {
+  api project(':molecule')
+  api deps.rxjava3
+  implementation deps.kotlinx.coroutines.rx3
+
+  androidTestImplementation deps.junit
+  androidTestImplementation deps.androidx.test.runner
+
+  add(KotlinPluginKt.PLUGIN_CLASSPATH_CONFIGURATION_NAME, deps.compose.compiler)
+}
+
+android {
+  defaultConfig {
+    testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+  }
+}
