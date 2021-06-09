@@ -1,0 +1,7 @@
+$dokka.format:html-v1
+$dokka.linkExtension:html
+$dokka.location:app.cash.molecule.rx3////PointingToDeclaration/molecule-rx3/app.cash.molecule.rx3/index.html
+$dokka.location:app.cash.molecule.rx3//moleculeFlowable/#kotlin.coroutines.CoroutineContext#kotlin.Function0[TypeParam(bounds=[kotlin.Any])]/PointingToDeclaration/molecule-rx3/app.cash.molecule.rx3/molecule-flowable.html
+$dokka.location:app.cash.molecule.rx3//moleculeObservable/#kotlin.coroutines.CoroutineContext#kotlin.Function0[TypeParam(bounds=[kotlin.Any])]/PointingToDeclaration/molecule-rx3/app.cash.molecule.rx3/molecule-observable.html
+app.cash.molecule.rx3
+
