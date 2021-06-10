@@ -24,7 +24,6 @@ import app.cash.turbine.test
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertSame
 import kotlinx.coroutines.CoroutineStart.UNDISPATCHED
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -33,7 +32,6 @@ import org.junit.Ignore
 import org.junit.Test
 import kotlin.time.ExperimentalTime
 
-@ExperimentalCoroutinesApi
 @ExperimentalTime
 class MoleculeTest {
   @Test fun items() = runBlocking(AndroidUiDispatcher.Main) {
