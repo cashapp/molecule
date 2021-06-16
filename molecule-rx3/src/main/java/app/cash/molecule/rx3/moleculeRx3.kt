@@ -16,6 +16,7 @@
 package app.cash.molecule.rx3
 
 import androidx.compose.runtime.Composable
+import app.cash.molecule.Action
 import app.cash.molecule.moleculeFlow
 import io.reactivex.rxjava3.core.Flowable
 import io.reactivex.rxjava3.core.Observable
@@ -26,14 +27,14 @@ import kotlin.coroutines.CoroutineContext
 
 fun <T : Any> moleculeObservable(
   coroutineContext: CoroutineContext,
-  body: @Composable () -> T,
+  body: @Composable () -> Action<T>,
 ): Observable<T> {
   return moleculeFlow(body).asObservable(coroutineContext + Unconfined)
 }
 
 fun <T : Any> moleculeFlowable(
   coroutineContext: CoroutineContext,
-  body: @Composable () -> T,
+  body: @Composable () -> Action<T>,
 ): Flowable<T> {
   return moleculeFlow(body).asFlowable(coroutineContext + Unconfined)
 }
