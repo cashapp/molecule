@@ -30,7 +30,21 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 
-fun <T> moleculeFlow(body: @Composable () -> T): Flow<T> {
+/**
+ * Models the union type of `T | Skip` which indicates the action to be performed after each
+ * recomposition of a molecule function.
+ *
+ * @see [moleculeFlow]
+ */
+sealed interface Action<out T>
+
+/** Molecule action which emits an item to the underlying stream. */
+class Emit<T>(val item: T) : Action<T>
+
+/** Molecule action which skips emission to the underlying stream. */
+object Skip : Action<Nothing>
+
+fun <T> moleculeFlow(body: @Composable () -> Action<T>): Flow<T> {
   return flow {
     coroutineScope {
       val clock = checkNotNull(coroutineContext[MonotonicFrameClock]) {
@@ -58,8 +72,11 @@ fun <T> moleculeFlow(body: @Composable () -> T): Flow<T> {
         var item by mutableStateOf<T?>(null)
         var valueChanged = false
         composition.setContent {
-          item = body()
-          valueChanged = true
+          val action = body()
+          if (action is Emit) {
+            item = action.item
+            valueChanged = true
+          }
         }
 
         while (true) {

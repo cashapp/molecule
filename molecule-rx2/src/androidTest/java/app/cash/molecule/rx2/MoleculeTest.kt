@@ -16,14 +16,15 @@
 package app.cash.molecule.rx2
 
 import app.cash.molecule.AndroidUiDispatcher.Companion.Main
+import app.cash.molecule.Emit
 import org.junit.Test
 
 class MoleculeTest {
   @Test fun observableLitmus() {
-    moleculeObservable(Main) { 0 }.test().assertValue(0).dispose()
+    moleculeObservable(Main) { Emit(0) }.test().assertValue(0).dispose()
   }
 
   @Test fun flowableLitmus() {
-    moleculeFlowable(Main) { 0 }.test().assertValue(0).dispose()
+    moleculeFlowable(Main) { Emit(0) }.test().assertValue(0).dispose()
   }
 }

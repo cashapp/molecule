@@ -20,6 +20,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import app.cash.molecule.AndroidUiDispatcher.Companion.Main
 import app.cash.turbine.test
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertSame
@@ -34,7 +35,7 @@ import kotlin.time.ExperimentalTime
 
 @ExperimentalTime
 class MoleculeTest {
-  @Test fun items() = runBlocking(AndroidUiDispatcher.Main) {
+  @Test fun items() = runBlocking(Main) {
     val flow = moleculeFlow {
       var count by remember { mutableStateOf(0) }
       LaunchedEffect(Unit) {
@@ -44,7 +45,7 @@ class MoleculeTest {
         }
       }
 
-      count
+      Emit(count)
     }
 
     flow.test {
@@ -55,7 +56,7 @@ class MoleculeTest {
     }
   }
 
-  @Test fun firstItemSentImmediately() = runBlocking(AndroidUiDispatcher.Main) {
+  @Test fun itemsCanBeSkipped() = runBlocking(Main) {
     val flow = moleculeFlow {
       var count by remember { mutableStateOf(0) }
       LaunchedEffect(Unit) {
@@ -65,7 +66,32 @@ class MoleculeTest {
         }
       }
 
-      count
+      if (count % 2 == 0) {
+        Emit(count)
+      } else {
+        Skip
+      }
+    }
+
+    flow.test {
+      assertEquals(0, expectItem())
+      assertEquals(2, expectItem())
+      assertEquals(4, expectItem())
+      cancelAndIgnoreRemainingEvents()
+    }
+  }
+
+  @Test fun firstItemSentImmediately() = runBlocking(Main) {
+    val flow = moleculeFlow {
+      var count by remember { mutableStateOf(0) }
+      LaunchedEffect(Unit) {
+        while (true) {
+          delay(100)
+          count++
+        }
+      }
+
+      Emit(count)
     }
 
     var value = -1
@@ -78,9 +104,9 @@ class MoleculeTest {
     job.cancel()
   }
 
-  @Test fun error() = runBlocking(AndroidUiDispatcher.Main) {
+  @Test fun error() = runBlocking(Main) {
     val runtimeException = RuntimeException()
-    val flow = moleculeFlow {
+    val flow = moleculeFlow<Nothing> {
       throw runtimeException
     }
 
@@ -89,7 +115,7 @@ class MoleculeTest {
     }
   }
 
-  @Test fun errorInEffect() = runBlocking(AndroidUiDispatcher.Main) {
+  @Test fun errorInEffect() = runBlocking(Main) {
     val runtimeException = RuntimeException()
     val flow = moleculeFlow {
       val count by remember { mutableStateOf(0) }
@@ -97,7 +123,7 @@ class MoleculeTest {
         delay(100)
         throw runtimeException
       }
-      count
+      Emit(count)
     }
 
     flow.test {
@@ -107,8 +133,8 @@ class MoleculeTest {
   }
 
   @Ignore("https://issuetracker.google.com/issues/169425431")
-  @Test fun complete() = runBlocking(AndroidUiDispatcher.Main) {
-    val flow = moleculeFlow { 0 }
+  @Test fun complete() = runBlocking(Main) {
+    val flow = moleculeFlow { Emit(0) }
 
     flow.test {
       assertEquals(0, expectItem())
@@ -117,7 +143,7 @@ class MoleculeTest {
   }
 
   @Ignore("https://issuetracker.google.com/issues/169425431")
-  @Test fun completeWithEffect() = runBlocking(AndroidUiDispatcher.Main) {
+  @Test fun completeWithEffect() = runBlocking(Main) {
     val flow = moleculeFlow {
       var count by remember { mutableStateOf(0) }
       LaunchedEffect(Unit) {
@@ -127,7 +153,7 @@ class MoleculeTest {
         }
       }
 
-      count
+      Emit(count)
     }
 
     flow.test {
