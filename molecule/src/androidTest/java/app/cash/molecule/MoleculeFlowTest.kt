@@ -21,128 +21,130 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import app.cash.molecule.AndroidUiDispatcher.Companion.Main
+import app.cash.turbine.test
 import kotlinx.coroutines.CoroutineStart.UNDISPATCHED
-import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertSame
-import org.junit.Assert.fail
 import org.junit.Ignore
 import org.junit.Test
 import kotlin.time.ExperimentalTime
 
 @ExperimentalTime
-class MoleculeTest {
+class MoleculeFlowTest {
   @Test fun items() = runBlocking(Main) {
-    val items = Channel<Int>()
-    val job = launch {
-      runMolecule(items::send) {
-        var count by remember { mutableStateOf(0) }
-        LaunchedEffect(Unit) {
-          while (true) {
-            delay(100)
-            count++
-          }
+    val flow = moleculeFlow {
+      var count by remember { mutableStateOf(0) }
+      LaunchedEffect(Unit) {
+        while (true) {
+          delay(100)
+          count++
         }
-
-        Emit(count)
       }
+
+      Emit(count)
     }
 
-    assertEquals(0, items.receive())
-    assertEquals(1, items.receive())
-    assertEquals(2, items.receive())
-    job.cancel()
+    flow.test {
+      assertEquals(0, expectItem())
+      assertEquals(1, expectItem())
+      assertEquals(2, expectItem())
+      cancelAndIgnoreRemainingEvents()
+    }
   }
 
   @Test fun itemsCanBeSkipped() = runBlocking(Main) {
-    val items = Channel<Int>()
-    val job = launch {
-      runMolecule(items::send) {
-        var count by remember { mutableStateOf(0) }
-        LaunchedEffect(Unit) {
-          while (true) {
-            delay(100)
-            count++
-          }
+    val flow = moleculeFlow {
+      var count by remember { mutableStateOf(0) }
+      LaunchedEffect(Unit) {
+        while (true) {
+          delay(100)
+          count++
         }
+      }
 
-        if (count % 2 == 0) {
-          Emit(count)
-        } else {
-          Skip
-        }
+      if (count % 2 == 0) {
+        Emit(count)
+      } else {
+        Skip
       }
     }
 
-    assertEquals(0, items.receive())
-    assertEquals(2, items.receive())
-    assertEquals(4, items.receive())
-    job.cancel()
+    flow.test {
+      assertEquals(0, expectItem())
+      assertEquals(2, expectItem())
+      assertEquals(4, expectItem())
+      cancelAndIgnoreRemainingEvents()
+    }
   }
 
   @Test fun firstItemSentImmediately() = runBlocking(Main) {
-    val items = Channel<Int>()
-    val job = launch(start = UNDISPATCHED) {
-      runMolecule(items::send) {
-        var count by remember { mutableStateOf(0) }
-        LaunchedEffect(Unit) {
-          while (true) {
-            delay(100)
-            count++
-          }
+    val flow = moleculeFlow {
+      var count by remember { mutableStateOf(0) }
+      LaunchedEffect(Unit) {
+        while (true) {
+          delay(100)
+          count++
         }
-
-        Emit(count)
       }
+
+      Emit(count)
     }
 
-    assertEquals(0, items.tryReceive().getOrNull())
+    var value = -1
+    val job = launch(start = UNDISPATCHED) {
+      flow.collect {
+        value = it
+      }
+    }
+    assertEquals(0, value)
     job.cancel()
   }
 
   @Test fun error() = runBlocking(Main) {
     val runtimeException = RuntimeException()
-    try {
-      runMolecule<Nothing>({ fail() }) {
-        throw runtimeException
-      }
-      fail()
-    } catch (t: Throwable) {
-      assertSame(runtimeException, t)
+    val flow = moleculeFlow<Nothing> {
+      throw runtimeException
+    }
+
+    flow.test {
+      assertSame(runtimeException, expectError())
     }
   }
 
   @Test fun errorInEffect() = runBlocking(Main) {
     val runtimeException = RuntimeException()
-    try {
-      runMolecule({ }) {
-        val count by remember { mutableStateOf(0) }
-        LaunchedEffect(Unit) {
-          delay(100)
-          throw runtimeException
-        }
-        Emit(count)
+    val flow = moleculeFlow {
+      val count by remember { mutableStateOf(0) }
+      LaunchedEffect(Unit) {
+        delay(100)
+        throw runtimeException
       }
-    } catch (t: Throwable) {
-      assertSame(runtimeException, t)
+      Emit(count)
+    }
+
+    flow.test {
+      assertEquals(0, expectItem())
+      assertSame(runtimeException, expectError())
     }
   }
 
   @Ignore("https://issuetracker.google.com/issues/169425431")
   @Test fun complete() = runBlocking(Main) {
-    val items = Channel<Int>()
-    runMolecule(items::send) { Emit(0) }
+    val flow = moleculeFlow { Emit(0) }
 
-    assertEquals(0, items.receive())
+    flow.test {
+      assertEquals(0, expectItem())
+      expectComplete()
+    }
   }
 
   @Ignore("https://issuetracker.google.com/issues/169425431")
   @Test fun completeWithEffect() = runBlocking(Main) {
-    val items = Channel<Int>()
-    runMolecule(items::send) {
+    val flow = moleculeFlow {
       var count by remember { mutableStateOf(0) }
       LaunchedEffect(Unit) {
         repeat(2) {
@@ -154,8 +156,11 @@ class MoleculeTest {
       Emit(count)
     }
 
-    assertEquals(0, items.receive())
-    assertEquals(1, items.receive())
-    assertEquals(2, items.receive())
+    flow.test {
+      assertEquals(0, expectItem())
+      assertEquals(1, expectItem())
+      assertEquals(2, expectItem())
+      expectComplete()
+    }
   }
 }
