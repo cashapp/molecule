@@ -2,7 +2,7 @@ buildscript {
   ext.versions = [
     'compileSdk': 30,
     'minSdk': 21,
-    'compose': '1.0.0-beta09',
+    'compose': '1.0.0-rc01',
     'coroutines': '1.5.0',
   ]
   ext.deps = [
