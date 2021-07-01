@@ -2,6 +2,7 @@ $dokka.format:html-v1
 $dokka.linkExtension:html
 $dokka.location:app.cash.molecule////PointingToDeclaration/molecule/app.cash.molecule/index.html
 $dokka.location:app.cash.molecule//moleculeFlow/#kotlin.Function0[app.cash.molecule.Action[TypeParam(bounds=[kotlin.Any?])]]/PointingToDeclaration/molecule/app.cash.molecule/molecule-flow.html
+$dokka.location:app.cash.molecule//runMolecule/#kotlin.coroutines.SuspendFunction1[TypeParam(bounds=[kotlin.Any?]),kotlin.Unit]#kotlin.Function0[app.cash.molecule.Action[TypeParam(bounds=[kotlin.Any?])]]/PointingToDeclaration/molecule/app.cash.molecule/run-molecule.html
 $dokka.location:app.cash.molecule/Action///PointingToDeclaration/molecule/app.cash.molecule/-action/index.html
 $dokka.location:app.cash.molecule/AndroidUiDispatcher.Companion///PointingToDeclaration/molecule/app.cash.molecule/-android-ui-dispatcher/-companion/index.html
 $dokka.location:app.cash.molecule/AndroidUiDispatcher.Companion/Main/#/PointingToDeclaration/molecule/app.cash.molecule/-android-ui-dispatcher/-companion/-main.html
