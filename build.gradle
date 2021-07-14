@@ -1,43 +1,14 @@
 buildscript {
-  ext.versions = [
-    'compileSdk': 30,
-    'minSdk': 21,
-    'compose': '1.0.0-rc01',
-    'coroutines': '1.5.0',
-  ]
-  ext.deps = [
-    'compose': [
-      'compiler': "androidx.compose.compiler:compiler:${versions.compose}",
-      'runtime': "androidx.compose.runtime:runtime:${versions.compose}",
-    ],
-    'kotlin': [
-      'gradlePlugin': 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.5.10',
-    ],
-    'kotlinx': [
-      'coroutines': [
-        'core': "org.jetbrains.kotlinx:kotlinx-coroutines-core:${versions.coroutines}",
-        'rx2': "org.jetbrains.kotlinx:kotlinx-coroutines-rx2:${versions.coroutines}",
-        'rx3': "org.jetbrains.kotlinx:kotlinx-coroutines-rx3:${versions.coroutines}",
-      ],
-    ],
-    'androidx': [
-      'core': 'androidx.core:core-ktx:1.2.0',
-      'test': [
-        'runner': 'androidx.test:runner:1.2.0',
-      ],
-    ],
-    'junit': 'junit:junit:4.13.2',
-    'turbine': 'app.cash.turbine:turbine:0.5.2',
-    'rxjava2': 'io.reactivex.rxjava2:rxjava:2.2.21',
-    'rxjava3': 'io.reactivex.rxjava3:rxjava:3.0.13',
-  ]
+  apply from: 'gradle/dependencies.gradle'
 
   dependencies {
-    classpath 'com.android.tools.build:gradle:7.0.0-beta05'
+    classpath deps.androidPlugin
     classpath deps.kotlin.gradlePlugin
-    classpath 'com.vanniktech:gradle-maven-publish-plugin:0.14.2'
-    classpath 'org.jetbrains.dokka:dokka-gradle-plugin:1.4.32'
-    classpath 'com.diffplug.spotless:spotless-plugin-gradle:5.12.4'
+    classpath deps.spotlessPlugin
+
+    // Normally you would declare a version here, but we use dependency substitution in
+    // settings.gradle to use the version built from inside the repo.
+    classpath 'app.cash.molecule:molecule-gradle-plugin'
   }
 
   repositories {
@@ -45,8 +16,6 @@ buildscript {
     google()
   }
 }
-
-apply plugin: 'org.jetbrains.dokka'
 
 allprojects {
   repositories {
@@ -56,15 +25,6 @@ allprojects {
 }
 
 subprojects {
-  tasks.withType(Test).configureEach {
-    testLogging {
-      if (System.getenv("CI") == "true") {
-        events = ["failed", "skipped", "passed"]
-      }
-      exceptionFormat "full"
-    }
-  }
-
   plugins.withId('java-base') {
     java {
       toolchain {

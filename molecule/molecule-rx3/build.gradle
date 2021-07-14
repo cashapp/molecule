@@ -5,7 +5,7 @@ apply plugin: 'org.jetbrains.kotlin.android'
 apply plugin: 'com.vanniktech.maven.publish'
 
 dependencies {
-  api project(':molecule')
+  api project(':molecule-runtime')
   api deps.rxjava3
   implementation deps.kotlinx.coroutines.rx3
 

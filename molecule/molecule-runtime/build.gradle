@@ -5,12 +5,13 @@ apply plugin: 'org.jetbrains.kotlin.android'
 apply plugin: 'com.vanniktech.maven.publish'
 
 dependencies {
-  api project(':molecule')
-  api deps.rxjava2
-  implementation deps.kotlinx.coroutines.rx2
+  api deps.compose.runtime
+  implementation deps.androidx.core
+  implementation deps.kotlinx.coroutines.core
 
   androidTestImplementation deps.junit
   androidTestImplementation deps.androidx.test.runner
+  androidTestImplementation deps.turbine
 
   add(KotlinPluginKt.PLUGIN_CLASSPATH_CONFIGURATION_NAME, deps.compose.compiler)
 }
@@ -18,5 +19,15 @@ dependencies {
 android {
   defaultConfig {
     testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+  }
+}
+
+spotless {
+  kotlin {
+    targetExclude(
+      // Apache 2-licensed files from AOSP.
+      "src/main/java/app/cash/molecule/AndroidUiDispatcher.kt",
+      "src/main/java/app/cash/molecule/AndroidUiFrameClock.kt",
+    )
   }
 }
