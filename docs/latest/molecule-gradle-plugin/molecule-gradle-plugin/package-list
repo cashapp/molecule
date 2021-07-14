@@ -1,0 +1,11 @@
+$dokka.format:html-v1
+$dokka.linkExtension:html
+$dokka.location:app.cash.molecule.gradle////PointingToDeclaration/molecule-gradle-plugin/app.cash.molecule.gradle/index.html
+$dokka.location:app.cash.molecule.gradle/MoleculePlugin///PointingToDeclaration/molecule-gradle-plugin/app.cash.molecule.gradle/-molecule-plugin/index.html
+$dokka.location:app.cash.molecule.gradle/MoleculePlugin/MoleculePlugin/#/PointingToDeclaration/molecule-gradle-plugin/app.cash.molecule.gradle/-molecule-plugin/-molecule-plugin.html
+$dokka.location:app.cash.molecule.gradle/MoleculePlugin/applyToCompilation/#org.jetbrains.kotlin.gradle.plugin.KotlinCompilation[*]/PointingToDeclaration/molecule-gradle-plugin/app.cash.molecule.gradle/-molecule-plugin/apply-to-compilation.html
+$dokka.location:app.cash.molecule.gradle/MoleculePlugin/getCompilerPluginId/#/PointingToDeclaration/molecule-gradle-plugin/app.cash.molecule.gradle/-molecule-plugin/get-compiler-plugin-id.html
+$dokka.location:app.cash.molecule.gradle/MoleculePlugin/getPluginArtifact/#/PointingToDeclaration/molecule-gradle-plugin/app.cash.molecule.gradle/-molecule-plugin/get-plugin-artifact.html
+$dokka.location:app.cash.molecule.gradle/MoleculePlugin/isApplicable/#org.jetbrains.kotlin.gradle.plugin.KotlinCompilation[*]/PointingToDeclaration/molecule-gradle-plugin/app.cash.molecule.gradle/-molecule-plugin/is-applicable.html
+app.cash.molecule.gradle
+
