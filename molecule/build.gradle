@@ -1,33 +1,78 @@
-import org.jetbrains.kotlin.gradle.plugin.KotlinPluginKt
+buildscript {
+  apply from: '../gradle/dependencies.gradle'
 
-apply plugin: 'com.android.library'
-apply plugin: 'org.jetbrains.kotlin.android'
-apply plugin: 'com.vanniktech.maven.publish'
+  dependencies {
+    classpath deps.androidPlugin
+    classpath deps.kotlin.gradlePlugin
+    classpath 'com.vanniktech:gradle-maven-publish-plugin:0.14.2'
+    classpath 'org.jetbrains.dokka:dokka-gradle-plugin:1.4.32'
+    classpath deps.spotlessPlugin
+  }
 
-dependencies {
-  api deps.compose.runtime
-  implementation deps.androidx.core
-  implementation deps.kotlinx.coroutines.core
-
-  androidTestImplementation deps.junit
-  androidTestImplementation deps.androidx.test.runner
-  androidTestImplementation deps.turbine
-
-  add(KotlinPluginKt.PLUGIN_CLASSPATH_CONFIGURATION_NAME, deps.compose.compiler)
-}
-
-android {
-  defaultConfig {
-    testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+  repositories {
+    mavenCentral()
+    google()
   }
 }
 
-spotless {
-  kotlin {
-    targetExclude(
-      // Apache 2-licensed files from AOSP.
-      "src/main/java/app/cash/molecule/AndroidUiDispatcher.kt",
-      "src/main/java/app/cash/molecule/AndroidUiFrameClock.kt",
-    )
+apply plugin: 'org.jetbrains.dokka'
+
+allprojects {
+  repositories {
+    mavenCentral()
+    google()
+  }
+}
+
+subprojects {
+  tasks.withType(Test).configureEach {
+    testLogging {
+      if (System.getenv("CI") == "true") {
+        events = ["failed", "skipped", "passed"]
+      }
+      exceptionFormat "full"
+    }
+  }
+
+  plugins.withId('java-base') {
+    java {
+      toolchain {
+        languageVersion = JavaLanguageVersion.of(8)
+      }
+    }
+  }
+
+  tasks.withType(org.jetbrains.kotlin.gradle.dsl.KotlinJvmCompile).configureEach { task ->
+    task.kotlinOptions {
+      jvmTarget = '1.8'
+    }
+  }
+
+  plugins.withType(com.android.build.gradle.BasePlugin).configureEach { plugin ->
+    def android = plugin.extension
+    android.compileSdkVersion versions.compileSdk
+    android.defaultConfig {
+      minSdkVersion versions.minSdk
+    }
+    android.lintOptions {
+      checkDependencies true
+      checkReleaseBuilds false // Full lint runs as part of 'build' task.
+    }
+  }
+
+  apply plugin: 'com.diffplug.spotless'
+  spotless {
+    kotlin {
+      target("src/**/*.kt")
+      licenseHeaderFile(rootProject.file('../gradle/license-header.txt'))
+      // Spotless doesn't read .editorconfig yet: https://github.com/diffplug/spotless/issues/142
+      ktlint('0.41.0').userData([
+        'insert_final_newline': 'true',
+        'end_of_line': 'lf',
+        'charset': 'utf-8',
+        'indent_size': '2',
+        'ij_kotlin_imports_layout': '*',
+      ])
+    }
   }
 }

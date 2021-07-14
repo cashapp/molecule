@@ -1,8 +1,10 @@
 rootProject.name = 'molecule-root'
 
-include ':molecule'
-include ':molecule-gradle-plugin'
-include ':molecule-rx2'
-include ':molecule-rx3'
-
 include ':sample'
+
+includeBuild('molecule') {
+  dependencySubstitution {
+    substitute module('app.cash.molecule:molecule-runtime') with project(':molecule-runtime')
+    substitute module('app.cash.molecule:molecule-gradle-plugin') with project(':molecule-gradle-plugin')
+  }
+}

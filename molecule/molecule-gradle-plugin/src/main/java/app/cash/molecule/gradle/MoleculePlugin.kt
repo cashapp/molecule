@@ -34,7 +34,7 @@ class MoleculePlugin : KotlinCompilerPluginSupportPlugin {
 
   override fun applyToCompilation(kotlinCompilation: KotlinCompilation<*>): Provider<List<SubpluginOption>> {
     kotlinCompilation.dependencies {
-      implementation("app.cash.molecule:molecule:$moleculeVersion")
+      implementation("app.cash.molecule:molecule-runtime:$moleculeVersion")
     }
 
     return kotlinCompilation.target.project.provider { emptyList() }
