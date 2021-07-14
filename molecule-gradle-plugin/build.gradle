@@ -1,0 +1,46 @@
+apply plugin: 'org.jetbrains.kotlin.jvm'
+apply plugin: 'java-gradle-plugin'
+apply plugin: 'com.vanniktech.maven.publish'
+
+dependencies {
+  compileOnly gradleApi()
+  compileOnly deps.kotlin.gradlePlugin
+}
+
+gradlePlugin {
+  plugins {
+    molecule {
+      id = "app.cash.molecule"
+      displayName = "Molecule"
+      description = "Molecule Gradle plugin"
+      implementationClass = "app.cash.molecule.gradle.MoleculePlugin"
+    }
+  }
+}
+
+def versionDirectory = "$buildDir/generated/version/"
+
+sourceSets {
+  main.java.srcDir versionDirectory
+}
+
+task pluginVersion {
+  def outputDir = file(versionDirectory)
+
+  inputs.property 'composeVersion', versions.compose
+  inputs.property 'moleculeVersion', project.version
+  outputs.dir outputDir
+
+  doLast {
+    def versionFile = file("$outputDir/app/cash/molecule/gradle/version.kt")
+    versionFile.parentFile.mkdirs()
+    versionFile.text = """// Generated file. Do not edit!
+package app.cash.molecule.gradle
+
+internal const val composeVersion = "${versions.compose}"
+internal const val moleculeVersion = "${project.version}"
+"""
+  }
+}
+
+tasks.getByName('compileKotlin').dependsOn('pluginVersion')
