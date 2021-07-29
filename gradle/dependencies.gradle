@@ -30,7 +30,7 @@ buildscript {
     'turbine': 'app.cash.turbine:turbine:0.5.2',
     'rxjava2': 'io.reactivex.rxjava2:rxjava:2.2.21',
     'rxjava3': 'io.reactivex.rxjava3:rxjava:3.0.13',
-    'androidPlugin': 'com.android.tools.build:gradle:7.0.0-rc01',
+    'androidPlugin': 'com.android.tools.build:gradle:7.0.0',
     'spotlessPlugin': 'com.diffplug.spotless:spotless-plugin-gradle:5.12.4',
   ]
 }
