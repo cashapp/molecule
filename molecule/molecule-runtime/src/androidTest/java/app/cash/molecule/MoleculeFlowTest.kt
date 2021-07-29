@@ -49,9 +49,9 @@ class MoleculeFlowTest {
     }
 
     flow.test {
-      assertEquals(0, expectItem())
-      assertEquals(1, expectItem())
-      assertEquals(2, expectItem())
+      assertEquals(0, awaitItem())
+      assertEquals(1, awaitItem())
+      assertEquals(2, awaitItem())
       cancelAndIgnoreRemainingEvents()
     }
   }
@@ -74,9 +74,9 @@ class MoleculeFlowTest {
     }
 
     flow.test {
-      assertEquals(0, expectItem())
-      assertEquals(2, expectItem())
-      assertEquals(4, expectItem())
+      assertEquals(0, awaitItem())
+      assertEquals(2, awaitItem())
+      assertEquals(4, awaitItem())
       cancelAndIgnoreRemainingEvents()
     }
   }
@@ -111,7 +111,7 @@ class MoleculeFlowTest {
     }
 
     flow.test {
-      assertSame(runtimeException, expectError())
+      assertSame(runtimeException, awaitError())
     }
   }
 
@@ -127,8 +127,8 @@ class MoleculeFlowTest {
     }
 
     flow.test {
-      assertEquals(0, expectItem())
-      assertSame(runtimeException, expectError())
+      assertEquals(0, awaitItem())
+      assertSame(runtimeException, awaitError())
     }
   }
 
@@ -137,8 +137,8 @@ class MoleculeFlowTest {
     val flow = moleculeFlow { Emit(0) }
 
     flow.test {
-      assertEquals(0, expectItem())
-      expectComplete()
+      assertEquals(0, awaitItem())
+      awaitComplete()
     }
   }
 
@@ -157,10 +157,10 @@ class MoleculeFlowTest {
     }
 
     flow.test {
-      assertEquals(0, expectItem())
-      assertEquals(1, expectItem())
-      assertEquals(2, expectItem())
-      expectComplete()
+      assertEquals(0, awaitItem())
+      assertEquals(1, awaitItem())
+      assertEquals(2, awaitItem())
+      awaitComplete()
     }
   }
 }
