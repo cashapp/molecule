@@ -18,81 +18,49 @@ package app.cash.molecule
 import androidx.compose.runtime.AbstractApplier
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Composition
-import androidx.compose.runtime.MonotonicFrameClock
 import androidx.compose.runtime.Recomposer
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.Snapshot
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart.UNDISPATCHED
-import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-/**
- * Models the union type of `T | Skip` which indicates the action to be performed after each
- * recomposition of a molecule function.
- *
- * @see [moleculeFlow]
- */
-sealed interface Action<out T>
+fun <T> CoroutineScope.launchMolecule(
+  body: @Composable () -> T,
+): StateFlow<T> {
+  val recomposer = Recomposer(coroutineContext)
+  val composition = Composition(UnitApplier, recomposer)
+  launch(start = UNDISPATCHED) {
+    recomposer.runRecomposeAndApplyChanges()
+  }
 
-/** Molecule action which emits an item to the underlying stream. */
-class Emit<T>(val item: T) : Action<T>
-
-/** Molecule action which skips emission to the underlying stream. */
-object Skip : Action<Nothing>
-
-suspend fun <T> runMolecule(
-  models: suspend (T) -> Unit,
-  body: @Composable () -> Action<T>,
-) {
-  coroutineScope {
-    val clock = checkNotNull(coroutineContext[MonotonicFrameClock]) {
-      "Coroutine context must have a MonotonicFrameClock"
-    }
-
-    val recomposer = Recomposer(coroutineContext)
-    val composition = Composition(UnitApplier, recomposer)
-    launch(start = UNDISPATCHED) {
-      recomposer.runRecomposeAndApplyChanges()
-    }
-
-    var applyScheduled = false
-    val snapshotHandle = Snapshot.registerGlobalWriteObserver {
-      if (!applyScheduled) {
-        applyScheduled = true
-        launch {
-          applyScheduled = false
-          Snapshot.sendApplyNotifications()
-        }
+  var applyScheduled = false
+  val snapshotHandle = Snapshot.registerGlobalWriteObserver {
+    if (!applyScheduled) {
+      applyScheduled = true
+      launch {
+        applyScheduled = false
+        Snapshot.sendApplyNotifications()
       }
-    }
-
-    try {
-      var item by mutableStateOf<T?>(null)
-      var valueChanged = false
-      composition.setContent {
-        val action = body()
-        if (action is Emit) {
-          item = action.item
-          valueChanged = true
-        }
-      }
-
-      while (true) {
-        if (valueChanged) {
-          valueChanged = false
-
-          @Suppress("UNCHECKED_CAST") // Value guaranteed to be set from body().
-          models(item as T)
-        }
-
-        clock.withFrameNanos {}
-      }
-    } finally {
-      snapshotHandle.dispose()
     }
   }
+  coroutineContext[Job]!!.invokeOnCompletion {
+    snapshotHandle.dispose()
+  }
+
+  var flow: MutableStateFlow<T>? = null
+  composition.setContent {
+    val value = body()
+    flow?.let {
+      it.value = value
+    } ?: MutableStateFlow(value).also {
+      flow = it
+    }
+  }
+
+  return flow!!
 }
 
 private object UnitApplier : AbstractApplier<Unit>(Unit) {
