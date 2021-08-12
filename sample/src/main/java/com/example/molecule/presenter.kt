@@ -20,9 +20,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import app.cash.molecule.Emit
-import app.cash.molecule.moleculeFlow
+import app.cash.molecule.launchMolecule
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
@@ -35,12 +36,15 @@ data class CounterModel(
   val loading: Boolean,
 )
 
-fun Flow<CounterEvent>.counter(randomService: RandomService): Flow<CounterModel> = moleculeFlow {
+fun CoroutineScope.launchCounter(
+  events: Flow<CounterEvent>,
+  randomService: RandomService,
+): StateFlow<CounterModel> = launchMolecule {
   var count by remember { mutableStateOf(0) }
   var loading by remember { mutableStateOf(false) }
 
   LaunchedEffect(this) {
-    collect { event ->
+    events.collect { event ->
       when (event) {
         is Change -> {
           count += event.amount
@@ -56,5 +60,5 @@ fun Flow<CounterEvent>.counter(randomService: RandomService): Flow<CounterModel>
     }
   }
 
-  Emit(CounterModel(count, loading))
+  CounterModel(count, loading)
 }

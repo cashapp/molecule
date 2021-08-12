@@ -42,7 +42,7 @@ class CounterActivity : Activity() {
       }
 
     val randomService = RandomService()
-    val models = events.counter(randomService)
+    val models = scope.launchCounter(events, randomService)
 
     scope.launch(start = UNDISPATCHED) {
       models.collect { model ->
