@@ -53,10 +53,12 @@ fun <T> CoroutineScope.launchMolecule(
   var flow: MutableStateFlow<T>? = null
   composition.setContent {
     val value = body()
-    flow?.let {
-      it.value = value
-    } ?: MutableStateFlow(value).also {
-      flow = it
+
+    val outputFlow = flow
+    if (outputFlow != null) {
+      outputFlow.value = value
+    } else {
+      flow = MutableStateFlow(value)
     }
   }
 
