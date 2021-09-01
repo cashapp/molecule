@@ -16,6 +16,7 @@ buildscript {
     'kotlinx': [
       'coroutines': [
         'core': "org.jetbrains.kotlinx:kotlinx-coroutines-core:${versions.coroutines}",
+        'test': "org.jetbrains.kotlinx:kotlinx-coroutines-test:${versions.coroutines}",
       ],
     ],
     'androidx': [
@@ -25,7 +26,6 @@ buildscript {
       ],
     ],
     'junit': 'junit:junit:4.13.2',
-    'turbine': 'app.cash.turbine:turbine:0.6.0',
     'androidPlugin': 'com.android.tools.build:gradle:7.0.0',
     'spotlessPlugin': 'com.diffplug.spotless:spotless-plugin-gradle:5.12.4',
   ]

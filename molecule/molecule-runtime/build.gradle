@@ -11,7 +11,7 @@ dependencies {
 
   androidTestImplementation deps.junit
   androidTestImplementation deps.androidx.test.runner
-  androidTestImplementation deps.turbine
+  androidTestImplementation deps.kotlinx.coroutines.test
 
   add(KotlinPluginKt.PLUGIN_CLASSPATH_CONFIGURATION_NAME, deps.compose.compiler)
 }
@@ -19,6 +19,11 @@ dependencies {
 android {
   defaultConfig {
     testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+  }
+
+  packagingOptions {
+    exclude 'META-INF/AL2.0'
+    exclude 'META-INF/LGPL2.1'
   }
 }
 
