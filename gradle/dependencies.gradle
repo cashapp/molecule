@@ -11,7 +11,7 @@ buildscript {
       'runtime': "androidx.compose.runtime:runtime:${versions.compose}",
     ],
     'kotlin': [
-      'gradlePlugin': 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.5.21',
+      'gradlePlugin': 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.5.31',
     ],
     'kotlinx': [
       'coroutines': [
