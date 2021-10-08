@@ -3,7 +3,10 @@
   <uses-permission android:name="android.permission.INTERNET"/>
 
   <application android:label="Molecule Counter">
-    <activity android:name=".CounterActivity">
+    <activity
+      android:name=".CounterActivity"
+      android:exported="true"
+      >
       <intent-filter>
         <action android:name="android.intent.action.MAIN"/>
         <category android:name="android.intent.category.LAUNCHER"/>

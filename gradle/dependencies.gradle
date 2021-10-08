@@ -1,6 +1,6 @@
 buildscript {
   ext.versions = [
-    'compileSdk': 30,
+    'compileSdk': 31,
     'minSdk': 21,
     'compose': '1.0.1',
     'coroutines': '1.5.0',
