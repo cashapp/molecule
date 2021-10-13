@@ -154,4 +154,34 @@ class MoleculeTest {
 
     scope.cancel()
   }
+
+  @Test fun customEmitter() {
+    val dispatcher = TestCoroutineDispatcher()
+    val clock = BroadcastFrameClock()
+    val scope = CoroutineScope(dispatcher + clock)
+
+    val items = mutableListOf<Int>()
+    scope.launchMolecule(
+      emitter = { items += it },
+      body = {
+        var count by remember { mutableStateOf(0) }
+        LaunchedEffect(Unit) {
+          while (true) {
+            delay(100)
+            count++
+          }
+        }
+
+        count
+      },
+    )
+
+    assertEquals(listOf(0), items)
+
+    dispatcher.advanceTimeBy(100)
+    clock.sendFrame(0)
+    assertEquals(listOf(0, 1), items)
+
+    scope.cancel()
+  }
 }
