@@ -30,6 +30,27 @@ import kotlinx.coroutines.launch
 fun <T> CoroutineScope.launchMolecule(
   body: @Composable () -> T,
 ): StateFlow<T> {
+  var flow: MutableStateFlow<T>? = null
+
+  launchMolecule(
+    emitter = { value ->
+      val outputFlow = flow
+      if (outputFlow != null) {
+        outputFlow.value = value
+      } else {
+        flow = MutableStateFlow(value)
+      }
+    },
+    body = body,
+  )
+
+  return flow!!
+}
+
+fun <T> CoroutineScope.launchMolecule(
+  emitter: (value: T) -> Unit,
+  body: @Composable () -> T,
+) {
   val recomposer = Recomposer(coroutineContext)
   val composition = Composition(UnitApplier, recomposer)
   launch(start = UNDISPATCHED) {
@@ -50,19 +71,9 @@ fun <T> CoroutineScope.launchMolecule(
     snapshotHandle.dispose()
   }
 
-  var flow: MutableStateFlow<T>? = null
   composition.setContent {
-    val value = body()
-
-    val outputFlow = flow
-    if (outputFlow != null) {
-      outputFlow.value = value
-    } else {
-      flow = MutableStateFlow(value)
-    }
+    emitter(body())
   }
-
-  return flow!!
 }
 
 private object UnitApplier : AbstractApplier<Unit>(Unit) {
