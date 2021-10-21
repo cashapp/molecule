@@ -4,19 +4,23 @@ buildscript {
     'minSdk': 21,
     'compose': '1.0.4',
     'coroutines': '1.5.0',
+    'kotlin': '1.5.31',
   ]
   ext.deps = [
     'compose': [
       'compiler': "androidx.compose.compiler:compiler:${versions.compose}",
       'runtime': "androidx.compose.runtime:runtime:${versions.compose}",
+      'rx2': "androidx.compose.runtime:runtime-rxjava2:${versions.compose}",
     ],
     'kotlin': [
-      'gradlePlugin': 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.5.31',
+      'gradlePlugin': "org.jetbrains.kotlin:kotlin-gradle-plugin:${versions.kotlin}",
+      'test': "org.jetbrains.kotlin:kotlin-test:${versions.kotlin}",
     ],
     'kotlinx': [
       'coroutines': [
         'core': "org.jetbrains.kotlinx:kotlinx-coroutines-core:${versions.coroutines}",
         'test': "org.jetbrains.kotlinx:kotlinx-coroutines-test:${versions.coroutines}",
+        'rx2': "org.jetbrains.kotlinx:kotlinx-coroutines-rx2:${versions.coroutines}",
       ],
     ],
     'androidx': [
@@ -26,6 +30,7 @@ buildscript {
       ],
     ],
     'junit': 'junit:junit:4.13.2',
+    'rx2': 'io.reactivex.rxjava2:rxjava:2.2.21',
     'androidPlugin': 'com.android.tools.build:gradle:7.0.0',
     'spotlessPlugin': 'com.diffplug.spotless:spotless-plugin-gradle:5.12.4',
   ]

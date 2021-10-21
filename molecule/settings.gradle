@@ -2,3 +2,4 @@ rootProject.name = 'molecule'
 
 include ':molecule-gradle-plugin'
 include ':molecule-runtime'
+include ':molecule-testing'
