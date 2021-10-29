@@ -1,6 +1,7 @@
 $dokka.format:html-v1
 $dokka.linkExtension:html
 $dokka.location:app.cash.molecule.testing////PointingToDeclaration/molecule-testing/app.cash.molecule.testing/index.html
+$dokka.location:app.cash.molecule.testing//launchMoleculeForTest/#kotlin.Function0[TypeParam(bounds=[kotlin.Any?])]#kotlin.Long#kotlin.coroutines.SuspendFunction1[app.cash.molecule.testing.MoleculeTurbine[TypeParam(bounds=[kotlin.Any?])],kotlin.Unit]/PointingToDeclaration/molecule-testing/app.cash.molecule.testing/launch-molecule-for-test.html
 $dokka.location:app.cash.molecule.testing//launchMoleculeForTest/#kotlin.Function0[TypeParam(bounds=[kotlin.Any?])]#kotlin.time.Duration#kotlin.coroutines.SuspendFunction1[app.cash.molecule.testing.MoleculeTurbine[TypeParam(bounds=[kotlin.Any?])],kotlin.Unit]/PointingToDeclaration/molecule-testing/app.cash.molecule.testing/launch-molecule-for-test.html
 $dokka.location:app.cash.molecule.testing/Event.Error///PointingToDeclaration/molecule-testing/app.cash.molecule.testing/-event/-error/index.html
 $dokka.location:app.cash.molecule.testing/Event.Error/Error/#kotlin.Throwable/PointingToDeclaration/molecule-testing/app.cash.molecule.testing/-event/-error/-error.html
@@ -15,6 +16,5 @@ $dokka.location:app.cash.molecule.testing/MoleculeTurbine///PointingToDeclaratio
 $dokka.location:app.cash.molecule.testing/MoleculeTurbine/awaitError/#/PointingToDeclaration/molecule-testing/app.cash.molecule.testing/-molecule-turbine/await-error.html
 $dokka.location:app.cash.molecule.testing/MoleculeTurbine/awaitEvent/#/PointingToDeclaration/molecule-testing/app.cash.molecule.testing/-molecule-turbine/await-event.html
 $dokka.location:app.cash.molecule.testing/MoleculeTurbine/awaitItem/#/PointingToDeclaration/molecule-testing/app.cash.molecule.testing/-molecule-turbine/await-item.html
-$dokka.location:app.cash.molecule.testing/MoleculeTurbine/timeout/#/PointingToDeclaration/molecule-testing/app.cash.molecule.testing/-molecule-turbine/timeout.html
 app.cash.molecule.testing
 
