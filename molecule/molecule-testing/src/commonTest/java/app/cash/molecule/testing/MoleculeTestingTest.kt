@@ -22,20 +22,80 @@ import io.reactivex.Observable
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.TimeoutCancellationException
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx2.asFlow
+import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertSame
+import org.junit.Assert.assertTrue
+import org.junit.Ignore
 import org.junit.Test
 import kotlin.test.assertFailsWith
+import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 
 @ExperimentalCoroutinesApi
-@ExperimentalTime
 class MoleculeTestingTest {
+  @Test
+  fun timeoutCanBeZero() = runBlocking {
+    launchMoleculeForTest({ 1 }, timeoutMs = 0) {
+      assertEquals(1, awaitItem())
+    }
+  }
+
+  @Ignore("Does not work due to internal single-thread dispatcher usage")
+  @Test
+  fun timeoutEnforcedLong() {
+    val dispatcher = TestCoroutineDispatcher()
+    runBlocking(dispatcher) {
+      launchMoleculeForTest({ 1 }, timeoutMs = 10_000) {
+        assertEquals(1, awaitItem())
+
+        val nextItem = async { awaitItem() }
+        dispatcher.advanceTimeBy(9_999)
+        assertTrue(nextItem.isActive)
+
+        dispatcher.advanceTimeBy(1)
+        assertFalse(nextItem.isActive)
+
+        val actual = assertFailsWith<TimeoutCancellationException> {
+          nextItem.await()
+        }
+        assertEquals("Timed out waiting for 10000 ms", actual.message)
+      }
+    }
+  }
+
+  @Ignore("Does not work due to internal single-thread dispatcher usage")
+  @Test
+  @ExperimentalTime
+  fun timeoutEnforcedDuration() {
+    val dispatcher = TestCoroutineDispatcher()
+    runBlocking(dispatcher) {
+      launchMoleculeForTest({ 1 }, timeout = Duration.seconds(10)) {
+        assertEquals(1, awaitItem())
+
+        val nextItem = async { awaitItem() }
+        dispatcher.advanceTimeBy(9_999)
+        assertTrue(nextItem.isActive)
+
+        dispatcher.advanceTimeBy(1)
+        assertFalse(nextItem.isActive)
+
+        val actual = assertFailsWith<TimeoutCancellationException> {
+          nextItem.await()
+        }
+        assertEquals("Timed out waiting for 10000 ms", actual.message)
+      }
+    }
+  }
+
   @Test
   fun flowOfWorks() = runBlocking {
     val flow = flowOf(1)

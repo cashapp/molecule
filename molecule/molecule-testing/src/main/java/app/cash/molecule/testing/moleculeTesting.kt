@@ -43,7 +43,14 @@ import kotlin.time.ExperimentalTime
 @ExperimentalTime
 suspend fun <T> launchMoleculeForTest(
   body: @Composable () -> T,
-  timeout: Duration = Duration.seconds(1),
+  timeout: Duration,
+  validate: suspend MoleculeTurbine<T>.() -> Unit,
+) = launchMoleculeForTest(body, timeout.inWholeMilliseconds, validate)
+
+@ExperimentalCoroutinesApi
+suspend fun <T> launchMoleculeForTest(
+  body: @Composable () -> T,
+  timeoutMs: Long = 1_000L,
   validate: suspend MoleculeTurbine<T>.() -> Unit,
 ) {
   val dispatcher = Executors.newSingleThreadExecutor().asCoroutineDispatcher()
@@ -75,7 +82,7 @@ suspend fun <T> launchMoleculeForTest(
     val moleculeTurbine = TickOnDemandMoleculeTurbine(
       events = events,
       clock = clock,
-      timeout = timeout,
+      timeoutMs = timeoutMs,
     )
 
     withContext(dispatcher) {
@@ -91,13 +98,6 @@ suspend fun <T> launchMoleculeForTest(
 }
 
 interface MoleculeTurbine<T> {
-  /**
-   * Duration that [awaitItem], [awaitError], and [awaitEvent] will wait before
-   * throwing a timeout exception.
-   */
-  @ExperimentalTime
-  public val timeout: Duration
-
   /**
    * Assert that an event was received and return it.
    * If no events have been received, this function will suspend for up to [timeout].
@@ -135,17 +135,16 @@ public sealed class Event<out T> {
 }
 
 @ExperimentalCoroutinesApi
-@ExperimentalTime
 private class TickOnDemandMoleculeTurbine<T>(
   private val events: Channel<Event<T>>,
   private val clock: BroadcastFrameClock,
-  override val timeout: Duration
+  private val timeoutMs: Long,
 ) : MoleculeTurbine<T> {
   private suspend fun <T> withTimeout(body: suspend () -> T): T {
-    return if (timeout == Duration.ZERO) {
+    return if (timeoutMs == 0L) {
       body()
     } else {
-      withTimeout(timeout) {
+      withTimeout(timeoutMs) {
         body()
       }
     }
