@@ -46,49 +46,47 @@ suspend fun <T> launchMoleculeForTest(
   timeout: Duration = Duration.seconds(1),
   validate: suspend MoleculeTurbine<T>.() -> Unit,
 ) {
-  coroutineScope {
-    val dispatcher = Executors.newSingleThreadExecutor().asCoroutineDispatcher()
-    val clock = BroadcastFrameClock()
+  val dispatcher = Executors.newSingleThreadExecutor().asCoroutineDispatcher()
+  val clock = BroadcastFrameClock()
 
-    val events = Channel<Event<T>>(UNLIMITED)
-    val exceptionHandler = EventEmittingExceptionHandler(events)
+  val events = Channel<Event<T>>(UNLIMITED)
+  val exceptionHandler = EventEmittingExceptionHandler(events)
 
-    val scope = CoroutineScope(dispatcher + clock + exceptionHandler)
+  val scope = CoroutineScope(dispatcher + clock + exceptionHandler)
 
+  try {
     try {
-      try {
-        scope.launchMolecule(
-          emitter = { value ->
-            val result = events.trySend(Event.Item(value))
-            if (result.isFailure) {
-              throw AssertionError("Unable to send item to events channel.")
-            }
-          },
-          body = body,
-        )
-      } catch (t: Throwable) {
-        val result = events.trySend(Event.Error(t))
-        if (result.isFailure) {
-          throw AssertionError("Unable to send error to events channel.")
-        }
-      }
-
-      val moleculeTurbine = TickOnDemandMoleculeTurbine(
-        events = events,
-        clock = clock,
-        timeout = timeout,
+      scope.launchMolecule(
+        emitter = { value ->
+          val result = events.trySend(Event.Item(value))
+          if (result.isFailure) {
+            throw AssertionError("Unable to send item to events channel.")
+          }
+        },
+        body = body,
       )
-
-      withContext(dispatcher) {
-        moleculeTurbine.validate()
+    } catch (t: Throwable) {
+      val result = events.trySend(Event.Error(t))
+      if (result.isFailure) {
+        throw AssertionError("Unable to send error to events channel.")
       }
-
-      scope.cancel()
-    } finally {
-      // https://android-review.googlesource.com/c/platform/frameworks/support/+/1822662
-      // Can be removed with compose 1.1.0.
-      scope.coroutineContext[Job]!!.cancelAndJoin()
     }
+
+    val moleculeTurbine = TickOnDemandMoleculeTurbine(
+      events = events,
+      clock = clock,
+      timeout = timeout,
+    )
+
+    withContext(dispatcher) {
+      moleculeTurbine.validate()
+    }
+
+    scope.cancel()
+  } finally {
+    // https://android-review.googlesource.com/c/platform/frameworks/support/+/1822662
+    // Can be removed with compose 1.1.0.
+    scope.coroutineContext[Job]!!.cancelAndJoin()
   }
 }
 
