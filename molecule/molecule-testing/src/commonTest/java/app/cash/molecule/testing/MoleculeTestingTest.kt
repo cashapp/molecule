@@ -21,11 +21,13 @@ import androidx.compose.runtime.rxjava2.subscribeAsState
 import io.reactivex.Observable
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
+import kotlinx.coroutines.CoroutineStart.UNDISPATCHED
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx2.asFlow
 import kotlinx.coroutines.test.TestCoroutineDispatcher
@@ -43,8 +45,8 @@ import kotlin.time.ExperimentalTime
 @ExperimentalCoroutinesApi
 class MoleculeTestingTest {
   @Test
-  fun timeoutCanBeZero() = runBlocking {
-    launchMoleculeForTest({ 1 }, timeoutMs = 0) {
+  fun timeoutCanBeZero() {
+    testMolecule({ 1 }, timeoutMs = 0) {
       assertEquals(1, awaitItem())
     }
   }
@@ -54,7 +56,7 @@ class MoleculeTestingTest {
   fun timeoutEnforcedLong() {
     val dispatcher = TestCoroutineDispatcher()
     runBlocking(dispatcher) {
-      launchMoleculeForTest({ 1 }, timeoutMs = 10_000) {
+      testMolecule({ 1 }, timeoutMs = 10_000) {
         assertEquals(1, awaitItem())
 
         val nextItem = async { awaitItem() }
@@ -78,7 +80,7 @@ class MoleculeTestingTest {
   fun timeoutEnforcedDuration() {
     val dispatcher = TestCoroutineDispatcher()
     runBlocking(dispatcher) {
-      launchMoleculeForTest({ 1 }, timeout = Duration.seconds(10)) {
+      testMolecule({ 1 }, timeout = Duration.seconds(10)) {
         assertEquals(1, awaitItem())
 
         val nextItem = async { awaitItem() }
@@ -97,9 +99,20 @@ class MoleculeTestingTest {
   }
 
   @Test
-  fun flowOfWorks() = runBlocking {
+  fun initialItemAvailableSynchronously() = runBlocking {
+    var value = 0
+    launch(start = UNDISPATCHED) {
+      testMolecule({ 1 }) {
+        value = awaitItem()
+      }
+    }
+    assertEquals(1, value)
+  }
+
+  @Test
+  fun flowOfWorks() {
     val flow = flowOf(1)
-    launchMoleculeForTest({
+    testMolecule({
       val data by flow.collectAsState(null)
       data
     }) {
@@ -109,9 +122,9 @@ class MoleculeTestingTest {
   }
 
   @Test
-  fun sharedFlowWorks() = runBlocking {
+  fun sharedFlowWorks() {
     val flow = MutableSharedFlow<Int>()
-    launchMoleculeForTest({
+    testMolecule({
       val data by flow.collectAsState(null)
       data
     }) {
@@ -124,9 +137,9 @@ class MoleculeTestingTest {
   }
 
   @Test
-  fun observableJustWorks() = runBlocking {
+  fun observableJustWorks() {
     val subject = Observable.just(1)
-    launchMoleculeForTest({
+    testMolecule({
       val data by subject.subscribeAsState(null)
       data
     }) {
@@ -136,9 +149,9 @@ class MoleculeTestingTest {
   }
 
   @Test
-  fun behaviorSubjectWorks() = runBlocking {
+  fun behaviorSubjectWorks() {
     val subject = BehaviorSubject.createDefault(1)
-    launchMoleculeForTest({
+    testMolecule({
       val data by subject.subscribeAsState(null)
       data
     }) {
@@ -150,10 +163,10 @@ class MoleculeTestingTest {
   }
 
   @Test
-  fun behaviorSubjectAsFlowWorks() = runBlocking {
+  fun behaviorSubjectAsFlowWorks() {
     val subject = BehaviorSubject.createDefault(1)
     val subjectFlow = subject.asFlow()
-    launchMoleculeForTest({
+    testMolecule({
       val data by subjectFlow.collectAsState(null)
       data
     }) {
@@ -165,9 +178,9 @@ class MoleculeTestingTest {
   }
 
   @Test
-  fun publishSubjectWorks() = runBlocking {
+  fun publishSubjectWorks() {
     val subject = PublishSubject.create<Int>()
-    launchMoleculeForTest({
+    testMolecule({
       val data by subject.subscribeAsState(null)
       data
     }) {
@@ -178,10 +191,10 @@ class MoleculeTestingTest {
   }
 
   @Test
-  fun publishSubjectAsFlowWorks() = runBlocking {
+  fun publishSubjectAsFlowWorks() {
     val subject = PublishSubject.create<Int>()
     val subjectFlow = subject.asFlow()
-    launchMoleculeForTest({
+    testMolecule({
       val data by subjectFlow.collectAsState(null)
       data
     }) {
@@ -192,11 +205,11 @@ class MoleculeTestingTest {
   }
 
   @Test
-  fun immediateError() = runBlocking {
+  fun immediateError() {
     // Use a custom subtype to prevent coroutines from breaking referential equality.
     val runtimeException = object : RuntimeException() {}
 
-    launchMoleculeForTest({
+    testMolecule({
       throw runtimeException
     }) {
       assertSame(runtimeException, awaitError())
@@ -204,12 +217,12 @@ class MoleculeTestingTest {
   }
 
   @Test
-  fun errorOnRecomposition() = runBlocking {
+  fun errorOnRecomposition() {
     // Use a custom subtype to prevent coroutines from breaking referential equality.
     val runtimeException = object : RuntimeException() {}
 
     val flow = MutableSharedFlow<Int>()
-    launchMoleculeForTest({
+    testMolecule({
       val data by flow.collectAsState(null)
 
       if (data != null) {
@@ -225,8 +238,8 @@ class MoleculeTestingTest {
   }
 
   @Test
-  fun errorWhenExpectingItem() = runBlocking {
-    launchMoleculeForTest<Unit>({
+  fun errorWhenExpectingItem() {
+    testMolecule<Unit>({
       throw RuntimeException()
     }) {
       val t = assertFailsWith<AssertionError> { awaitItem() }
@@ -235,8 +248,8 @@ class MoleculeTestingTest {
   }
 
   @Test
-  fun itemWhenExpectingError() = runBlocking {
-    launchMoleculeForTest({}) {
+  fun itemWhenExpectingError() {
+    testMolecule({}) {
       val t = assertFailsWith<AssertionError> { awaitError() }
       assertEquals(t.message, "Expected error but found Item(kotlin.Unit)")
     }
