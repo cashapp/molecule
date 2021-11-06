@@ -19,6 +19,7 @@ import android.app.Activity
 import android.os.Bundle
 import android.util.Log
 import app.cash.molecule.AndroidUiDispatcher.Companion.Main
+import app.cash.molecule.launchMolecule
 import com.example.molecule.databinding.CounterBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart.UNDISPATCHED
@@ -42,7 +43,9 @@ class CounterActivity : Activity() {
       }
 
     val randomService = RandomService()
-    val models = scope.launchCounter(events, randomService)
+    val models = scope.launchMolecule {
+      CounterPresenter(events, randomService)
+    }
 
     scope.launch(start = UNDISPATCHED) {
       models.collect { model ->
