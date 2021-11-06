@@ -1,8 +1,8 @@
 $dokka.format:html-v1
 $dokka.linkExtension:html
 $dokka.location:app.cash.molecule.testing////PointingToDeclaration/molecule-testing/app.cash.molecule.testing/index.html
-$dokka.location:app.cash.molecule.testing//launchMoleculeForTest/#kotlin.Function0[TypeParam(bounds=[kotlin.Any?])]#kotlin.Long#kotlin.coroutines.SuspendFunction1[app.cash.molecule.testing.MoleculeTurbine[TypeParam(bounds=[kotlin.Any?])],kotlin.Unit]/PointingToDeclaration/molecule-testing/app.cash.molecule.testing/launch-molecule-for-test.html
-$dokka.location:app.cash.molecule.testing//launchMoleculeForTest/#kotlin.Function0[TypeParam(bounds=[kotlin.Any?])]#kotlin.time.Duration#kotlin.coroutines.SuspendFunction1[app.cash.molecule.testing.MoleculeTurbine[TypeParam(bounds=[kotlin.Any?])],kotlin.Unit]/PointingToDeclaration/molecule-testing/app.cash.molecule.testing/launch-molecule-for-test.html
+$dokka.location:app.cash.molecule.testing//testMolecule/#kotlin.Function0[TypeParam(bounds=[kotlin.Any?])]#kotlin.Long#kotlin.coroutines.SuspendFunction1[app.cash.molecule.testing.MoleculeTurbine[TypeParam(bounds=[kotlin.Any?])],kotlin.Unit]/PointingToDeclaration/molecule-testing/app.cash.molecule.testing/test-molecule.html
+$dokka.location:app.cash.molecule.testing//testMolecule/#kotlin.Function0[TypeParam(bounds=[kotlin.Any?])]#kotlin.time.Duration#kotlin.coroutines.SuspendFunction1[app.cash.molecule.testing.MoleculeTurbine[TypeParam(bounds=[kotlin.Any?])],kotlin.Unit]/PointingToDeclaration/molecule-testing/app.cash.molecule.testing/test-molecule.html
 $dokka.location:app.cash.molecule.testing/Event.Error///PointingToDeclaration/molecule-testing/app.cash.molecule.testing/-event/-error/index.html
 $dokka.location:app.cash.molecule.testing/Event.Error/Error/#kotlin.Throwable/PointingToDeclaration/molecule-testing/app.cash.molecule.testing/-event/-error/-error.html
 $dokka.location:app.cash.molecule.testing/Event.Error/throwable/#/PointingToDeclaration/molecule-testing/app.cash.molecule.testing/-event/-error/throwable.html
