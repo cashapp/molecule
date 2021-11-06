@@ -20,50 +20,45 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.withFrameMillis
 import app.cash.molecule.launchMolecule
 import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart.UNDISPATCHED
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.asCoroutineDispatcher
-import kotlinx.coroutines.cancel
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.Channel.Factory.UNLIMITED
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeout
 import kotlinx.coroutines.yield
-import java.util.concurrent.Executors
 import kotlin.coroutines.CoroutineContext
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 
 @ExperimentalCoroutinesApi
 @ExperimentalTime
-suspend fun <T> launchMoleculeForTest(
+fun <T> testMolecule(
   body: @Composable () -> T,
   timeout: Duration,
   validate: suspend MoleculeTurbine<T>.() -> Unit,
-) = launchMoleculeForTest(body, timeout.inWholeMilliseconds, validate)
+) = testMolecule(body, timeout.inWholeMilliseconds, validate)
 
 @ExperimentalCoroutinesApi
-suspend fun <T> launchMoleculeForTest(
+fun <T> testMolecule(
   body: @Composable () -> T,
   timeoutMs: Long = 1_000L,
   validate: suspend MoleculeTurbine<T>.() -> Unit,
-) {
-  val dispatcher = Executors.newSingleThreadExecutor().asCoroutineDispatcher()
-  val clock = BroadcastFrameClock()
-
+) = runBlocking {
   val events = Channel<Event<T>>(UNLIMITED)
   val exceptionHandler = EventEmittingExceptionHandler(events)
+  val clock = BroadcastFrameClock()
 
-  val scope = CoroutineScope(dispatcher + clock + exceptionHandler)
+  // Ensure exceptions in the molecule do not crash runBlocking. We redirect exceptions as events.
+  val moleculeJob = SupervisorJob()
 
-  try {
+  launch(exceptionHandler + clock + moleculeJob) {
     try {
-      scope.launchMolecule(
+      launchMolecule(
         emitter = { value ->
           val result = events.trySend(Event.Item(value))
           if (result.isFailure) {
@@ -78,22 +73,18 @@ suspend fun <T> launchMoleculeForTest(
         throw AssertionError("Unable to send error to events channel.")
       }
     }
+  }
 
+  try {
     val moleculeTurbine = TickOnDemandMoleculeTurbine(
       events = events,
       clock = clock,
       timeoutMs = timeoutMs,
     )
 
-    withContext(dispatcher) {
-      moleculeTurbine.validate()
-    }
-
-    scope.cancel()
+    moleculeTurbine.validate()
   } finally {
-    // https://android-review.googlesource.com/c/platform/frameworks/support/+/1822662
-    // Can be removed with compose 1.1.0.
-    scope.coroutineContext[Job]!!.cancelAndJoin()
+    moleculeJob.cancelAndJoin()
   }
 }
 

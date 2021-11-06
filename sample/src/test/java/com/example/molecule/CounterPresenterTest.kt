@@ -15,18 +15,17 @@
  */
 package com.example.molecule
 
-import app.cash.molecule.testing.launchMoleculeForTest
+import app.cash.molecule.testing.testMolecule
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
 class CounterPresenterTest {
   private val randomService = LocalRandomService(123)
 
-  @Test fun localChanges() = runBlocking {
+  @Test fun localChanges() {
     val events = MutableSharedFlow<CounterEvent>()
-    launchMoleculeForTest({
+    testMolecule({
       CounterPresenter(events, randomService)
     }) {
       assertEquals(CounterModel(0, false), awaitItem())
@@ -39,9 +38,9 @@ class CounterPresenterTest {
     }
   }
 
-  @Test fun randomChange() = runBlocking {
+  @Test fun randomChange() {
     val events = MutableSharedFlow<CounterEvent>()
-    launchMoleculeForTest({
+    testMolecule({
       CounterPresenter(events, randomService)
     }) {
       assertEquals(CounterModel(0, false), awaitItem())
