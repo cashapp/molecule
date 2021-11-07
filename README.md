@@ -79,7 +79,7 @@ class ProfilePresenter(
 This code is okay, but the RxJava ceremony will scale non-linearly.
 This means the more sources of data which are used and the more complex the logic the harder to understand the Rx code becomes.
 
-Despite emitting the `Loading` state synchronously, Compose UI [requires an initial value](https://developer.android.com/reference/kotlin/androidx/compose/runtime/rxjava3/package-summary#(io.reactivex.rxjava3.core.Observable).subscribeAsState(kotlin.Any)) be specified for all `Obserable` usage.
+Despite emitting the `Loading` state synchronously, Compose UI [requires an initial value](https://developer.android.com/reference/kotlin/androidx/compose/runtime/rxjava3/package-summary#(io.reactivex.rxjava3.core.Observable).subscribeAsState(kotlin.Any)) be specified for all `Observable` usage.
 This is a layering violation as the view layer is not in the position to dictate a reasonable default since the presenter layer controls the model object.
 
 Molecule lets us fix both of these problems.
