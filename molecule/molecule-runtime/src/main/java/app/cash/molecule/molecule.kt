@@ -22,9 +22,9 @@ import androidx.compose.runtime.Recomposer
 import androidx.compose.runtime.snapshots.Snapshot
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart.UNDISPATCHED
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.job
 import kotlinx.coroutines.launch
 
 fun <T> CoroutineScope.launchMolecule(
@@ -67,7 +67,7 @@ fun <T> CoroutineScope.launchMolecule(
       }
     }
   }
-  coroutineContext[Job]!!.invokeOnCompletion {
+  coroutineContext.job.invokeOnCompletion {
     snapshotHandle.dispose()
   }
 
