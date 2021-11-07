@@ -47,7 +47,7 @@ Additionally, if we want to power a different display with the same logic (poten
 
 Extracting the business logic to a presenter-like object fixes these three things.
 
-In Cash App our presenter objects traditionally expose a single stream of display models through RxJava `Observable` or Kotlin coroutine's `Flow`.
+In Cash App our presenter objects traditionally expose a single stream of display models through Kotlin coroutine's `Flow` or RxJava `Observable`.
 
 ```kotlin
 sealed interface ProfileModel {
@@ -60,11 +60,11 @@ sealed interface ProfileModel {
 
 class ProfilePresenter(
   private val db: Db,
-) : ObservableTransformer<Nothing, ProfileModel> {
-  override fun whevs(events: Observable<Nothing>): Observable<ProfileModel> {
-    return combineLatest(
-      db.userObservable().startWith(null),
-      db.balanceObservable().startWith(0L),
+) {
+  fun transform(events: Flow<Nothing>): Flow<ProfileModel> {
+    return combine(
+      db.users().onStart { emit(null) },
+      db.balances().onStart { emit(0L) },
     ) { user, balance ->
       if (user == null) {
         Loading
@@ -76,10 +76,10 @@ class ProfilePresenter(
 }
 ```
 
-This code is okay, but the RxJava ceremony will scale non-linearly.
-This means the more sources of data which are used and the more complex the logic the harder to understand the Rx code becomes.
+This code is okay, but the ceremony of combining reactive streams will scale non-linearly.
+This means the more sources of data which are used and the more complex the logic the harder to understand the reactive code becomes.
 
-Despite emitting the `Loading` state synchronously, Compose UI [requires an initial value](https://developer.android.com/reference/kotlin/androidx/compose/runtime/rxjava3/package-summary#(io.reactivex.rxjava3.core.Observable).subscribeAsState(kotlin.Any)) be specified for all `Observable` usage.
+Despite emitting the `Loading` state synchronously, Compose UI [requires an initial value](https://developer.android.com/reference/kotlin/androidx/compose/runtime/package-summary#(kotlinx.coroutines.flow.Flow).collectAsState(kotlin.Any,kotlin.coroutines.CoroutineContext)) be specified for all `Flow` or `Obserable` usage.
 This is a layering violation as the view layer is not in the position to dictate a reasonable default since the presenter layer controls the model object.
 
 Molecule lets us fix both of these problems.
@@ -89,17 +89,27 @@ And by using Compose we also can build our model objects using imperative code b
 ```kotlin
 @Composable
 fun ProfilePresenter(
-  userFlow: Observable<User>,
-  balanceFlow: Observable<Long>,
+  userFlow: Flow<User>,
+  balanceFlow: Flow<Long>,
 ): ProfileModel {
-  val user by userFlow.subscribeAsState(null)
-  val balance by balanceFlow.subscribeAsState(0L)
+  val user by userFlow.collectAsState(null)
+  val balance by balanceFlow.collectAsState(0L)
 
   return if (user == null) {
     Loading
   } else {
     Data(user.name, balance)
   }
+}
+```
+
+This model-producing composable function can be run with `launchMolecule`.
+
+```kotlin
+val userFlow = db.users()
+val balanceFlow = db.balances()
+val models = scope.launchMolecule {
+  ProfilePresenter(userFlow, balanceFlow)
 }
 ```
 
