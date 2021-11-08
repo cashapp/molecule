@@ -166,6 +166,33 @@ apply plugin: 'app.cash.molecule'
 </p>
 </details>
 
+### Frame Clock
+
+The entrypoint to the library is [the `launchMolecule` function](https://cashapp.github.io/molecule/docs/latest/molecule-runtime/molecule-runtime/app.cash.molecule/launch-molecule.html) which is an extension on `CoroutineScope`.
+That scope must contain a `MonotonicFrameClock` key which is used to determine when recomposition occurs and a new value is produced.
+
+On Android, [`AndroidUiDispatcher.Main`](https://cashapp.github.io/molecule/docs/latest/molecule-runtime/molecule-runtime/app.cash.molecule/-android-ui-dispatcher/-companion/-main.html) can be used for running your composables on the main thread with recomposition synchronized to the frame rate.
+For any other rate or to recompose on a background thread, create a [`BroadcastFrameClock`](https://developer.android.com/reference/kotlin/androidx/compose/runtime/BroadcastFrameClock) and a timer to invoke its `sendFrame` function at your desired rate.
+
+### Testing
+
+While the created `StateFlow` can be tested normally, the use of the frame clock to control recomposition makes it harder than it should be.
+The 'molecule-testing' dependency provides a `testMolecule` function which simplifies your test code by managing the threading, coroutine scope, and frame clock for you.
+Validating your produced values should feel familiar to those who have used [Turbine](https://github.com/cashapp/turbine/).
+
+```kotlin
+@Test fun counting() {
+  testMoleceule({ Counter(1, 3)} ) {
+    assertEquals(1, awaitItem())
+    assertEquals(2, awaitItem())
+    assertEquals(3, awaitItem())
+  }
+}
+```
+
+For more information see [the documentation](https://cashapp.github.io/molecule/docs/latest/molecule-testing/molecule-testing/app.cash.molecule.testing/test-molecule.html).
+
+
 ## License
 
     Copyright 2021 Square, Inc.
