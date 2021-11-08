@@ -100,6 +100,8 @@ class MoleculeTestingTest {
 
   @Test
   fun initialItemAvailableSynchronously() = runBlocking {
+    // TODO(jw): Figure out why this worked despite not having start=UNDISPATCHED.
+
     var value = 0
     launch(start = UNDISPATCHED) {
       testMolecule({ 1 }) {
@@ -253,5 +255,22 @@ class MoleculeTestingTest {
       val t = assertFailsWith<AssertionError> { awaitError() }
       assertEquals(t.message, "Expected error but found Item(kotlin.Unit)")
     }
+  }
+
+  @Test fun moleculeExceptionIsAddedAsSuppressed() {
+    // Use custom subtypes to prevent coroutines from breaking referential equality.
+    val moleculeException = object : RuntimeException("Molecule exception") {}
+    val validateException = object : RuntimeException("Validate exception") {}
+
+    val thrown = assertFailsWith<RuntimeException> {
+      testMolecule({
+        throw moleculeException
+      }) {
+        throw validateException
+      }
+    }
+
+    assertSame(validateException, thrown)
+    assertSame(moleculeException, thrown.suppressed.single())
   }
 }
