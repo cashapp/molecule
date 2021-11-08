@@ -56,7 +56,7 @@ fun <T> testMolecule(
   // Ensure exceptions in the molecule do not crash runBlocking. We redirect exceptions as events.
   val moleculeJob = SupervisorJob()
 
-  launch(exceptionHandler + clock + moleculeJob) {
+  launch(exceptionHandler + clock + moleculeJob, start = UNDISPATCHED) {
     try {
       launchMolecule(
         emitter = { value ->
@@ -83,6 +83,16 @@ fun <T> testMolecule(
     )
 
     moleculeTurbine.validate()
+  } catch (t: Throwable) {
+    while (true) {
+      // If the validation lambda has thrown, search for an exception from the composable to
+      // include which may help indicate the cause of the failure.
+      val event = events.tryReceive().getOrNull() ?: break // No more items.
+      if (event is Event.Error) {
+        t.addSuppressed(event.throwable)
+      }
+    }
+    throw t
   } finally {
     moleculeJob.cancelAndJoin()
   }
