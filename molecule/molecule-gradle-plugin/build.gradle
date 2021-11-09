@@ -4,7 +4,26 @@ apply plugin: 'com.vanniktech.maven.publish'
 
 dependencies {
   compileOnly gradleApi()
-  compileOnly deps.kotlin.gradlePlugin
+  api deps.kotlin.gradlePlugin
+
+  testImplementation deps.junit
+  testImplementation deps.truth
+  testImplementation gradleTestKit()
+}
+
+test {
+  dependsOn(':molecule-gradle-plugin:publishAllPublicationsToInRepoRepository')
+  dependsOn(':molecule-runtime:publishAllPublicationsToInRepoRepository')
+  dependsOn(':molecule-testing:publishAllPublicationsToInRepoRepository')
+
+  inputs.dir('src/test/fixtures')
+
+  testLogging {
+    if (System.getenv("CI") == "true") {
+      events = ["failed", "skipped", "passed"]
+    }
+    exceptionFormat "full"
+  }
 }
 
 gradlePlugin {
