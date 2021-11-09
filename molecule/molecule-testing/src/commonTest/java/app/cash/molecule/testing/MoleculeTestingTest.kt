@@ -24,9 +24,9 @@ import io.reactivex.subjects.PublishSubject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx2.asFlow
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.junit.Assert.assertEquals
@@ -49,14 +49,14 @@ class MoleculeTestingTest {
     }
   }
 
-  @Ignore("Does not work due to internal single-thread dispatcher usage")
+  @Ignore("Will not work due to internal yield usage and https://github.com/Kotlin/kotlinx.coroutines/issues/2605")
   @Test
   fun timeoutEnforcedLong() {
     val dispatcher = TestCoroutineDispatcher()
-    runBlocking(dispatcher) {
-      testMolecule({ 1 }, timeoutMs = 10_000) {
-        assertEquals(1, awaitItem())
+    testMolecule({ 1 } /*, dispatcher = dispatcher*/, timeoutMs = 10_000) {
+      assertEquals(1, awaitItem())
 
+      coroutineScope {
         val nextItem = async { awaitItem() }
         dispatcher.advanceTimeBy(9_999)
         assertTrue(nextItem.isActive)
@@ -72,15 +72,15 @@ class MoleculeTestingTest {
     }
   }
 
-  @Ignore("Does not work due to internal single-thread dispatcher usage")
+  @Ignore("Will not work due to internal yield usage and https://github.com/Kotlin/kotlinx.coroutines/issues/2605")
   @Test
   @ExperimentalTime
   fun timeoutEnforcedDuration() {
     val dispatcher = TestCoroutineDispatcher()
-    runBlocking(dispatcher) {
-      testMolecule({ 1 }, timeout = Duration.seconds(10)) {
-        assertEquals(1, awaitItem())
+    testMolecule({ 1 } /*, dispatcher = dispatcher*/, timeout = Duration.seconds(10)) {
+      assertEquals(1, awaitItem())
 
+      coroutineScope {
         val nextItem = async { awaitItem() }
         dispatcher.advanceTimeBy(9_999)
         assertTrue(nextItem.isActive)
