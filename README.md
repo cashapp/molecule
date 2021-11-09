@@ -178,6 +178,14 @@ For any other rate or to recompose on a background thread, create a [`BroadcastF
 
 While the created `StateFlow` can be tested normally, the use of the frame clock to control recomposition makes it harder than it should be.
 The 'molecule-testing' dependency provides a `testMolecule` function which simplifies your test code by managing the threading, coroutine scope, and frame clock for you.
+
+```kotlin
+dependencies {
+  testImplementation("app.cash.molecule:molecule-testing")
+  // or androidTestImplementation…
+}
+```
+
 Validating your produced values should feel familiar to those who have used [Turbine](https://github.com/cashapp/turbine/).
 
 ```kotlin

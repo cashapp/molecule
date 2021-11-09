@@ -37,14 +37,14 @@ subprojects {
   plugins.withId('java-base') {
     java {
       toolchain {
-        languageVersion = JavaLanguageVersion.of(8)
+        languageVersion = JavaLanguageVersion.of(11)
       }
     }
   }
 
   tasks.withType(org.jetbrains.kotlin.gradle.dsl.KotlinJvmCompile).configureEach { task ->
     task.kotlinOptions {
-      jvmTarget = '1.8'
+      jvmTarget = '11'
     }
   }
 
@@ -73,6 +73,18 @@ subprojects {
         'indent_size': '2',
         'ij_kotlin_imports_layout': '*',
       ])
+    }
+  }
+
+  plugins.withId('maven-publish') {
+    mavenPublish {
+      targets {
+        inRepo {
+          def url = file("${rootProject.buildDir}/localMaven").toURI().toString()
+          releaseRepositoryUrl = url
+          snapshotRepositoryUrl = url
+        }
+      }
     }
   }
 }
