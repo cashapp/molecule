@@ -123,8 +123,7 @@ class MoleculeTest {
     count++
     Snapshot.sendApplyNotifications() // Ensure external state mutation is observed.
     clock.sendFrame(0)
-    assertEquals(1, exceptionHandler.exceptions.size)
-    assertSame(runtimeException, exceptionHandler.exceptions[0])
+    assertSame(runtimeException, exceptionHandler.exceptions.single())
 
     scope.cancel()
   }
@@ -149,8 +148,7 @@ class MoleculeTest {
 
     dispatcher.advanceTimeBy(50)
     clock.sendFrame(0)
-    assertEquals(1, exceptionHandler.exceptions.size)
-    assertSame(runtimeException, exceptionHandler.exceptions[0])
+    assertSame(runtimeException, exceptionHandler.exceptions.single())
 
     scope.cancel()
   }
