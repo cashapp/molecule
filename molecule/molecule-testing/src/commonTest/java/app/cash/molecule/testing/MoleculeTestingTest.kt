@@ -21,13 +21,11 @@ import androidx.compose.runtime.rxjava2.subscribeAsState
 import io.reactivex.Observable
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
-import kotlinx.coroutines.CoroutineStart.UNDISPATCHED
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx2.asFlow
 import kotlinx.coroutines.test.TestCoroutineDispatcher
@@ -96,19 +94,6 @@ class MoleculeTestingTest {
         assertEquals("Timed out waiting for 10000 ms", actual.message)
       }
     }
-  }
-
-  @Test
-  fun initialItemAvailableSynchronously() = runBlocking {
-    // TODO(jw): Figure out why this worked despite not having start=UNDISPATCHED.
-
-    var value = 0
-    launch(start = UNDISPATCHED) {
-      testMolecule({ 1 }) {
-        value = awaitItem()
-      }
-    }
-    assertEquals(1, value)
   }
 
   @Test
