@@ -1,6 +1,6 @@
 # Releasing
 
-1. Update the `VERSION_NAME` in `gradle.properties` to the release version.
+1. Update the `VERSION_NAME` in `molecule/gradle.properties` to the release version.
 
 2. Update the `CHANGELOG.md`:
    1. Change the `Unreleased` header to the release version.
@@ -13,7 +13,7 @@
 4. Commit
 
    ```
-   $ git commit -am "Prepare version X.Y.X"
+   $ git commit -am "Prepare version X.Y.Z"
    ```
 
 5. Tag
