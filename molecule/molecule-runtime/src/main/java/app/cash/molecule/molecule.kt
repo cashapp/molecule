@@ -22,10 +22,25 @@ import androidx.compose.runtime.Recomposer
 import androidx.compose.runtime.snapshots.Snapshot
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart.UNDISPATCHED
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.job
 import kotlinx.coroutines.launch
+
+@OptIn(ExperimentalCoroutinesApi::class) // Marked as stable in kotlinx.coroutines 1.6.
+fun <T> moleculeFlow(body: @Composable () -> T): Flow<T> {
+  return channelFlow {
+    launchMolecule(
+      emitter = {
+        trySend(it).getOrThrow()
+      },
+      body = body,
+    )
+  }
+}
 
 fun <T> CoroutineScope.launchMolecule(
   body: @Composable () -> T,
