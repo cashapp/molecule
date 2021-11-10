@@ -3,6 +3,7 @@ $dokka.linkExtension:html
 $dokka.location:app.cash.molecule////PointingToDeclaration/molecule-runtime/app.cash.molecule/index.html
 $dokka.location:app.cash.molecule//launchMolecule/kotlinx.coroutines.CoroutineScope#kotlin.Function0[TypeParam(bounds=[kotlin.Any?])]/PointingToDeclaration/molecule-runtime/app.cash.molecule/launch-molecule.html
 $dokka.location:app.cash.molecule//launchMolecule/kotlinx.coroutines.CoroutineScope#kotlin.Function1[TypeParam(bounds=[kotlin.Any?]),kotlin.Unit]#kotlin.Function0[TypeParam(bounds=[kotlin.Any?])]/PointingToDeclaration/molecule-runtime/app.cash.molecule/launch-molecule.html
+$dokka.location:app.cash.molecule//moleculeFlow/#kotlin.Function0[TypeParam(bounds=[kotlin.Any?])]/PointingToDeclaration/molecule-runtime/app.cash.molecule/molecule-flow.html
 $dokka.location:app.cash.molecule/AndroidUiDispatcher.Companion///PointingToDeclaration/molecule-runtime/app.cash.molecule/-android-ui-dispatcher/-companion/index.html
 $dokka.location:app.cash.molecule/AndroidUiDispatcher.Companion/Main/#/PointingToDeclaration/molecule-runtime/app.cash.molecule/-android-ui-dispatcher/-companion/-main.html
 $dokka.location:app.cash.molecule/AndroidUiDispatcher///PointingToDeclaration/molecule-runtime/app.cash.molecule/-android-ui-dispatcher/index.html
