@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.gradle.plugin.KotlinPluginKt
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 apply plugin: 'com.android.library'
 apply plugin: 'org.jetbrains.kotlin.android'
@@ -40,6 +41,12 @@ android {
   packagingOptions {
     exclude 'META-INF/AL2.0'
     exclude 'META-INF/LGPL2.1'
+  }
+}
+
+tasks.withType(KotlinCompile).configureEach {
+  kotlinOptions {
+    freeCompilerArgs += '-Xopt-in=kotlin.RequiresOptIn'
   }
 }
 
