@@ -18,6 +18,7 @@ package app.cash.molecule
 import androidx.compose.runtime.AbstractApplier
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Composition
+import androidx.compose.runtime.MonotonicFrameClock
 import androidx.compose.runtime.Recomposer
 import androidx.compose.runtime.snapshots.Snapshot
 import kotlinx.coroutines.CoroutineScope
@@ -30,6 +31,13 @@ import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.job
 import kotlinx.coroutines.launch
 
+/**
+ * Create a [Flow] which will continually recompose `body` to produce a stream of [T] values
+ * when collected.
+ *
+ * The [CoroutineScope] in which the returned [Flow] is collected must contain a
+ * [MonotonicFrameClock] key which controls when recomposition occurs.
+ */
 @OptIn(ExperimentalCoroutinesApi::class) // Marked as stable in kotlinx.coroutines 1.6.
 fun <T> moleculeFlow(body: @Composable () -> T): Flow<T> {
   return channelFlow {
@@ -42,6 +50,13 @@ fun <T> moleculeFlow(body: @Composable () -> T): Flow<T> {
   }
 }
 
+/**
+ * Launch a coroutine into this [CoroutineScope] which will continually recompose `body`
+ * to produce a [StateFlow] stream of [T] values.
+ *
+ * The [CoroutineScope] in which this [StateFlow] is created must contain a
+ * [MonotonicFrameClock] key which controls when recomposition occurs.
+ */
 fun <T> CoroutineScope.launchMolecule(
   body: @Composable () -> T,
 ): StateFlow<T> {
@@ -62,6 +77,13 @@ fun <T> CoroutineScope.launchMolecule(
   return flow!!
 }
 
+/**
+ * Launch a coroutine into this [CoroutineScope] which will continually recompose `body`
+ * to invoke [emitter] with each returned [T] value.
+ *
+ * The [CoroutineScope] in which this [StateFlow] is created must contain a
+ * [MonotonicFrameClock] key which controls when recomposition occurs.
+ */
 fun <T> CoroutineScope.launchMolecule(
   emitter: (value: T) -> Unit,
   body: @Composable () -> T,
