@@ -12,9 +12,11 @@ dependencies {
 
   androidTestImplementation deps.junit
   androidTestImplementation deps.androidx.test.runner
+  androidTestImplementation deps.kotlin.test
   androidTestImplementation deps.kotlinx.coroutines.test
 
   testImplementation deps.junit
+  testImplementation deps.kotlin.test
   testImplementation deps.kotlinx.coroutines.test
 
   add(KotlinPluginKt.PLUGIN_CLASSPATH_CONFIGURATION_NAME, deps.compose.compiler)
