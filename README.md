@@ -225,7 +225,7 @@ Validating your produced values should feel familiar to those who have used [Tur
 
 ```kotlin
 @Test fun counting() {
-  testMoleceule({ Counter(1, 3)} ) {
+  testMolecule({ Counter(1, 3)} ) {
     assertEquals(1, awaitItem())
     assertEquals(2, awaitItem())
     assertEquals(3, awaitItem())
