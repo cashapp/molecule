@@ -24,10 +24,14 @@ import androidx.compose.runtime.snapshots.Snapshot
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart.UNDISPATCHED
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.Channel.Factory.CONFLATED
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.channelFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.consumeAsFlow
 import kotlinx.coroutines.job
 import kotlinx.coroutines.launch
 
@@ -89,7 +93,12 @@ fun <T> CoroutineScope.launchMolecule(
   body: @Composable () -> T,
 ) {
   val recomposer = Recomposer(coroutineContext)
-  val composition = Composition(UnitApplier, recomposer)
+  Composition(UnitApplier, recomposer).apply {
+    setContent {
+      emitter(body())
+    }
+  }
+
   launch(start = UNDISPATCHED) {
     recomposer.runRecomposeAndApplyChanges()
   }
@@ -106,10 +115,6 @@ fun <T> CoroutineScope.launchMolecule(
   }
   coroutineContext.job.invokeOnCompletion {
     snapshotHandle.dispose()
-  }
-
-  composition.setContent {
-    emitter(body())
   }
 }
 

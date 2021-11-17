@@ -35,6 +35,12 @@ import org.junit.Test
 import kotlin.coroutines.CoroutineContext
 import kotlin.test.assertFailsWith
 import kotlin.time.ExperimentalTime
+import kotlinx.coroutines.async
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.Channel.Factory.UNLIMITED
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
+import kotlinx.coroutines.withTimeout
 
 @ExperimentalCoroutinesApi
 @ExperimentalTime
@@ -102,31 +108,33 @@ class MoleculeTest {
     override val key get() = CoroutineExceptionHandler
   }
 
-  @Test fun errorDelayed() {
-    val dispatcher = TestCoroutineDispatcher()
+  @Test fun errorDelayed() = runBlocking {
     val clock = BroadcastFrameClock()
-    val exceptionHandler = RecordingExceptionHandler()
-    val scope = CoroutineScope(dispatcher + clock + exceptionHandler)
-    var value: Int? = null
+    val values = Channel<Int>(UNLIMITED)
 
     // Use a custom subtype to prevent coroutines from breaking referential equality.
     val runtimeException = object : RuntimeException() {}
     var count by mutableStateOf(0)
-    scope.launchMolecule(emitter = { value = it }) {
-      if (count == 1) {
-        throw runtimeException
-      }
-      count
+    val exception = async {
+      runCatching {
+        withContext(clock) {
+          launchMolecule(emitter = values::trySend) {
+            if (count == 1) {
+              throw runtimeException
+            }
+            count
+          }
+        }
+      }.exceptionOrNull()
     }
 
-    assertEquals(0, value)
+    assertEquals(0, withTimeout(1000) { values.receive() })
 
     count++
     Snapshot.sendApplyNotifications() // Ensure external state mutation is observed.
     clock.sendFrame(0)
-    assertSame(runtimeException, exceptionHandler.exceptions.single())
 
-    scope.cancel()
+    assertSame(runtimeException, withTimeout(1000) { exception.await() })
   }
 
   @Test fun errorInEffect() {
