@@ -7,6 +7,8 @@ dependencies {
   implementation 'com.squareup.retrofit2:converter-scalars:2.9.0'
   implementation 'com.squareup.okhttp3:okhttp:4.9.2'
   implementation 'com.squareup.okhttp3:logging-interceptor:4.9.2'
+  implementation "androidx.activity:activity-compose:1.4.0"
+  implementation "androidx.compose.material:material:1.0.4"
 
   testImplementation 'junit:junit:4.13.2'
   testImplementation 'app.cash.molecule:molecule-testing'
@@ -15,6 +17,7 @@ dependencies {
 android {
   buildFeatures {
     viewBinding true
+    compose true
   }
 
   testOptions {
