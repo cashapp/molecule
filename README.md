@@ -4,7 +4,7 @@ Build a `StateFlow` or `Flow` stream using Jetpack Compose[^1].
 
 ```kotlin
 fun CoroutineScope.launchCounter(): StateFlow<Int> = launchMolecule {
-  val count by remember { mutableStateOf(0) }
+  var count by remember { mutableStateOf(0) }
 
   LaunchedEffect(Unit) {
     while (true) {
