@@ -16,6 +16,7 @@
 package app.cash.molecule
 
 import androidx.compose.runtime.AbstractApplier
+import androidx.compose.runtime.BroadcastFrameClock
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Composition
 import androidx.compose.runtime.MonotonicFrameClock
@@ -24,11 +25,14 @@ import androidx.compose.runtime.snapshots.Snapshot
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart.UNDISPATCHED
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.Channel.Factory.CONFLATED
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.channelFlow
-import kotlinx.coroutines.job
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.consumeAsFlow
 import kotlinx.coroutines.launch
 
 /**
@@ -90,26 +94,31 @@ fun <T> CoroutineScope.launchMolecule(
 ) {
   val recomposer = Recomposer(coroutineContext)
   val composition = Composition(UnitApplier, recomposer)
-  launch(start = UNDISPATCHED) {
-    recomposer.runRecomposeAndApplyChanges()
-  }
-
-  var applyScheduled = false
-  val snapshotHandle = Snapshot.registerGlobalWriteObserver {
-    if (!applyScheduled) {
-      applyScheduled = true
-      launch {
-        applyScheduled = false
-        Snapshot.sendApplyNotifications()
-      }
-    }
-  }
-  coroutineContext.job.invokeOnCompletion {
-    snapshotHandle.dispose()
-  }
-
   composition.setContent {
     emitter(body())
+  }
+  val broadcastFrameClock = coroutineContext[MonotonicFrameClock] as? BroadcastFrameClock
+
+  launch(start = UNDISPATCHED) {
+    val globalWrites = Channel<Unit>(CONFLATED)
+    val snapshotHandle = Snapshot.registerGlobalWriteObserver { globalWrites.trySend(Unit) }
+
+    try {
+      launch {
+        globalWrites.consumeAsFlow().collect {
+          Snapshot.sendApplyNotifications()
+
+          // Recomposed values are always pulled for each composition frame, never pushed by state updates.
+          // So if there is a broadcast frame clock in the launch scope (as is the case when producing
+          // a StateFlow or Flow), a frame must be sent to force recomposition and pull a new value.
+          broadcastFrameClock?.sendFrame(0)
+        }
+      }
+
+      recomposer.runRecomposeAndApplyChanges()
+    } finally {
+      snapshotHandle.dispose()
+    }
   }
 }
 

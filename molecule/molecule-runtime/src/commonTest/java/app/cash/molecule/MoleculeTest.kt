@@ -22,19 +22,26 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.Snapshot
+import kotlin.coroutines.CoroutineContext
+import kotlin.test.assertFailsWith
+import kotlin.time.ExperimentalTime
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.ReceiveChannel
+import kotlinx.coroutines.channels.produce
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.consumeAsFlow
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.TestCoroutineDispatcher
+import kotlinx.coroutines.withTimeout
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertSame
 import org.junit.Assert.fail
 import org.junit.Test
-import kotlin.coroutines.CoroutineContext
-import kotlin.test.assertFailsWith
-import kotlin.time.ExperimentalTime
 
 @ExperimentalCoroutinesApi
 @ExperimentalTime
@@ -202,4 +209,38 @@ class MoleculeTest {
 
     scope.cancel()
   }
+
+  @Test fun snapshotUpdatesTickEnclosingClock() = runBlocking(BroadcastFrameClock()) {
+    data class State(val searchText: String? = null)
+    data class Model(val searchText: String)
+    val eventsChannel = Channel<String>(Channel.UNLIMITED)
+    val events = eventsChannel.consumeAsFlow()
+
+    val output = produce {
+      launchMolecule {
+        var state by remember { mutableStateOf(State()) }
+
+        LaunchedEffect(events) {
+          events.collect { searchText ->
+            state = state.copy(searchText = searchText)
+          }
+        }
+
+        Model(searchText = "${state.searchText}")
+      }.collect {
+        send(it)
+      }
+    }
+
+    assertEquals(output.awaitValue(), Model("null"))
+
+    eventsChannel.send("help")
+    assertEquals(output.awaitValue(), Model("help"))
+
+    output.cancel()
+  }
+}
+
+suspend fun <T> ReceiveChannel<T>.awaitValue() = withTimeout(1000) {
+  receive()
 }
