@@ -105,6 +105,7 @@ fun <T> CoroutineScope.launchMolecule(
     }
   }
   coroutineContext.job.invokeOnCompletion {
+    composition.dispose()
     snapshotHandle.dispose()
   }
 

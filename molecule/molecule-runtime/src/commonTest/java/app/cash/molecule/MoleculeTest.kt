@@ -16,6 +16,7 @@
 package app.cash.molecule
 
 import androidx.compose.runtime.BroadcastFrameClock
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -201,5 +202,30 @@ class MoleculeTest {
     assertSame(runtimeException, exceptionHandler.exceptions.single())
 
     scope.cancel()
+  }
+
+  enum class DisposableEffectState { NOT_LAUNCHED, LAUNCHED, DISPOSED }
+
+  @Test fun disposableEffectDisposesWhenScopeIsCancelled() {
+    val dispatcher = TestCoroutineDispatcher()
+    val clock = BroadcastFrameClock()
+    val scope = CoroutineScope(dispatcher + clock)
+
+    var state: DisposableEffectState = DisposableEffectState.NOT_LAUNCHED
+
+    scope.launchMolecule {
+      DisposableEffect(Unit) {
+        state = DisposableEffectState.LAUNCHED
+
+        onDispose {
+          state = DisposableEffectState.DISPOSED
+        }
+      }
+    }
+
+    assertEquals(DisposableEffectState.LAUNCHED, state)
+
+    scope.cancel()
+    assertEquals(DisposableEffectState.DISPOSED, state)
   }
 }
