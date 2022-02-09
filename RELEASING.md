@@ -7,7 +7,7 @@
    2. Add a link URL to ensure the header link works.
    3. Add a new `Unreleased` section to the top.
 
-3. Update the `README.md` so the "Download" section reflects the new release version and the
+3. Update the `README.md` so the "Usage" section reflects the new release version and the
    snapshot section reflects the next "SNAPSHOT" version.
 
 4. Commit

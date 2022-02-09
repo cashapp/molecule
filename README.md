@@ -170,7 +170,7 @@ buildscript {
     mavenCental()
   }
   dependencies {
-    classpath 'app.cash.molecule:molecule-gradle-plugin:0.1.0'
+    classpath 'app.cash.molecule:molecule-gradle-plugin:0.2.0'
   }
 }
 
@@ -190,7 +190,7 @@ buildscript {
     }
   }
   dependencies {
-    classpath 'app.cash.molecule:molecule-gradle-plugin:0.2.0-SNAPSHOT'
+    classpath 'app.cash.molecule:molecule-gradle-plugin:0.3.0-SNAPSHOT'
   }
 }
 
