@@ -6,7 +6,7 @@ apply plugin: 'com.vanniktech.maven.publish'
 
 dependencies {
   api deps.compose.runtime
-  implementation project(':molecule-runtime')
+  implementation projects.moleculeRuntime
   implementation deps.kotlinx.coroutines.core
 
   androidTestImplementation deps.androidx.test.runner
