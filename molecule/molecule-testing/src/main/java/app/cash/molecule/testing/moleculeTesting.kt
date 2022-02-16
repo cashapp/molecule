@@ -124,6 +124,13 @@ interface MoleculeTurbine<T> {
    * @throws kotlinx.coroutines.TimeoutCancellationException if no event was received in time.
    */
   public suspend fun awaitError(): Throwable
+
+  /**
+   * Assert that there are no unconsumed events which have already been received.
+   *
+   * @throws AssertionError if unconsumed events are found.
+   */
+  public fun expectNoEvents()
 }
 
 public sealed class Event<out T> {
@@ -177,6 +184,13 @@ private class TickOnDemandMoleculeTurbine<T>(
       unexpectedEvent(event, "error")
     }
     return event.throwable
+  }
+
+  override fun expectNoEvents() {
+    val event = events.tryReceive().getOrNull()
+    if (event != null) {
+      unexpectedEvent(event, "no events")
+    }
   }
 
   private fun unexpectedEvent(event: Event<*>, expected: String): Nothing {

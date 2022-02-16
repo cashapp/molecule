@@ -37,6 +37,7 @@ import org.junit.Assert.assertTrue
 import org.junit.Ignore
 import org.junit.Test
 import kotlin.test.assertFailsWith
+import kotlin.test.fail
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 
@@ -257,5 +258,25 @@ class MoleculeTestingTest {
 
     assertSame(validateException, thrown)
     assertSame(moleculeException, thrown.suppressed.single())
+  }
+
+  @Test
+  fun expectNoEvents() {
+    testMolecule({}) {
+      awaitItem()
+      expectNoEvents()
+    }
+  }
+
+  @Test
+  fun expectNoEventsFail() {
+    testMolecule({}) {
+      try {
+        expectNoEvents()
+        fail()
+      } catch (t: AssertionError) {
+        assertEquals(t.message, "Expected no events but found Item(kotlin.Unit)")
+      }
+    }
   }
 }
