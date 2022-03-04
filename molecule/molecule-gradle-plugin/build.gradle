@@ -1,6 +1,7 @@
 apply plugin: 'org.jetbrains.kotlin.jvm'
 apply plugin: 'java-gradle-plugin'
 apply plugin: 'com.vanniktech.maven.publish'
+apply plugin: 'org.jetbrains.dokka'
 
 dependencies {
   compileOnly gradleApi()
@@ -12,9 +13,9 @@ dependencies {
 }
 
 test {
-  dependsOn(':molecule-gradle-plugin:publishAllPublicationsToInRepoRepository')
-  dependsOn(':molecule-runtime:publishAllPublicationsToInRepoRepository')
-  dependsOn(':molecule-testing:publishAllPublicationsToInRepoRepository')
+  dependsOn(':molecule-gradle-plugin:publishAllPublicationsToInstallLocallyRepository')
+  dependsOn(':molecule-runtime:publishAllPublicationsToInstallLocallyRepository')
+  dependsOn(':molecule-testing:publishAllPublicationsToInstallLocallyRepository')
 
   inputs.dir('src/test/fixtures')
 

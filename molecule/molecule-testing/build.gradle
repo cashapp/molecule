@@ -3,6 +3,7 @@ import org.jetbrains.kotlin.gradle.plugin.KotlinPluginKt
 apply plugin: 'com.android.library'
 apply plugin: 'org.jetbrains.kotlin.android'
 apply plugin: 'com.vanniktech.maven.publish'
+apply plugin: 'org.jetbrains.dokka'
 
 dependencies {
   api deps.compose.runtime

@@ -8,13 +8,13 @@ buildscript {
   ]
   ext.deps = [
     'compose': [
-      'compiler': "androidx.compose.compiler:compiler:${versions.compose}",
-      'runtime': "androidx.compose.runtime:runtime:${versions.compose}",
+      'compiler': "org.jetbrains.compose.compiler:compiler:${versions.compose}",
+      'runtime': "org.jetbrains.compose.runtime:runtime:${versions.compose}",
       'rx2': "androidx.compose.runtime:runtime-rxjava2:${versions.compose}",
     ],
     'kotlin': [
       'gradlePlugin': "org.jetbrains.kotlin:kotlin-gradle-plugin:${versions.kotlin}",
-      'test': "org.jetbrains.kotlin:kotlin-test:${versions.kotlin}",
+      'test': "org.jetbrains.kotlin:kotlin-test",
     ],
     'kotlinx': [
       'coroutines': [

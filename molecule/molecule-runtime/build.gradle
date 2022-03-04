@@ -2,33 +2,63 @@ import org.jetbrains.kotlin.gradle.plugin.KotlinPluginKt
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 apply plugin: 'com.android.library'
-apply plugin: 'org.jetbrains.kotlin.android'
+apply plugin: 'org.jetbrains.kotlin.multiplatform'
 apply plugin: 'com.vanniktech.maven.publish'
+apply plugin: 'org.jetbrains.dokka'
+
+kotlin {
+  android {
+    publishLibraryVariants('release')
+  }
+  js {
+    nodejs()
+  }
+  jvm()
+
+  sourceSets {
+    commonMain {
+      dependencies {
+        api deps.compose.runtime
+        api deps.kotlinx.coroutines.core
+      }
+    }
+    commonTest {
+      dependencies {
+        implementation deps.kotlin.test
+      }
+    }
+    commonJvmTest {
+      dependencies {
+        implementation deps.kotlinx.coroutines.test
+      }
+    }
+
+    androidMain {
+      dependencies {
+        implementation deps.androidx.core
+      }
+    }
+    androidTest {
+      dependsOn(commonJvmTest)
+    }
+    jvmTest {
+      dependsOn(commonJvmTest)
+    }
+  }
+}
 
 dependencies {
-  api deps.compose.runtime
-  implementation deps.androidx.core
-  implementation deps.kotlinx.coroutines.core
-
-  androidTestImplementation deps.junit
   androidTestImplementation deps.androidx.test.runner
   androidTestImplementation deps.kotlin.test
   androidTestImplementation deps.kotlinx.coroutines.test
-
-  testImplementation deps.junit
-  testImplementation deps.kotlin.test
-  testImplementation deps.kotlinx.coroutines.test
 
   add(KotlinPluginKt.PLUGIN_CLASSPATH_CONFIGURATION_NAME, deps.compose.compiler)
 }
 
 android {
   sourceSets {
-    test {
-      java.srcDirs += 'src/commonTest/java'
-    }
     androidTest {
-      java.srcDirs += 'src/commonTest/java'
+      java.srcDirs += 'src/commonJvmTest/kotlin'
     }
   }
 
@@ -56,8 +86,8 @@ spotless {
   kotlin {
     targetExclude(
       // Apache 2-licensed files from AOSP.
-      "src/main/java/app/cash/molecule/AndroidUiDispatcher.kt",
-      "src/main/java/app/cash/molecule/AndroidUiFrameClock.kt",
+      "src/androidMain/kotlin/app/cash/molecule/AndroidUiDispatcher.kt",
+      "src/androidMain/kotlin/app/cash/molecule/AndroidUiFrameClock.kt",
     )
   }
 }
