@@ -33,20 +33,19 @@ import kotlinx.coroutines.withTimeout
 import kotlinx.coroutines.yield
 import kotlin.coroutines.CoroutineContext
 import kotlin.time.Duration
-import kotlin.time.ExperimentalTime
-
-@ExperimentalCoroutinesApi
-@ExperimentalTime
-fun <T> testMolecule(
-  body: @Composable () -> T,
-  timeout: Duration,
-  validate: suspend MoleculeTurbine<T>.() -> Unit,
-) = testMolecule(body, timeout.inWholeMilliseconds, validate)
+import kotlin.time.Duration.Companion.milliseconds
 
 @ExperimentalCoroutinesApi
 fun <T> testMolecule(
   body: @Composable () -> T,
   timeoutMs: Long = 1_000L,
+  validate: suspend MoleculeTurbine<T>.() -> Unit,
+) = testMolecule(body, timeoutMs.milliseconds, validate)
+
+@ExperimentalCoroutinesApi
+fun <T> testMolecule(
+  body: @Composable () -> T,
+  timeout: Duration,
   validate: suspend MoleculeTurbine<T>.() -> Unit,
 ) = runBlocking {
   val events = Channel<Event<T>>(UNLIMITED)
@@ -79,7 +78,7 @@ fun <T> testMolecule(
     val moleculeTurbine = TickOnDemandMoleculeTurbine(
       events = events,
       clock = clock,
-      timeoutMs = timeoutMs,
+      timeout = timeout,
     )
 
     moleculeTurbine.validate()
@@ -139,13 +138,14 @@ public sealed class Event<out T> {
 private class TickOnDemandMoleculeTurbine<T>(
   private val events: Channel<Event<T>>,
   private val clock: BroadcastFrameClock,
-  private val timeoutMs: Long,
+  private val timeout: Duration,
 ) : MoleculeTurbine<T> {
   private suspend fun <T> withTimeout(body: suspend () -> T): T {
-    return if (timeoutMs == 0L) {
+    return if (timeout == Duration.ZERO) {
       body()
     } else {
-      withTimeout(timeoutMs) {
+      // TODO Migrate to just withTimeout(Duration) when we get coroutines 1.6.
+      withTimeout(timeout.inWholeMilliseconds) {
         body()
       }
     }
