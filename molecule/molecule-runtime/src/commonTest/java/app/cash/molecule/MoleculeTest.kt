@@ -35,10 +35,8 @@ import org.junit.Assert.fail
 import org.junit.Test
 import kotlin.coroutines.CoroutineContext
 import kotlin.test.assertFailsWith
-import kotlin.time.ExperimentalTime
 
 @ExperimentalCoroutinesApi
-@ExperimentalTime
 class MoleculeTest {
   @Test fun items() {
     val dispatcher = TestCoroutineDispatcher()

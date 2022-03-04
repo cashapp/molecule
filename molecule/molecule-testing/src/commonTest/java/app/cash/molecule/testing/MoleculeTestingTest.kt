@@ -37,8 +37,7 @@ import org.junit.Assert.assertTrue
 import org.junit.Ignore
 import org.junit.Test
 import kotlin.test.assertFailsWith
-import kotlin.time.Duration
-import kotlin.time.ExperimentalTime
+import kotlin.time.Duration.Companion.seconds
 
 @ExperimentalCoroutinesApi
 class MoleculeTestingTest {
@@ -74,10 +73,9 @@ class MoleculeTestingTest {
 
   @Ignore("Will not work due to internal yield usage and https://github.com/Kotlin/kotlinx.coroutines/issues/2605")
   @Test
-  @ExperimentalTime
   fun timeoutEnforcedDuration() {
     val dispatcher = TestCoroutineDispatcher()
-    testMolecule({ 1 } /*, dispatcher = dispatcher*/, timeout = Duration.seconds(10)) {
+    testMolecule({ 1 } /*, dispatcher = dispatcher*/, timeout = 10.seconds) {
       assertEquals(1, awaitItem())
 
       coroutineScope {
