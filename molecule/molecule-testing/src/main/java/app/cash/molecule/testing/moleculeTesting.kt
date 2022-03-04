@@ -36,6 +36,13 @@ import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 
 @ExperimentalCoroutinesApi
+@Deprecated(
+  "Use overload with Duration",
+  ReplaceWith(
+    "testMolecule(body, timeoutMs.milliseconds, validate)",
+    "kotlin.time.Duration.Companion.milliseconds"
+  ),
+)
 fun <T> testMolecule(
   body: @Composable () -> T,
   timeoutMs: Long = 1_000L,

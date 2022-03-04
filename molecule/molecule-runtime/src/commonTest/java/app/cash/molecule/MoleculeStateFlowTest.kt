@@ -33,10 +33,8 @@ import org.junit.Assert.assertSame
 import org.junit.Test
 import kotlin.coroutines.CoroutineContext
 import kotlin.test.assertFailsWith
-import kotlin.time.ExperimentalTime
 
 @ExperimentalCoroutinesApi
-@ExperimentalTime
 class MoleculeStateFlowTest {
   @Test fun items() {
     val dispatcher = TestCoroutineDispatcher()
