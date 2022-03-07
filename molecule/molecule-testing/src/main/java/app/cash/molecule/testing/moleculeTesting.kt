@@ -34,6 +34,7 @@ import kotlinx.coroutines.yield
 import kotlin.coroutines.CoroutineContext
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.Duration.Companion.seconds
 
 @ExperimentalCoroutinesApi
 @Deprecated(
@@ -45,14 +46,14 @@ import kotlin.time.Duration.Companion.milliseconds
 )
 fun <T> testMolecule(
   body: @Composable () -> T,
-  timeoutMs: Long = 1_000L,
+  timeoutMs: Long,
   validate: suspend MoleculeTurbine<T>.() -> Unit,
 ) = testMolecule(body, timeoutMs.milliseconds, validate)
 
 @ExperimentalCoroutinesApi
 fun <T> testMolecule(
   body: @Composable () -> T,
-  timeout: Duration,
+  timeout: Duration = 1.seconds,
   validate: suspend MoleculeTurbine<T>.() -> Unit,
 ) = runBlocking {
   val events = Channel<Event<T>>(UNLIMITED)
