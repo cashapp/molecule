@@ -4,8 +4,8 @@ include ':sample'
 
 includeBuild('molecule') {
   dependencySubstitution {
-    substitute module('app.cash.molecule:molecule-gradle-plugin') with project(':molecule-gradle-plugin')
-    substitute module('app.cash.molecule:molecule-runtime') with project(':molecule-runtime')
-    substitute module('app.cash.molecule:molecule-testing') with project(':molecule-testing')
+    substitute module('app.cash.molecule:molecule-gradle-plugin') using project(':molecule-gradle-plugin')
+    substitute module('app.cash.molecule:molecule-runtime') using project(':molecule-runtime')
+    substitute module('app.cash.molecule:molecule-testing') using project(':molecule-testing')
   }
 }
