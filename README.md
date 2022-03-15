@@ -166,8 +166,8 @@ Add the buildscript dependency and apply the plugin to every module which wants 
 
 ```groovy
 buildscript {
-  repository {
-    mavenCental()
+  repositories {
+    mavenCentral()
   }
   dependencies {
     classpath 'app.cash.molecule:molecule-gradle-plugin:0.2.0'
@@ -183,8 +183,8 @@ apply plugin: 'app.cash.molecule'
 
 ```groovy
 buildscript {
-  repository {
-    mavenCental()
+  repositories {
+    mavenCentral()
     maven {
       url 'https://oss.sonatype.org/content/repositories/snapshots/'
     }
