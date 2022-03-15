@@ -126,7 +126,7 @@ fun Profile(models: StateFlow<ProfileModel>) {
 }
 ```
 
-For more information see [the `launchMolecule` documentation](https://cashapp.github.io/molecule/docs/latest/molecule-runtime/molecule-runtime/app.cash.molecule/launch-molecule.html).
+For more information see [the `launchMolecule` documentation](https://cashapp.github.io/molecule/docs/latest/molecule-runtime/app.cash.molecule/launch-molecule.html).
 
 ### Flow
 
@@ -158,7 +158,7 @@ fun counter(): Flow<Int> = moleculeFlow {
 }
 ```
 
-For more information see [the `moleculeFlow` documentation](https://cashapp.github.io/molecule/docs/latest/molecule-runtime/molecule-runtime/app.cash.molecule/molecule-flow.html).
+For more information see [the `moleculeFlow` documentation](https://cashapp.github.io/molecule/docs/latest/molecule-runtime/app.cash.molecule/molecule-flow.html).
 
 ## Usage
 
@@ -203,10 +203,10 @@ apply plugin: 'app.cash.molecule'
 ### Frame Clock
 
 Molecule requires a `MonotonicFrameClock` key in your `CoroutineScope`.
-This applies to [the `launchMolecule` extension's](https://cashapp.github.io/molecule/docs/latest/molecule-runtime/molecule-runtime/app.cash.molecule/launch-molecule.html) receiver and the scope in which you collect [the `moleculeFlow` function]()-returned flow.
+This applies to [the `launchMolecule` extension's](https://cashapp.github.io/molecule/docs/latest/molecule-runtime/app.cash.molecule/launch-molecule.html) receiver and the scope in which you collect [the `moleculeFlow` function]()-returned flow.
 The clock is used to determine when recomposition occurs and a new value is produced.
 
-On Android, [`AndroidUiDispatcher.Main`](https://cashapp.github.io/molecule/docs/latest/molecule-runtime/molecule-runtime/app.cash.molecule/-android-ui-dispatcher/-companion/-main.html) can be used for running your composables on the main thread with recomposition synchronized to the frame rate.
+On Android, [`AndroidUiDispatcher.Main`](https://cashapp.github.io/molecule/docs/latest/molecule-runtime/app.cash.molecule/-android-ui-dispatcher/-companion/-main.html) can be used for running your composables on the main thread with recomposition synchronized to the frame rate.
 For any other rate or to recompose on a background thread, create a [`BroadcastFrameClock`](https://developer.android.com/reference/kotlin/androidx/compose/runtime/BroadcastFrameClock) and a timer to invoke its `sendFrame` function at your desired rate.
 
 ### Testing
@@ -233,7 +233,7 @@ Validating your produced values should feel familiar to those who have used [Tur
 }
 ```
 
-For more information see [the documentation](https://cashapp.github.io/molecule/docs/latest/molecule-testing/molecule-testing/app.cash.molecule.testing/test-molecule.html).
+For more information see [the documentation](https://cashapp.github.io/molecule/docs/latest/molecule-testing/app.cash.molecule.testing/test-molecule.html).
 
 
 ## License
