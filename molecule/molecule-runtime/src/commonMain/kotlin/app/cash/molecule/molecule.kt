@@ -19,7 +19,10 @@ import androidx.compose.runtime.AbstractApplier
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Composition
 import androidx.compose.runtime.MonotonicFrameClock
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.Recomposer
+import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.snapshots.Snapshot
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart.UNDISPATCHED
@@ -75,6 +78,33 @@ fun <T> CoroutineScope.launchMolecule(
   )
 
   return flow!!
+}
+
+/**
+ * Launch a coroutine into this [CoroutineScope] which will continually recompose `body`
+ * to produce a [State] stream of [T] values.
+ *
+ * The [CoroutineScope] in which this [State] is created must contain a
+ * [MonotonicFrameClock] key which controls when recomposition occurs.
+ */
+fun <T> CoroutineScope.moleculeComposeState(
+  body: @Composable () -> T,
+): State<T> {
+  var mutableState: MutableState<T>? = null
+
+  launchMolecule(
+    emitter = { value ->
+      val outputFlow = mutableState
+      if (outputFlow != null) {
+        outputFlow.value = value
+      } else {
+        mutableState = mutableStateOf(value)
+      }
+    },
+    body = body,
+  )
+
+  return mutableState!!
 }
 
 /**
