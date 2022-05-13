@@ -24,12 +24,47 @@ import androidx.compose.runtime.snapshots.Snapshot
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart.UNDISPATCHED
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.channelFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.consumeAsFlow
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.job
 import kotlinx.coroutines.launch
+
+/**
+ * Create a [Flow] which will continually recompose `body` to produce a stream of [T] values
+ * when collected.
+ *
+ * The [Flow] produced by [backpressureMoleculeFlow] uses backpressure as a clock mechanism: collecting an item
+ * on the [Flow] acts as a clock tick. [body] will then either immediately recompose, or suspend and await the next
+ * [Snapshot] invalidation. No [MonotonicFrameClock] is required.
+ */
+@OptIn(ExperimentalCoroutinesApi::class)
+fun <T> backpressureMoleculeFlow(body: @Composable () -> T): Flow<T> = flow {
+  coroutineScope {
+    val clock = GatedFrameClock()
+    val outputBuffer = Channel<T>(1)
+
+    launch(clock, start = UNDISPATCHED) {
+      launchMolecule(
+        emitter = {
+          clock.isRunning = false
+          outputBuffer.trySend(it).getOrThrow()
+        },
+        body = body,
+      )
+    }
+    outputBuffer.consumeAsFlow().collect {
+      emit(it)
+      if (outputBuffer.isEmpty) clock.isRunning = true
+    }
+  }
+}
 
 /**
  * Create a [Flow] which will continually recompose `body` to produce a stream of [T] values
