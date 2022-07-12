@@ -18,8 +18,8 @@ package app.cash.molecule.testing
 import androidx.compose.runtime.BroadcastFrameClock
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.withFrameMillis
-import app.cash.molecule.launchMolecule
 import app.cash.molecule.RecompositionClock
+import app.cash.molecule.launchMolecule
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineStart.UNDISPATCHED
 import kotlinx.coroutines.ExperimentalCoroutinesApi

@@ -24,9 +24,18 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.Snapshot
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.job
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.plus
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.supervisorScope
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlin.coroutines.CoroutineContext
 import kotlin.test.Test
@@ -41,7 +50,7 @@ class MoleculeStateFlowTest {
     val clock = BroadcastFrameClock()
     val scope = CoroutineScope(dispatcher + clock)
 
-    val flow = scope.launchMolecule {
+    val flow = scope.launchMolecule(RecompositionClock.ContextClock) {
       var count by remember { mutableStateOf(0) }
       LaunchedEffect(Unit) {
         while (true) {
@@ -80,7 +89,7 @@ class MoleculeStateFlowTest {
     // Use a custom subtype to prevent coroutines from breaking referential equality.
     val runtimeException = object : RuntimeException() {}
     val t = assertFailsWith<RuntimeException> {
-      scope.launchMolecule {
+      scope.launchMolecule(RecompositionClock.ContextClock) {
         throw runtimeException
       }
     }
@@ -107,7 +116,7 @@ class MoleculeStateFlowTest {
     // Use a custom subtype to prevent coroutines from breaking referential equality.
     val runtimeException = object : RuntimeException() {}
     var count by mutableStateOf(0)
-    val flow = scope.launchMolecule {
+    val flow = scope.launchMolecule(RecompositionClock.ContextClock) {
       if (count == 1) {
         throw runtimeException
       }
@@ -132,7 +141,7 @@ class MoleculeStateFlowTest {
 
     // Use a custom subtype to prevent coroutines from breaking referential equality.
     val runtimeException = object : RuntimeException() {}
-    val flow = scope.launchMolecule {
+    val flow = scope.launchMolecule(RecompositionClock.ContextClock) {
       LaunchedEffect(Unit) {
         delay(50)
         throw runtimeException
@@ -147,5 +156,66 @@ class MoleculeStateFlowTest {
     assertSame(runtimeException, exceptionHandler.exceptions.single())
 
     scope.cancel()
+  }
+
+  @Test
+  fun itemsImmediate() = runBlocking {
+    val dispatcher = TestCoroutineDispatcher()
+    val values = Channel<Int>(Channel.UNLIMITED)
+    val job = Job(coroutineContext.job)
+    val scope = this + job + dispatcher
+
+    val flow = scope.launchMolecule(RecompositionClock.Immediate) {
+      var count by remember { mutableStateOf(0) }
+      LaunchedEffect(Unit) {
+        while (true) {
+          delay(100)
+          count++
+        }
+      }
+
+      count
+    }
+
+    assertEquals(0, flow.value)
+
+    dispatcher.advanceTimeBy(99)
+    assertEquals(0, flow.value)
+
+    dispatcher.advanceTimeBy(1)
+    assertEquals(1, flow.value)
+
+    dispatcher.advanceTimeBy(100)
+    assertEquals(2, flow.value)
+
+    job.cancel()
+  }
+
+  @Test fun errorDelayedImmediate() = runBlocking {
+    // Use a custom subtype to prevent coroutines from breaking referential equality.
+    val runtimeException = object : RuntimeException() {}
+    val exceptionHandler = RecordingExceptionHandler()
+
+    var count by mutableStateOf(0)
+    supervisorScope {
+      var flow: StateFlow<Int>? = null
+
+      val job = launch(start = CoroutineStart.UNDISPATCHED, context = exceptionHandler) {
+        flow = launchMolecule(RecompositionClock.Immediate) {
+          if (count == 1) {
+            throw runtimeException
+          }
+          count
+        }
+      }
+
+      assertEquals(0, flow!!.value)
+
+      count++
+
+      job.join()
+
+      assertSame(runtimeException, exceptionHandler.exceptions.single())
+    }
   }
 }
