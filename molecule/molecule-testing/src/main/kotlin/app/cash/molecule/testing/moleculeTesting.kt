@@ -18,6 +18,7 @@ package app.cash.molecule.testing
 import androidx.compose.runtime.BroadcastFrameClock
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.withFrameMillis
+import app.cash.molecule.RecompositionClock
 import app.cash.molecule.launchMolecule
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineStart.UNDISPATCHED
@@ -66,6 +67,7 @@ fun <T> testMolecule(
   launch(exceptionHandler + clock + moleculeJob, start = UNDISPATCHED) {
     try {
       launchMolecule(
+        clock = RecompositionClock.ContextClock,
         emitter = { value ->
           val result = events.trySend(Event.Item(value))
           if (result.isFailure) {
