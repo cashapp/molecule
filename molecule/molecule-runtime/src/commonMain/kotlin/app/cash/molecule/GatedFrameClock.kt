@@ -17,6 +17,10 @@ package app.cash.molecule
 
 import androidx.compose.runtime.BroadcastFrameClock
 import androidx.compose.runtime.MonotonicFrameClock
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.Channel.Factory.CONFLATED
+import kotlinx.coroutines.launch
 import kotlin.time.ExperimentalTime
 import kotlin.time.TimeSource
 
@@ -27,8 +31,15 @@ import kotlin.time.TimeSource
  * the clock is set to run again.
  */
 @OptIn(ExperimentalTime::class)
-internal class GatedFrameClock : MonotonicFrameClock {
+internal class GatedFrameClock(scope: CoroutineScope) : MonotonicFrameClock {
   private val start = TimeSource.Monotonic.markNow()
+  private val frameSends = Channel<Unit>(CONFLATED)
+
+  init {
+    scope.launch {
+      for (send in frameSends) sendFrame()
+    }
+  }
 
   var isRunning: Boolean = true
     set(value) {
@@ -44,7 +55,7 @@ internal class GatedFrameClock : MonotonicFrameClock {
   }
 
   private val clock = BroadcastFrameClock {
-    if (isRunning) sendFrame()
+    frameSends.trySend(Unit).getOrThrow()
   }
 
   override suspend fun <R> withFrameNanos(onFrame: (frameTimeNanos: Long) -> R): R {
