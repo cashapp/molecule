@@ -63,7 +63,7 @@ private fun <T> contextClockFlow(body: @Composable () -> T) = channelFlow {
 @OptIn(ExperimentalCoroutinesApi::class) // Marked as stable in kotlinx.coroutines 1.6.
 private fun <T> immediateClockFlow(body: @Composable () -> T): Flow<T> = flow {
   coroutineScope {
-    val clock = GatedFrameClock()
+    val clock = GatedFrameClock(this)
     val outputBuffer = Channel<T>(1)
 
     launch(clock, start = UNDISPATCHED) {
@@ -123,7 +123,7 @@ fun <T> CoroutineScope.launchMolecule(
 ) {
   val clockContext = when (clock) {
     RecompositionClock.ContextClock -> EmptyCoroutineContext
-    RecompositionClock.Immediate -> GatedFrameClock().also { it.isRunning = true }
+    RecompositionClock.Immediate -> GatedFrameClock(this).also { it.isRunning = true }
   }
 
   with(this + clockContext) {
