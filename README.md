@@ -3,7 +3,7 @@
 Build a `StateFlow` or `Flow` stream using Jetpack Compose[^1].
 
 ```kotlin
-fun CoroutineScope.launchCounter(): StateFlow<Int> = launchMolecule {
+fun CoroutineScope.launchCounter(): StateFlow<Int> = launchMolecule(clock = ContextClock) {
   var count by remember { mutableStateOf(0) }
 
   LaunchedEffect(Unit) {
@@ -108,10 +108,12 @@ This model-producing composable function can be run with `launchMolecule`.
 ```kotlin
 val userFlow = db.users()
 val balanceFlow = db.balances()
-val models: StateFlow<ProfileModel> = scope.launchMolecule {
+val models: StateFlow<ProfileModel> = scope.launchMolecule(clock = ContextClock) {
   ProfilePresenter(userFlow, balanceFlow)
 }
 ```
+
+A coroutine that runs `ProfilePresenter` and shares its output with the `StateFlow` is launched into the provided `CoroutineScope`.
 
 At the view-layer, consuming the `StateFlow` of our model objects becomes trivial.
 
@@ -131,20 +133,19 @@ For more information see [the `launchMolecule` documentation](https://cashapp.gi
 ### Flow
 
 In addition to `StateFlow`s, Molecule can create regular `Flow`s.
-The flow-returning function does not require a `CoroutineScope` as it will be inherited from the collector.
 
 Here is the presenter example updated to use a regular `Flow`:
 ```kotlin
 val userFlow = db.users()
 val balanceFlow = db.balances()
-val models: Flow<ProfileModel> = moleculeFlow {
+val models: Flow<ProfileModel> = moleculeFlow(clock = Immediate) {
   ProfilePresenter(userFlow, balanceFlow)
 }
 ```
 
 And the counter example:
 ```kotlin
-fun counter(): Flow<Int> = moleculeFlow {
+fun counter(): Flow<Int> = moleculeFlow((clock = Immediate)) {
   val count by remember { mutableStateOf(0) }
 
   LaunchedEffect(Unit) {
@@ -202,17 +203,35 @@ apply plugin: 'app.cash.molecule'
 
 ### Frame Clock
 
-Molecule requires a `MonotonicFrameClock` key in your `CoroutineScope`.
-This applies to [the `launchMolecule` extension's](https://cashapp.github.io/molecule/docs/latest/molecule-runtime/app.cash.molecule/launch-molecule.html) receiver and the scope in which you collect [the `moleculeFlow` function]()-returned flow.
-The clock is used to determine when recomposition occurs and a new value is produced.
+Whenever Jetpack Compose recomposes, it always waits for the next frame before beginning its work.
+It is dependent on a `MonotonicFrameClock` in its `CoroutineContext` to know when a new frame is sent.
+Molecule is just Jetpack Compose under the hood, so it also requires a frame clock: values won't be produced until a frame is sent and recomposition occurs.
 
-On Android, [`AndroidUiDispatcher.Main`](https://cashapp.github.io/molecule/docs/latest/molecule-runtime/app.cash.molecule/-android-ui-dispatcher/-companion/-main.html) can be used for running your composables on the main thread with recomposition synchronized to the frame rate.
-For any other rate or to recompose on a background thread, create a [`BroadcastFrameClock`](https://developer.android.com/reference/kotlin/androidx/compose/runtime/BroadcastFrameClock) and a timer to invoke its `sendFrame` function at your desired rate.
+Unlike Jetpack Compose, however, Molecule will sometimes be run in circumstances that do not provide a `MonotonicFrameClock`.
+So all Molecule APIs require you to specify your preferred clock behavior:
+
+* `RecompositionClock.ContextClock` behaves like Jetpack Compose: it will fish the `MonotonicFrameClock` out of the calling `coroutineContext` and use it for recomposition.
+  If there is no `MonotonicFrameClock`, it will throw an exception.
+  `ContextClock` is useful with Android's [`AndroidUiDispatcher.Main`](https://cashapp.github.io/molecule/docs/latest/molecule-runtime/app.cash.molecule/-android-ui-dispatcher/-companion/-main.html).
+  `Main` has a built-in `MonotonicFrameClock` that is synchronized with the frame rate of the device.
+  So a Molecule run on `Main` with `ContextClock` will run in lock step with the frame rate, too.
+  Nifty!
+  You can also provide your own `BroadcastFrameClock` to implement your own frame rate.
+* `RecompositionClock.Immediate` will construct an immediate clock.
+  This clock will produce a frame whenever the enclosing flow is ready to emit an item.
+  (This is always the case for a `StateFlow`.)
+  `Immediate` can be used where no clock is available at all without any additional wiring.
+  It may be used for unit testing, or for running molecules off the main thread.
 
 ### Testing
 
-While the created `StateFlow`s and `Flow`s can be tested normally, the use of the frame clock to control recomposition makes it harder than it should be.
-The 'molecule-testing' dependency provides a `testMolecule` function which simplifies your test code by managing the threading, coroutine scope, and frame clock for you.
+There are two options for testing:
+
+1. Use `moleculeFlow(clock = Immediate)` and test using [Turbine](https://github.com/cashapp/turbine/).
+  Your `moleculeFlow` will run just like any other flow does in Turbine.
+
+2. Use the `molecule-testing` dependency.
+  `molecule-testing` provides a `testMolecule` function with a Turbine-like API.
 
 ```kotlin
 dependencies {
@@ -221,7 +240,9 @@ dependencies {
 }
 ```
 
-Validating your produced values should feel familiar to those who have used [Turbine](https://github.com/cashapp/turbine/).
+Unlike `moleculeFlow(clock = Immediate)`, `testMolecule` simulates clock ticks:
+Calling `awaitItem` yields to running coroutines and "ticks" the Molecule's clock until a change to snapshot state occurs, triggering a fresh recomposition and a new item.
+If snapshot state is never changed, no recomposition will ever occur and `awaitItem` will fail.
 
 ```kotlin
 @Test fun counting() {
