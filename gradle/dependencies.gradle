@@ -2,15 +2,15 @@ buildscript {
   ext.versions = [
     'compileSdk': 31,
     'minSdk': 21,
-    'compose': '1.1.0',
+    'compose': '1.2.0',
     'coroutines': '1.5.2',
-    'kotlin': '1.6.10',
+    'kotlin': '1.7.0',
   ]
   ext.deps = [
     'compose': [
-      'compiler': "org.jetbrains.compose.compiler:compiler:${versions.compose}",
-      'runtime': "org.jetbrains.compose.runtime:runtime:${versions.compose}",
-      'rx2': "androidx.compose.runtime:runtime-rxjava2:${versions.compose}",
+      'compiler': "androidx.compose.compiler:compiler:${versions.compose}",
+      'runtime': 'org.jetbrains.compose.runtime:runtime:1.1.0',
+      'rx2': 'androidx.compose.runtime:runtime-rxjava2:1.1.0',
     ],
     'kotlin': [
       'gradlePlugin': "org.jetbrains.kotlin:kotlin-gradle-plugin:${versions.kotlin}",
