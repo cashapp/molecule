@@ -21,8 +21,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.Channel.Factory.CONFLATED
 import kotlinx.coroutines.launch
-import kotlin.time.ExperimentalTime
-import kotlin.time.TimeSource
 
 /**
  * A [MonotonicFrameClock] that is either running, or not.
@@ -30,9 +28,7 @@ import kotlin.time.TimeSource
  * While running, any request for a frame immediately succeeds. If stopped, requests for a frame wait until
  * the clock is set to run again.
  */
-@OptIn(ExperimentalTime::class)
 internal class GatedFrameClock(scope: CoroutineScope) : MonotonicFrameClock {
-  private val start = TimeSource.Monotonic.markNow()
   private val frameSends = Channel<Unit>(CONFLATED)
 
   init {
@@ -51,7 +47,7 @@ internal class GatedFrameClock(scope: CoroutineScope) : MonotonicFrameClock {
     }
 
   private fun sendFrame() {
-    clock.sendFrame(start.elapsedNow().inWholeNanoseconds)
+    clock.sendFrame(0L)
   }
 
   private val clock = BroadcastFrameClock {

@@ -22,15 +22,12 @@ import androidx.compose.runtime.Recomposer
 import androidx.compose.runtime.snapshots.Snapshot
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart.UNDISPATCHED
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.channelFlow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.consumeAsFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.job
 import kotlinx.coroutines.launch
@@ -41,7 +38,6 @@ import kotlin.coroutines.EmptyCoroutineContext
  * Create a [Flow] which will continually recompose `body` to produce a stream of [T] values
  * when collected.
  */
-@OptIn(ExperimentalCoroutinesApi::class) // Marked as stable in kotlinx.coroutines 1.6.
 fun <T> moleculeFlow(clock: RecompositionClock, body: @Composable () -> T): Flow<T> {
   return when (clock) {
     RecompositionClock.ContextClock -> contextClockFlow(body)
@@ -49,7 +45,6 @@ fun <T> moleculeFlow(clock: RecompositionClock, body: @Composable () -> T): Flow
   }
 }
 
-@OptIn(ExperimentalCoroutinesApi::class) // Marked as stable in kotlinx.coroutines 1.6.
 private fun <T> contextClockFlow(body: @Composable () -> T) = channelFlow {
   launchMolecule(
     clock = RecompositionClock.ContextClock,
@@ -60,7 +55,6 @@ private fun <T> contextClockFlow(body: @Composable () -> T) = channelFlow {
   )
 }
 
-@OptIn(ExperimentalCoroutinesApi::class) // Marked as stable in kotlinx.coroutines 1.6.
 private fun <T> immediateClockFlow(body: @Composable () -> T): Flow<T> = flow {
   coroutineScope {
     val clock = GatedFrameClock(this)
@@ -76,10 +70,28 @@ private fun <T> immediateClockFlow(body: @Composable () -> T): Flow<T> = flow {
         body = body,
       )
     }
-    outputBuffer.consumeAsFlow().collect {
-      emit(it)
-      if (outputBuffer.isEmpty) clock.isRunning = true
+
+    while (true) {
+      val result = outputBuffer.tryReceive()
+      // Per `ReceiveChannel.tryReceive` documentation: isFailure means channel is empty.
+      val value = if (result.isFailure) {
+        clock.isRunning = true
+        outputBuffer.receive()
+      } else {
+        result.getOrThrow()
+      }
+      emit(value)
     }
+    /*
+    TODO: Replace the above block with the following once `ReceiveChannel.isEmpty` is stable:
+
+    for (item in outputBuffer) {
+      emit(item)
+      if (outputBuffer.isEmpty) {
+        clock.isRunning = true
+      }
+    }
+    */
   }
 }
 
@@ -123,7 +135,7 @@ fun <T> CoroutineScope.launchMolecule(
 ) {
   val clockContext = when (clock) {
     RecompositionClock.ContextClock -> EmptyCoroutineContext
-    RecompositionClock.Immediate -> GatedFrameClock(this).also { it.isRunning = true }
+    RecompositionClock.Immediate -> GatedFrameClock(this)
   }
 
   with(this + clockContext) {

@@ -3,7 +3,7 @@ buildscript {
     'compileSdk': 31,
     'minSdk': 21,
     'compose': '1.2.0',
-    'coroutines': '1.5.2',
+    'coroutines': '1.6.4',
     'kotlin': '1.7.0',
   ]
   ext.deps = [
