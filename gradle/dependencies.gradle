@@ -34,5 +34,6 @@ buildscript {
     'rx2': 'io.reactivex.rxjava2:rxjava:2.2.21',
     'androidPlugin': 'com.android.tools.build:gradle:7.0.0',
     'spotlessPlugin': 'com.diffplug.spotless:spotless-plugin-gradle:6.8.0',
+    'kotlinterPlugin': 'org.jmailen.gradle:kotlinter-gradle:3.11.1',
   ]
 }
