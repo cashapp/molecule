@@ -21,6 +21,8 @@ import androidx.compose.runtime.rxjava2.subscribeAsState
 import io.reactivex.Observable
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
+import kotlin.test.assertFailsWith
+import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.async
@@ -36,8 +38,6 @@ import org.junit.Assert.assertSame
 import org.junit.Assert.assertTrue
 import org.junit.Ignore
 import org.junit.Test
-import kotlin.test.assertFailsWith
-import kotlin.time.Duration.Companion.seconds
 
 @ExperimentalCoroutinesApi
 class MoleculeTestingTest {
@@ -100,7 +100,7 @@ class MoleculeTestingTest {
     testMolecule({
       val data by flow.collectAsState(null)
       data
-    }) {
+    },) {
       assertNull(awaitItem())
       assertEquals(1, awaitItem())
     }
@@ -112,7 +112,7 @@ class MoleculeTestingTest {
     testMolecule({
       val data by flow.collectAsState(null)
       data
-    }) {
+    },) {
       assertNull(awaitItem())
       flow.emit(1)
       assertEquals(1, awaitItem())
@@ -127,7 +127,7 @@ class MoleculeTestingTest {
     testMolecule({
       val data by subject.subscribeAsState(null)
       data
-    }) {
+    },) {
       assertNull(awaitItem())
       assertEquals(1, awaitItem())
     }
@@ -139,7 +139,7 @@ class MoleculeTestingTest {
     testMolecule({
       val data by subject.subscribeAsState(null)
       data
-    }) {
+    },) {
       assertNull(awaitItem())
       assertEquals(1, awaitItem())
       subject.onNext(2)
@@ -154,7 +154,7 @@ class MoleculeTestingTest {
     testMolecule({
       val data by subjectFlow.collectAsState(null)
       data
-    }) {
+    },) {
       assertNull(awaitItem())
       assertEquals(1, awaitItem())
       subject.onNext(2)
@@ -168,7 +168,7 @@ class MoleculeTestingTest {
     testMolecule({
       val data by subject.subscribeAsState(null)
       data
-    }) {
+    },) {
       assertNull(awaitItem())
       subject.onNext(1)
       assertEquals(1, awaitItem())
@@ -182,7 +182,7 @@ class MoleculeTestingTest {
     testMolecule({
       val data by subjectFlow.collectAsState(null)
       data
-    }) {
+    },) {
       assertNull(awaitItem())
       subject.onNext(1)
       assertEquals(1, awaitItem())
@@ -196,7 +196,7 @@ class MoleculeTestingTest {
 
     testMolecule({
       throw runtimeException
-    }) {
+    },) {
       assertSame(runtimeException, awaitError())
     }
   }
@@ -215,7 +215,7 @@ class MoleculeTestingTest {
       } else {
         data
       }
-    }) {
+    },) {
       assertNull(awaitItem())
       flow.emit(1)
       assertSame(runtimeException, awaitError())
@@ -226,7 +226,7 @@ class MoleculeTestingTest {
   fun errorWhenExpectingItem() {
     testMolecule<Unit>({
       throw RuntimeException()
-    }) {
+    },) {
       val t = assertFailsWith<AssertionError> { awaitItem() }
       assertEquals(t.message, "Expected item but found Error(RuntimeException)")
     }
@@ -248,7 +248,7 @@ class MoleculeTestingTest {
     val thrown = assertFailsWith<RuntimeException> {
       testMolecule({
         throw moleculeException
-      }) {
+      },) {
         throw validateException
       }
     }

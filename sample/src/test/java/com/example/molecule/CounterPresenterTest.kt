@@ -27,7 +27,7 @@ class CounterPresenterTest {
     val events = MutableSharedFlow<CounterEvent>()
     testMolecule({
       CounterPresenter(events, randomService)
-    }) {
+    },) {
       assertEquals(CounterModel(0, false), awaitItem())
       events.emit(Change(+1))
       assertEquals(CounterModel(1, false), awaitItem())
@@ -42,7 +42,7 @@ class CounterPresenterTest {
     val events = MutableSharedFlow<CounterEvent>()
     testMolecule({
       CounterPresenter(events, randomService)
-    }) {
+    },) {
       assertEquals(CounterModel(0, false), awaitItem())
       events.emit(Randomize)
       assertEquals(CounterModel(0, true), awaitItem())

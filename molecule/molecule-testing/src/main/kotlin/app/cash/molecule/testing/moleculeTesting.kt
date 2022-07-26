@@ -20,6 +20,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.withFrameMillis
 import app.cash.molecule.RecompositionClock
 import app.cash.molecule.launchMolecule
+import kotlin.coroutines.CoroutineContext
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineStart.UNDISPATCHED
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -32,17 +36,13 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeout
 import kotlinx.coroutines.yield
-import kotlin.coroutines.CoroutineContext
-import kotlin.time.Duration
-import kotlin.time.Duration.Companion.milliseconds
-import kotlin.time.Duration.Companion.seconds
 
 @ExperimentalCoroutinesApi
 @Deprecated(
   "Use overload with Duration",
   ReplaceWith(
     "testMolecule(body, timeoutMs.milliseconds, validate)",
-    "kotlin.time.Duration.Companion.milliseconds"
+    "kotlin.time.Duration.Companion.milliseconds",
   ),
 )
 fun <T> testMolecule(
