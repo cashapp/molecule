@@ -16,14 +16,15 @@
 package app.cash.molecule.gradle
 
 import com.google.common.truth.Truth.assertThat
+import java.io.File
 import org.gradle.testkit.runner.GradleRunner
 import org.junit.Test
-import java.io.File
 
 class MoleculePluginTest {
   @Test fun testingModuleWithoutVersion() {
     createRunner("testing-module-without-version").build()
   }
+
   @Test fun testingModuleExplicitVersion() {
     val result = createRunner("testing-module-explicit-version").buildAndFail()
     assertThat(result.output).contains("Could not find app.cash.molecule:molecule-testing:0.0.0")

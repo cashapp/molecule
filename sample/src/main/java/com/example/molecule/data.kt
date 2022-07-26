@@ -44,9 +44,9 @@ fun RandomService(): RandomService {
       OkHttpClient.Builder()
         .addInterceptor(
           HttpLoggingInterceptor { Log.d("HTTP", it) }
-            .also { it.level = BASIC }
+            .also { it.level = BASIC },
         )
-        .build()
+        .build(),
     )
     .addConverterFactory(ScalarsConverterFactory.create())
     .build()

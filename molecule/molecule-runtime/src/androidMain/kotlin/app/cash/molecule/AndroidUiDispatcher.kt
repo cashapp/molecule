@@ -41,7 +41,7 @@ import kotlinx.coroutines.runBlocking
 // messages would wait behind a frame barrier.
 public class AndroidUiDispatcher private constructor(
   public val choreographer: Choreographer,
-  private val handler: android.os.Handler
+  private val handler: android.os.Handler,
 ) : CoroutineDispatcher() {
 
   // Guards all properties in this class
@@ -83,10 +83,10 @@ public class AndroidUiDispatcher private constructor(
         task = nextTask()
       }
     } while (
-    // We don't dispatch holding the lock so that other tasks can get in on our
-    // trampolining time slice, but once we're done, make sure nothing added a new task
-    // before we set scheduledDispatch = false, which would prevent the next dispatch
-    // from being correctly scheduled. Loop to run these stragglers now.
+      // We don't dispatch holding the lock so that other tasks can get in on our
+      // trampolining time slice, but once we're done, make sure nothing added a new task
+      // before we set scheduledDispatch = false, which would prevent the next dispatch
+      // from being correctly scheduled. Loop to run these stragglers now.
       synchronized(lock) {
         if (toRunTrampolined.isEmpty()) {
           scheduledTrampolineDispatch = false
@@ -157,7 +157,7 @@ public class AndroidUiDispatcher private constructor(
       val dispatcher = AndroidUiDispatcher(
         if (isMainThread()) Choreographer.getInstance()
         else runBlocking(Dispatchers.Main) { Choreographer.getInstance() },
-        HandlerCompat.createAsync(Looper.getMainLooper())
+        HandlerCompat.createAsync(Looper.getMainLooper()),
       )
 
       dispatcher + dispatcher.frameClock

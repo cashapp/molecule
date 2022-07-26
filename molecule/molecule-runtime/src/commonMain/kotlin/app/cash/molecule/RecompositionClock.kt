@@ -23,6 +23,7 @@ enum class RecompositionClock {
    * Use this option to drive Molecule with the built-in Android frame clock.
    */
   ContextClock,
+
   /**
    * Install an eagerly recomposing clock. This clock will provide a new frame immediately whenever
    * one is requested. The resulting flow will emit a new item every time the snapshot state is invalidated.

@@ -15,8 +15,8 @@
  */
 package com.example.molecule
 
-import kotlinx.coroutines.delay
 import kotlin.random.Random
+import kotlinx.coroutines.delay
 
 class LocalRandomService(private val random: Random) : RandomService {
   constructor(seed: Int) : this(Random(seed))

@@ -5,6 +5,7 @@ buildscript {
     classpath deps.androidPlugin
     classpath deps.kotlin.gradlePlugin
     classpath deps.spotlessPlugin
+    classpath deps.kotlinterPlugin
 
     // Normally you would declare a version here, but we use dependency substitution in
     // settings.gradle to use the version built from inside the repo.
@@ -14,6 +15,7 @@ buildscript {
   repositories {
     mavenCentral()
     google()
+    gradlePluginPortal()
   }
 }
 
@@ -56,14 +58,13 @@ subprojects {
     kotlin {
       target("src/**/*.kt")
       licenseHeaderFile(rootProject.file('gradle/license-header.txt'))
-      // Spotless doesn't read .editorconfig yet: https://github.com/diffplug/spotless/issues/142
-      ktlint('0.41.0').userData([
-        'insert_final_newline': 'true',
-        'end_of_line': 'lf',
-        'charset': 'utf-8',
-        'indent_size': '2',
-        'ij_kotlin_imports_layout': '*',
-      ])
     }
+  }
+
+  apply plugin: 'org.jmailen.kotlinter'
+  kotlinter {
+    disabledRules = [
+      'filename',
+    ]
   }
 }
