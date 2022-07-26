@@ -52,6 +52,11 @@ fun <T> testMolecule(
 ) = testMolecule(body, timeoutMs.milliseconds, validate)
 
 @ExperimentalCoroutinesApi
+@Deprecated(
+  """Use moleculeFlow or launchMolecule with an 'Immediate' clock and then use Turbine to test.
+
+If you believe this is insufficient please let us know at https://github.com/cashapp/molecule/issues/97.""",
+)
 fun <T> testMolecule(
   body: @Composable () -> T,
   timeout: Duration = 1.seconds,
