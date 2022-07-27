@@ -1,0 +1,9 @@
+$dokka.format:html-v1
+$dokka.linkExtension:html
+
+module:molecule-gradle-plugin
+app.cash.molecule.gradle
+module:molecule-runtime
+app.cash.molecule
+module:molecule-testing
+app.cash.molecule.testing
