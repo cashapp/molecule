@@ -3,6 +3,13 @@
 ## [Unreleased]
 
 
+## [0.4.0-beta01] - 2022-07-27
+
+New:
+
+ - Update to Compose compiler 1.3.0-beta01 which supports Kotlin 1.7.10.
+
+
 ## [0.3.0] - 2022-07-27
 
 New:
