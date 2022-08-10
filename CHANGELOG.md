@@ -3,11 +3,29 @@
 ## [Unreleased]
 
 
+## [0.4.0] - 2022-08-10
+
+New:
+
+ - Update to Compose compiler 1.3.0 which supports Kotlin 1.7.10.
+
+Fixed:
+
+ - Prevent "Trying to call 'getOrThrow' on a failed channel result: Failed" exceptions when using the immediate recompose clock.
+
+
 ## [0.4.0-beta01] - 2022-07-27
 
 New:
 
  - Update to Compose compiler 1.3.0-beta01 which supports Kotlin 1.7.10.
+
+
+## [0.3.1] - 2022-08-10
+
+Fixed:
+
+ - Prevent "Trying to call 'getOrThrow' on a failed channel result: Failed" exceptions when using the immediate recompose clock.
 
 
 ## [0.3.0] - 2022-07-27
@@ -37,7 +55,10 @@ Initial release
 
 
 
-[Unreleased]: https://github.com/cashapp/molecule/compare/0.3.0...HEAD
+[Unreleased]: https://github.com/cashapp/molecule/compare/0.4.0...HEAD
+[0.4.0]: https://github.com/cashapp/molecule/releases/tag/0.4.0
+[0.4.0-beta01]: https://github.com/cashapp/molecule/releases/tag/0.4.0-beta01
+[0.3.1]: https://github.com/cashapp/molecule/releases/tag/0.3.1
 [0.3.0]: https://github.com/cashapp/molecule/releases/tag/0.3.0
 [0.2.0]: https://github.com/cashapp/molecule/releases/tag/0.2.0
 [0.1.0]: https://github.com/cashapp/molecule/releases/tag/0.1.0
