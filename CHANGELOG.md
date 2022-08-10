@@ -3,6 +3,13 @@
 ## [Unreleased]
 
 
+## [0.3.1] - 2022-08-10
+
+Fixed:
+
+ - Prevent "Trying to call 'getOrThrow' on a failed channel result: Failed" exceptions when using the immediate recompose clock.
+
+
 ## [0.3.0] - 2022-07-27
 
 New:
@@ -30,7 +37,8 @@ Initial release
 
 
 
-[Unreleased]: https://github.com/cashapp/molecule/compare/0.3.0...HEAD
+[Unreleased]: https://github.com/cashapp/molecule/compare/0.3.1...HEAD
+[0.3.1]: https://github.com/cashapp/molecule/releases/tag/0.3.1
 [0.3.0]: https://github.com/cashapp/molecule/releases/tag/0.3.0
 [0.2.0]: https://github.com/cashapp/molecule/releases/tag/0.2.0
 [0.1.0]: https://github.com/cashapp/molecule/releases/tag/0.1.0
