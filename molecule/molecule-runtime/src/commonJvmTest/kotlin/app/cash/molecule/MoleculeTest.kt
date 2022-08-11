@@ -237,7 +237,7 @@ class MoleculeTest {
   @Test
   fun itemsImmediate() = runBlocking {
     val dispatcher = TestCoroutineDispatcher()
-    val values = Channel<Int>(Channel.UNLIMITED)
+    val values = Channel<Int>()
 
     val job = launch(dispatcher) {
       moleculeFlow(clock = RecompositionClock.Immediate) {
@@ -263,6 +263,13 @@ class MoleculeTest {
     dispatcher.advanceTimeBy(100)
     value = values.awaitValue()
     assertEquals(2, value)
+
+    dispatcher.advanceTimeBy(300)
+
+    value = values.awaitValue()
+    assertEquals(3, value)
+    value = values.awaitValue()
+    assertEquals(5, value)
 
     job.cancel()
   }
