@@ -1,11 +1,9 @@
 buildscript {
-  apply from: 'gradle/dependencies.gradle'
-
   dependencies {
-    classpath deps.androidPlugin
-    classpath deps.kotlin.gradlePlugin
-    classpath deps.spotlessPlugin
-    classpath deps.kotlinterPlugin
+    classpath libs.android.plugin
+    classpath libs.kotlin.plugin
+    classpath libs.spotless.plugin
+    classpath libs.kotlinter.plugin
 
     // Normally you would declare a version here, but we use dependency substitution in
     // settings.gradle to use the version built from inside the repo.
@@ -43,9 +41,9 @@ subprojects {
 
   plugins.withType(com.android.build.gradle.BasePlugin).configureEach { plugin ->
     def android = plugin.extension
-    android.compileSdkVersion versions.compileSdk
+    android.compileSdkVersion libs.versions.compileSdk.get().toInteger()
     android.defaultConfig {
-      minSdkVersion versions.minSdk
+      minSdkVersion libs.versions.minSdk.get().toInteger()
     }
     android.lintOptions {
       checkDependencies true

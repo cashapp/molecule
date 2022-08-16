@@ -5,10 +5,10 @@ apply plugin: 'org.jetbrains.dokka'
 
 dependencies {
   compileOnly gradleApi()
-  api deps.kotlin.gradlePlugin
+  api libs.kotlin.plugin
 
-  testImplementation deps.junit
-  testImplementation deps.truth
+  testImplementation libs.junit
+  testImplementation libs.truth
   testImplementation gradleTestKit()
 }
 
@@ -47,7 +47,7 @@ sourceSets {
 task pluginVersion {
   def outputDir = file(versionDirectory)
 
-  inputs.property 'composeVersion', versions.compose
+  inputs.property 'composeVersion', libs.versions.compose.get()
   inputs.property 'moleculeVersion', project.version
   outputs.dir outputDir
 
@@ -57,7 +57,7 @@ task pluginVersion {
     versionFile.text = """// Generated file. Do not edit!
 package app.cash.molecule.gradle
 
-internal const val composeVersion = "${versions.compose}"
+internal const val composeVersion = "${libs.versions.compose.get()}"
 internal const val moleculeVersion = "${project.version}"
 """
   }
