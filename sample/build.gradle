@@ -3,12 +3,12 @@ apply plugin: 'org.jetbrains.kotlin.android'
 apply plugin: 'app.cash.molecule'
 
 dependencies {
-  implementation 'com.squareup.retrofit2:retrofit:2.9.0'
-  implementation 'com.squareup.retrofit2:converter-scalars:2.9.0'
-  implementation 'com.squareup.okhttp3:okhttp:4.9.2'
-  implementation 'com.squareup.okhttp3:logging-interceptor:4.9.2'
+  implementation libs.squareup.retrofit.client
+  implementation libs.squareup.retrofit.converter.scalars
+  implementation libs.squareup.okhttp.client
+  implementation libs.squareup.okhttp.logging.interceptor
 
-  testImplementation 'junit:junit:4.13.2'
+  testImplementation libs.junit
   testImplementation 'app.cash.molecule:molecule-testing'
 }
 

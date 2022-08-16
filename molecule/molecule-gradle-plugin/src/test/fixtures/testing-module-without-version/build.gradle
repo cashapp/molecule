@@ -1,8 +1,6 @@
 buildscript {
-  apply from: '../../../../../../gradle/dependencies.gradle'
-
   dependencies {
-    classpath deps.androidPlugin
+    classpath libs.android.plugin
     classpath "app.cash.molecule:molecule-gradle-plugin:$moleculeVersion"
   }
   repositories {
@@ -19,7 +17,7 @@ apply plugin: 'app.cash.molecule'
 
 dependencies {
   testImplementation 'app.cash.molecule:molecule-testing'
-  testImplementation deps.junit
+  testImplementation libs.junit
 }
 
 repositories {
@@ -31,9 +29,9 @@ repositories {
 }
 
 android {
-  compileSdkVersion versions.compileSdk
+  compileSdkVersion libs.versions.compileSdk.get().toInteger()
 
   defaultConfig {
-    minSdkVersion versions.minSdk
+    minSdkVersion libs.versions.minSdk.get().toInteger()
   }
 }
