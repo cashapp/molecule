@@ -6,6 +6,7 @@ buildscript {
     classpath libs.dokka.plugin
     classpath libs.spotless.plugin
     classpath libs.kotlinter.plugin
+    classpath libs.buildConfig.plugin
   }
 
   repositories {

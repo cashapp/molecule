@@ -2,6 +2,7 @@ apply plugin: 'org.jetbrains.kotlin.jvm'
 apply plugin: 'java-gradle-plugin'
 apply plugin: 'com.vanniktech.maven.publish'
 apply plugin: 'org.jetbrains.dokka'
+apply plugin: 'com.github.gmazzo.buildconfig'
 
 dependencies {
   compileOnly gradleApi()
@@ -38,29 +39,13 @@ gradlePlugin {
   }
 }
 
-def versionDirectory = "$buildDir/generated/version/"
-
-sourceSets {
-  main.java.srcDir versionDirectory
-}
-
-task pluginVersion {
-  def outputDir = file(versionDirectory)
-
-  inputs.property 'composeVersion', libs.versions.compose.get()
-  inputs.property 'moleculeVersion', project.version
-  outputs.dir outputDir
-
-  doLast {
-    def versionFile = file("$outputDir/app/cash/molecule/gradle/version.kt")
-    versionFile.parentFile.mkdirs()
-    versionFile.text = """// Generated file. Do not edit!
-package app.cash.molecule.gradle
-
-internal const val composeVersion = "${libs.versions.compose.get()}"
-internal const val moleculeVersion = "${project.version}"
-"""
+buildConfig {
+  useKotlinOutput {
+    internalVisibility = true
+    topLevelConstants = true
   }
-}
 
-tasks.getByName('compileKotlin').dependsOn('pluginVersion')
+  packageName('app.cash.molecule.gradle')
+  buildConfigField("String", "composeVersion", "\"${libs.versions.compose.get()}\"")
+  buildConfigField("String", "moleculeVersion", "\"${project.version}\"")
+}
