@@ -15,41 +15,49 @@
  */
 package com.example.molecule
 
-import app.cash.molecule.testing.testMolecule
-import kotlinx.coroutines.flow.MutableSharedFlow
+import app.cash.molecule.RecompositionClock
+import app.cash.molecule.moleculeFlow
+import kotlinx.coroutines.test.runTest
+import app.cash.turbine.test
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.receiveAsFlow
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
 class CounterPresenterTest {
   private val randomService = LocalRandomService(123)
 
-  @Test fun localChanges() {
-    val events = MutableSharedFlow<CounterEvent>()
-    testMolecule({
-      CounterPresenter(events, randomService)
-    },) {
-      assertEquals(CounterModel(0, false), awaitItem())
-      events.emit(Change(+1))
-      assertEquals(CounterModel(1, false), awaitItem())
-      events.emit(Change(+1))
-      assertEquals(CounterModel(2, false), awaitItem())
-      events.emit(Change(-10))
-      assertEquals(CounterModel(-8, false), awaitItem())
+  @Test
+  fun localChanges() = runTest {
+    val events = Channel<CounterEvent>()
+    moleculeFlow(clock = RecompositionClock.Immediate) {
+      CounterPresenter(events.receiveAsFlow(), randomService)
     }
+      .test {
+        assertEquals(CounterModel(0, false), awaitItem())
+        events.send(Change(+1))
+        assertEquals(CounterModel(1, false), awaitItem())
+        events.send(Change(+1))
+        assertEquals(CounterModel(2, false), awaitItem())
+        events.send(Change(-10))
+        assertEquals(CounterModel(-8, false), awaitItem())
+      }
   }
 
-  @Test fun randomChange() {
-    val events = MutableSharedFlow<CounterEvent>()
-    testMolecule({
-      CounterPresenter(events, randomService)
-    },) {
-      assertEquals(CounterModel(0, false), awaitItem())
-      events.emit(Randomize)
-      assertEquals(CounterModel(0, true), awaitItem())
-      assertEquals(CounterModel(18, false), awaitItem())
-      events.emit(Randomize)
-      assertEquals(CounterModel(18, true), awaitItem())
-      assertEquals(CounterModel(-4, false), awaitItem())
+  @Test
+  fun randomChange() = runTest {
+    val events = Channel<CounterEvent>()
+    moleculeFlow(clock = RecompositionClock.Immediate) {
+      CounterPresenter(events.receiveAsFlow(), randomService)
     }
+      .test {
+        assertEquals(CounterModel(0, false), awaitItem())
+        events.send(Randomize)
+        assertEquals(CounterModel(0, true), awaitItem())
+        assertEquals(CounterModel(18, false), awaitItem())
+        events.send(Randomize)
+        assertEquals(CounterModel(18, true), awaitItem())
+        assertEquals(CounterModel(-4, false), awaitItem())
+      }
   }
 }
