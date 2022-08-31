@@ -145,7 +145,7 @@ val models: Flow<ProfileModel> = moleculeFlow(clock = Immediate) {
 
 And the counter example:
 ```kotlin
-fun counter(): Flow<Int> = moleculeFlow((clock = Immediate)) {
+fun counter(): Flow<Int> = moleculeFlow(clock = Immediate) {
   val count by remember { mutableStateOf(0) }
 
   LaunchedEffect(Unit) {
