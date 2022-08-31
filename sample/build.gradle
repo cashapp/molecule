@@ -9,7 +9,8 @@ dependencies {
   implementation libs.squareup.okhttp.logging.interceptor
 
   testImplementation libs.junit
-  testImplementation 'app.cash.molecule:molecule-testing'
+  testImplementation libs.kotlinx.coroutines.test
+  testImplementation libs.turbine
 }
 
 android {
