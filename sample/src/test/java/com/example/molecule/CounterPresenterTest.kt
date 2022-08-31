@@ -17,8 +17,8 @@ package com.example.molecule
 
 import app.cash.molecule.RecompositionClock
 import app.cash.molecule.moleculeFlow
-import kotlinx.coroutines.test.runTest
 import app.cash.turbine.test
+import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import org.junit.Assert.assertEquals
