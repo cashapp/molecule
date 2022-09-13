@@ -15,11 +15,16 @@
  */
 package com.example
 
+import app.cash.molecule.RecompositionClock.Immediate
+import app.cash.molecule.launchMolecule
+import app.cash.turbine.test
 import org.junit.Assert.assertEquals
 
 class CountToThreeTest {
   @Test fun counts() {
-    testMolecule({ CountToThree() }) {
+    launchMolecule(Immediate) {
+      CountToThree()
+    }.test {
       assertEquals(1, awaitItem())
       assertEquals(2, awaitItem())
       assertEquals(3, awaitItem())
