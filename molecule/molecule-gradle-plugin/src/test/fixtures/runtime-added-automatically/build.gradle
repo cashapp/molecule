@@ -16,7 +16,7 @@ apply plugin: 'com.android.library'
 apply plugin: 'app.cash.molecule'
 
 dependencies {
-  testImplementation 'app.cash.molecule:molecule-testing'
+  testImplementation 'app.cash.turbine:turbine:0.9.0'
   testImplementation libs.junit
 }
 

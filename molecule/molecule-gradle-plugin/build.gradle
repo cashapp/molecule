@@ -16,7 +16,6 @@ dependencies {
 test {
   dependsOn(':molecule-gradle-plugin:publishAllPublicationsToInstallLocallyRepository')
   dependsOn(':molecule-runtime:publishAllPublicationsToInstallLocallyRepository')
-  dependsOn(':molecule-testing:publishAllPublicationsToInstallLocallyRepository')
 
   inputs.dir('src/test/fixtures')
 
