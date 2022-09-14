@@ -76,12 +76,6 @@ android {
   }
 }
 
-tasks.withType(KotlinCompile).configureEach {
-  kotlinOptions {
-    freeCompilerArgs += '-Xopt-in=kotlin.RequiresOptIn'
-  }
-}
-
 spotless {
   kotlin {
     targetExclude(

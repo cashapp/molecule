@@ -26,7 +26,7 @@ android {
 tasks.withType(org.jetbrains.kotlin.gradle.dsl.KotlinJvmCompile).configureEach { task ->
   task.kotlinOptions {
     freeCompilerArgs += [
-      '-Xopt-in=kotlinx.coroutines.ExperimentalCoroutinesApi',
+      '-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi',
     ]
   }
 }
