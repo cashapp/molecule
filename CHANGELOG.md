@@ -3,6 +3,18 @@
 ## [Unreleased]
 
 
+## [0.5.0-beta01] - 2022-09-16
+
+New:
+
+ - Update to JetBrains Compose runtime 1.2.0-beta01 (this uses AndroidX Compose runtime 1.2.1).
+ - Add iOS, MacOS, tvOS, watchOS, linux, and windows targets for Kotlin/Native.
+
+Changed:
+
+ - The 'molecule-testing' artifact has been removed.
+
+
 ## [0.4.0] - 2022-08-10
 
 New:
@@ -55,7 +67,8 @@ Initial release
 
 
 
-[Unreleased]: https://github.com/cashapp/molecule/compare/0.4.0...HEAD
+[Unreleased]: https://github.com/cashapp/molecule/compare/0.5.0-beta01...HEAD
+[0.5.0-beta01]: https://github.com/cashapp/molecule/releases/tag/0.5.0-beta01
 [0.4.0]: https://github.com/cashapp/molecule/releases/tag/0.4.0
 [0.4.0-beta01]: https://github.com/cashapp/molecule/releases/tag/0.4.0-beta01
 [0.3.1]: https://github.com/cashapp/molecule/releases/tag/0.3.1
