@@ -76,6 +76,8 @@ dependencies {
 }
 
 android {
+  namespace 'app.cash.molecule'
+
   sourceSets {
     androidTest {
       java.srcDirs += 'src/commonJvmTest/kotlin'
