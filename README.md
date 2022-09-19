@@ -225,37 +225,33 @@ So all Molecule APIs require you to specify your preferred clock behavior:
 
 ### Testing
 
-There are two options for testing:
-
-1. Use `moleculeFlow(clock = Immediate)` and test using [Turbine](https://github.com/cashapp/turbine/).
-  Your `moleculeFlow` will run just like any other flow does in Turbine.
-
-2. Use the `molecule-testing` dependency.
-  `molecule-testing` provides a `testMolecule` function with a Turbine-like API.
+Use `moleculeFlow(clock = Immediate)` and test using [Turbine](https://github.com/cashapp/turbine/). Your `moleculeFlow` will run just like any other flow does in Turbine.
 
 ```kotlin
-dependencies {
-  testImplementation("app.cash.molecule:molecule-testing")
-  // or androidTestImplementation…
-}
-```
-
-Unlike `moleculeFlow(clock = Immediate)`, `testMolecule` simulates clock ticks:
-Calling `awaitItem` yields to running coroutines and "ticks" the Molecule's clock until a change to snapshot state occurs, triggering a fresh recomposition and a new item.
-If snapshot state is never changed, no recomposition will ever occur and `awaitItem` will fail.
-
-```kotlin
-@Test fun counting() {
-  testMolecule({ Counter(1, 3) }) {
+@Test fun counter() = runTest {
+  moleculeFlow(RecompositionClock.Immediate) {
+    Counter()
+  }.test {
+    assertEquals(0, awaitItem())
     assertEquals(1, awaitItem())
     assertEquals(2, awaitItem())
-    assertEquals(3, awaitItem())
+    cancel()
   }
 }
 ```
 
-For more information see [the documentation](https://cashapp.github.io/molecule/docs/latest/molecule-testing/app.cash.molecule.testing/test-molecule.html).
 
+If you're unit testing Molecule on the JVM in an Android module, please set below in your project's AGP config.
+
+```gradle
+android {
+  ...
+  testOptions {
+    unitTests.returnDefaultValues = true
+  }
+  ...
+}
+```
 
 ## License
 
