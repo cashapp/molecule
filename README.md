@@ -240,7 +240,6 @@ Use `moleculeFlow(clock = Immediate)` and test using [Turbine](https://github.co
 }
 ```
 
-> Note : If you're earlier using `molecule-testing` dependency, please switch to testing your molecule using `moleculeFlow` with `ImmediateClock` and [Turbine](https://github.com/cashapp/turbine/).  
 
 If you're unit testing a molecule in Android, please set below in your project's AGP config.
 
