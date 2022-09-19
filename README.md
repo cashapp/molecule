@@ -225,7 +225,7 @@ So all Molecule APIs require you to specify your preferred clock behavior:
 
 ### Testing
 
-Use `moleculeFlow(clock = Immediate)` and test using [Turbine](https://github.com/cashapp/turbine/).   Your `moleculeFlow` will run just like any other flow does in Turbine.
+Use `moleculeFlow(clock = Immediate)` and test using [Turbine](https://github.com/cashapp/turbine/). Your `moleculeFlow` will run just like any other flow does in Turbine.
 
 ```kotlin
 @Test fun counter() = runTest {
