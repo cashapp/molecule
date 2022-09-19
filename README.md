@@ -227,7 +227,20 @@ So all Molecule APIs require you to specify your preferred clock behavior:
 
 Use `moleculeFlow(clock = Immediate)` and test using [Turbine](https://github.com/cashapp/turbine/).   Your `moleculeFlow` will run just like any other flow does in Turbine.
 
-> Note : If you're earlier using `molecule-testing` dependency, please switch to testing `moleculeFlow` with `ImmediateClock` and [Turbine](https://github.com/cashapp/turbine/).  
+```kotlin
+@Test fun counter() = runTest {
+  moleculeFlow(RecompositionClock.Immediate) {
+    Counter()
+  }.test {
+      assertEquals(0, awaitItem())
+      assertEquals(1, awaitItem())
+      assertEquals(2, awaitItem())
+      cancel()
+    }
+}
+```
+
+> Note : If you're earlier using `molecule-testing` dependency, please switch to testing your molecule using `moleculeFlow` with `ImmediateClock` and [Turbine](https://github.com/cashapp/turbine/).  
 
 If you're unit testing a molecule in Android, please set below in your project's AGP config.
 
