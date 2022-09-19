@@ -232,11 +232,11 @@ Use `moleculeFlow(clock = Immediate)` and test using [Turbine](https://github.co
   moleculeFlow(RecompositionClock.Immediate) {
     Counter()
   }.test {
-      assertEquals(0, awaitItem())
-      assertEquals(1, awaitItem())
-      assertEquals(2, awaitItem())
-      cancel()
-    }
+    assertEquals(0, awaitItem())
+    assertEquals(1, awaitItem())
+    assertEquals(2, awaitItem())
+    cancel()
+  }
 }
 ```
 
