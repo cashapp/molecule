@@ -241,7 +241,7 @@ Use `moleculeFlow(clock = Immediate)` and test using [Turbine](https://github.co
 ```
 
 
-If you're unit testing a molecule in Android, please set below in your project's AGP config.
+If you're unit testing Molecule on the JVM in an Android module, please set below in your project's AGP config.
 
 ```gradle
 android {
