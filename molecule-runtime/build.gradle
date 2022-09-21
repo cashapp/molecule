@@ -16,6 +16,7 @@ kotlin {
   js {
     nodejs()
   }
+
   jvm()
 
   linuxX64()
@@ -43,10 +44,6 @@ kotlin {
     commonTest {
       dependencies {
         implementation libs.kotlin.test
-      }
-    }
-    commonJvmTest {
-      dependencies {
         implementation libs.kotlinx.coroutines.test
       }
     }
@@ -55,12 +52,6 @@ kotlin {
       dependencies {
         implementation libs.androidx.core
       }
-    }
-    androidTest {
-      dependsOn(commonJvmTest)
-    }
-    jvmTest {
-      dependsOn(commonJvmTest)
     }
   }
 }
@@ -76,7 +67,7 @@ android {
 
   sourceSets {
     androidTest {
-      java.srcDirs += 'src/commonJvmTest/kotlin'
+      java.srcDirs += 'src/commonTest/kotlin'
     }
   }
 

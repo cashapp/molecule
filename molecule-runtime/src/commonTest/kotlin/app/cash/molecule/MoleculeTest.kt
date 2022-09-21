@@ -23,6 +23,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.Snapshot
+import app.cash.molecule.MoleculeTest.DisposableEffectState.DISPOSED
+import app.cash.molecule.MoleculeTest.DisposableEffectState.LAUNCHED
+import app.cash.molecule.MoleculeTest.DisposableEffectState.NOT_LAUNCHED
+import app.cash.molecule.RecompositionClock.ContextClock
+import app.cash.molecule.RecompositionClock.Immediate
 import kotlin.coroutines.CoroutineContext
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -32,25 +37,27 @@ import kotlin.test.fail
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.test.TestCoroutineDispatcher
+import kotlinx.coroutines.test.advanceTimeBy
+import kotlinx.coroutines.test.runCurrent
+import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.withTimeout
 
 @ExperimentalCoroutinesApi
 class MoleculeTest {
-  @Test fun items() {
-    val dispatcher = TestCoroutineDispatcher()
+  @Test fun items() = runTest {
+    val job = Job()
     val clock = BroadcastFrameClock()
-    val scope = CoroutineScope(dispatcher + clock)
+    val scope = CoroutineScope(coroutineContext + job + clock)
     var value: Int? = null
 
-    scope.launchMolecule(RecompositionClock.ContextClock, emitter = { value = it }) {
+    scope.launchMolecule(ContextClock, emitter = { value = it }) {
       var count by remember { mutableStateOf(0) }
       LaunchedEffect(Unit) {
         while (true) {
@@ -67,19 +74,22 @@ class MoleculeTest {
     clock.sendFrame(0)
     assertEquals(0, value)
 
-    dispatcher.advanceTimeBy(99)
+    advanceTimeBy(99)
+    runCurrent()
     clock.sendFrame(0)
     assertEquals(0, value)
 
-    dispatcher.advanceTimeBy(1)
+    advanceTimeBy(1)
+    runCurrent()
     clock.sendFrame(0)
     assertEquals(1, value)
 
-    dispatcher.advanceTimeBy(100)
+    advanceTimeBy(100)
+    runCurrent()
     clock.sendFrame(0)
     assertEquals(2, value)
 
-    scope.cancel()
+    job.cancel()
   }
 
   @Test fun errorImmediately() {
@@ -89,7 +99,7 @@ class MoleculeTest {
     // Use a custom subtype to prevent coroutines from breaking referential equality.
     val runtimeException = object : RuntimeException() {}
     val t = assertFailsWith<RuntimeException> {
-      scope.launchMolecule(RecompositionClock.ContextClock, emitter = { fail() }) {
+      scope.launchMolecule(ContextClock, emitter = { fail() }) {
         throw runtimeException
       }
     }
@@ -107,17 +117,17 @@ class MoleculeTest {
     override val key get() = CoroutineExceptionHandler
   }
 
-  @Test fun errorDelayed() {
-    val dispatcher = TestCoroutineDispatcher()
+  @Test fun errorDelayed() = runTest {
+    val job = Job()
     val clock = BroadcastFrameClock()
     val exceptionHandler = RecordingExceptionHandler()
-    val scope = CoroutineScope(dispatcher + clock + exceptionHandler)
+    val scope = CoroutineScope(coroutineContext + job + clock + exceptionHandler)
     var value: Int? = null
 
     // Use a custom subtype to prevent coroutines from breaking referential equality.
     val runtimeException = object : RuntimeException() {}
     var count by mutableStateOf(0)
-    scope.launchMolecule(RecompositionClock.ContextClock, emitter = { value = it }) {
+    scope.launchMolecule(ContextClock, emitter = { value = it }) {
       if (count == 1) {
         throw runtimeException
       }
@@ -128,22 +138,24 @@ class MoleculeTest {
 
     count++
     Snapshot.sendApplyNotifications() // Ensure external state mutation is observed.
+    runCurrent()
     clock.sendFrame(0)
+    runCurrent()
     assertSame(runtimeException, exceptionHandler.exceptions.single())
 
-    scope.cancel()
+    job.cancel()
   }
 
-  @Test fun errorInEffect() {
-    val dispatcher = TestCoroutineDispatcher()
+  @Test fun errorInEffect() = runTest {
+    val job = Job()
     val clock = BroadcastFrameClock()
     val exceptionHandler = RecordingExceptionHandler()
-    val scope = CoroutineScope(dispatcher + clock + exceptionHandler)
+    val scope = CoroutineScope(coroutineContext + job + clock + exceptionHandler)
     var value: Int? = null
 
     // Use a custom subtype to prevent coroutines from breaking referential equality.
     val runtimeException = object : RuntimeException() {}
-    scope.launchMolecule(RecompositionClock.ContextClock, emitter = { value = it }) {
+    scope.launchMolecule(ContextClock, emitter = { value = it }) {
       LaunchedEffect(Unit) {
         delay(50)
         throw runtimeException
@@ -153,11 +165,12 @@ class MoleculeTest {
 
     assertEquals(0, value)
 
-    dispatcher.advanceTimeBy(50)
+    advanceTimeBy(50)
+    runCurrent()
     clock.sendFrame(0)
     assertSame(runtimeException, exceptionHandler.exceptions.single())
 
-    scope.cancel()
+    job.cancel()
   }
 
   @Test fun errorInEmitterImmediately() {
@@ -167,7 +180,7 @@ class MoleculeTest {
     // Use a custom subtype to prevent coroutines from breaking referential equality.
     val runtimeException = object : RuntimeException() {}
     val t = assertFailsWith<RuntimeException> {
-      scope.launchMolecule(RecompositionClock.ContextClock, emitter = { throw runtimeException }) {
+      scope.launchMolecule(ContextClock, emitter = { throw runtimeException }) {
         0
       }
     }
@@ -177,18 +190,18 @@ class MoleculeTest {
     scope.cancel()
   }
 
-  @Test fun errorInEmitterDelayed() {
-    val dispatcher = TestCoroutineDispatcher()
+  @Test fun errorInEmitterDelayed() = runTest {
+    val job = Job()
     val clock = BroadcastFrameClock()
     val exceptionHandler = RecordingExceptionHandler()
-    val scope = CoroutineScope(dispatcher + clock + exceptionHandler)
+    val scope = CoroutineScope(coroutineContext + job + clock + exceptionHandler)
     var value: Int? = null
 
     // Use a custom subtype to prevent coroutines from breaking referential equality.
     val runtimeException = object : RuntimeException() {}
     var count by mutableStateOf(0)
     scope.launchMolecule(
-      RecompositionClock.ContextClock,
+      ContextClock,
       emitter = {
         if (it == 1) {
           throw runtimeException
@@ -203,44 +216,46 @@ class MoleculeTest {
 
     count++
     Snapshot.sendApplyNotifications() // Ensure external state mutation is observed.
+    runCurrent()
     clock.sendFrame(0)
+    runCurrent()
     assertSame(runtimeException, exceptionHandler.exceptions.single())
 
-    scope.cancel()
+    job.cancel()
   }
 
   enum class DisposableEffectState { NOT_LAUNCHED, LAUNCHED, DISPOSED }
 
-  @Test fun disposableEffectDisposesWhenScopeIsCancelled() {
-    val dispatcher = TestCoroutineDispatcher()
+  @Test fun disposableEffectDisposesWhenScopeIsCancelled() = runTest {
+    val job = Job()
     val clock = BroadcastFrameClock()
-    val scope = CoroutineScope(dispatcher + clock)
+    val scope = CoroutineScope(coroutineContext + job + clock)
 
-    var state: DisposableEffectState = DisposableEffectState.NOT_LAUNCHED
+    var state: DisposableEffectState = NOT_LAUNCHED
 
-    scope.launchMolecule(RecompositionClock.ContextClock) {
+    scope.launchMolecule(ContextClock) {
       DisposableEffect(Unit) {
-        state = DisposableEffectState.LAUNCHED
+        state = LAUNCHED
 
         onDispose {
-          state = DisposableEffectState.DISPOSED
+          state = DISPOSED
         }
       }
     }
 
-    assertEquals(DisposableEffectState.LAUNCHED, state)
+    assertEquals(LAUNCHED, state)
 
-    scope.cancel()
-    assertEquals(DisposableEffectState.DISPOSED, state)
+    job.cancel()
+    runCurrent()
+    assertEquals(DISPOSED, state)
   }
 
   @Test
-  fun itemsImmediate() = runBlocking {
-    val dispatcher = TestCoroutineDispatcher()
+  fun itemsImmediate() = runTest {
     val values = Channel<Int>()
 
-    val job = launch(dispatcher) {
-      moleculeFlow(clock = RecompositionClock.Immediate) {
+    val job = launch {
+      moleculeFlow(clock = Immediate) {
         var count by remember { mutableStateOf(0) }
         LaunchedEffect(Unit) {
           while (true) {
@@ -256,15 +271,15 @@ class MoleculeTest {
     var value = values.awaitValue()
     assertEquals(0, value)
 
-    dispatcher.advanceTimeBy(100)
+    advanceTimeBy(100)
     value = values.awaitValue()
     assertEquals(1, value)
 
-    dispatcher.advanceTimeBy(100)
+    advanceTimeBy(100)
     value = values.awaitValue()
     assertEquals(2, value)
 
-    dispatcher.advanceTimeBy(300)
+    advanceTimeBy(300)
 
     value = values.awaitValue()
     assertEquals(3, value)
@@ -275,11 +290,11 @@ class MoleculeTest {
   }
 
   @Test
-  fun errorsImmediate() = runBlocking {
+  fun errorsImmediate() = runTest {
     // Use a custom subtype to prevent coroutines from breaking referential equality.
     val runtimeException = object : RuntimeException() {}
     val t = assertFailsWith<RuntimeException> {
-      moleculeFlow(clock = RecompositionClock.Immediate) {
+      moleculeFlow(clock = Immediate) {
         throw runtimeException
       }.collect()
     }
@@ -288,7 +303,7 @@ class MoleculeTest {
   }
 
   @Test
-  fun errorDelayedImmediate() = runBlocking {
+  fun errorDelayedImmediate() = runTest {
     val values = Channel<Int>(Channel.UNLIMITED)
 
     // Use a custom subtype to prevent coroutines from breaking referential equality.
@@ -296,7 +311,7 @@ class MoleculeTest {
     var count by mutableStateOf(0)
     launch {
       val exception = kotlin.runCatching {
-        moleculeFlow(clock = RecompositionClock.Immediate) {
+        moleculeFlow(clock = Immediate) {
           if (count == 1) {
             throw runtimeException
           }
@@ -315,14 +330,14 @@ class MoleculeTest {
   }
 
   @Test
-  fun errorInEffectImmediate() = runBlocking {
+  fun errorInEffectImmediate() = runTest {
     val values = Channel<Int>(Channel.UNLIMITED)
 
     // Use a custom subtype to prevent coroutines from breaking referential equality.
     val runtimeException = object : RuntimeException() {}
     launch {
       val exception = kotlin.runCatching {
-        moleculeFlow(clock = RecompositionClock.Immediate) {
+        moleculeFlow(clock = Immediate) {
           LaunchedEffect(Unit) {
             delay(50)
             throw runtimeException
@@ -341,18 +356,18 @@ class MoleculeTest {
   }
 
   @Test
-  fun disposableEffectDisposesWhenScopeIsCancelledImmediate() = runBlocking {
+  fun disposableEffectDisposesWhenScopeIsCancelledImmediate() = runTest {
     val values = Channel<Int>(Channel.UNLIMITED)
 
-    var state: DisposableEffectState = DisposableEffectState.NOT_LAUNCHED
+    var state: DisposableEffectState = NOT_LAUNCHED
 
     val job = launch {
-      moleculeFlow(clock = RecompositionClock.Immediate) {
+      moleculeFlow(clock = Immediate) {
         DisposableEffect(Unit) {
-          state = DisposableEffectState.LAUNCHED
+          state = LAUNCHED
 
           onDispose {
-            state = DisposableEffectState.DISPOSED
+            state = DISPOSED
           }
         }
         0
@@ -365,7 +380,7 @@ class MoleculeTest {
 
     job.cancelAndJoin()
 
-    assertEquals(DisposableEffectState.DISPOSED, state)
+    assertEquals(DISPOSED, state)
   }
 
   private suspend fun <T> Channel<T>.awaitValue(): T = withTimeout(1000) { receive() }

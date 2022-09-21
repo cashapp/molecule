@@ -22,6 +22,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.Snapshot
+import app.cash.molecule.RecompositionClock.ContextClock
+import app.cash.molecule.RecompositionClock.Immediate
 import kotlin.coroutines.CoroutineContext
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -33,24 +35,24 @@ import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
-import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.supervisorScope
-import kotlinx.coroutines.test.TestCoroutineDispatcher
+import kotlinx.coroutines.test.advanceTimeBy
+import kotlinx.coroutines.test.runCurrent
+import kotlinx.coroutines.test.runTest
 
 @ExperimentalCoroutinesApi
 class MoleculeStateFlowTest {
-  @Test fun items() {
-    val dispatcher = TestCoroutineDispatcher()
+  @Test fun items() = runTest {
+    val job = Job()
     val clock = BroadcastFrameClock()
-    val scope = CoroutineScope(dispatcher + clock)
+    val scope = CoroutineScope(coroutineContext + job + clock)
 
-    val flow = scope.launchMolecule(RecompositionClock.ContextClock) {
+    val flow = scope.launchMolecule(ContextClock) {
       var count by remember { mutableStateOf(0) }
       LaunchedEffect(Unit) {
         while (true) {
@@ -67,19 +69,22 @@ class MoleculeStateFlowTest {
     clock.sendFrame(0)
     assertEquals(0, flow.value)
 
-    dispatcher.advanceTimeBy(99)
+    advanceTimeBy(99)
+    runCurrent()
     clock.sendFrame(0)
     assertEquals(0, flow.value)
 
-    dispatcher.advanceTimeBy(1)
+    advanceTimeBy(1)
+    runCurrent()
     clock.sendFrame(0)
     assertEquals(1, flow.value)
 
-    dispatcher.advanceTimeBy(100)
+    advanceTimeBy(100)
+    runCurrent()
     clock.sendFrame(0)
     assertEquals(2, flow.value)
 
-    scope.cancel()
+    job.cancel()
   }
 
   @Test fun errorImmediately() {
@@ -89,7 +94,7 @@ class MoleculeStateFlowTest {
     // Use a custom subtype to prevent coroutines from breaking referential equality.
     val runtimeException = object : RuntimeException() {}
     val t = assertFailsWith<RuntimeException> {
-      scope.launchMolecule(RecompositionClock.ContextClock) {
+      scope.launchMolecule(ContextClock) {
         throw runtimeException
       }
     }
@@ -107,16 +112,17 @@ class MoleculeStateFlowTest {
     override val key get() = CoroutineExceptionHandler
   }
 
-  @Test fun errorDelayed() {
-    val dispatcher = TestCoroutineDispatcher()
+  @Test fun errorDelayed() = runTest {
+    val job = Job()
     val clock = BroadcastFrameClock()
     val exceptionHandler = RecordingExceptionHandler()
-    val scope = CoroutineScope(dispatcher + clock + exceptionHandler)
+    val scope = CoroutineScope(coroutineContext + job + clock + exceptionHandler)
 
     // Use a custom subtype to prevent coroutines from breaking referential equality.
     val runtimeException = object : RuntimeException() {}
     var count by mutableStateOf(0)
-    val flow = scope.launchMolecule(RecompositionClock.ContextClock) {
+    val flow = scope.launchMolecule(ContextClock) {
+      println("Sup $count")
       if (count == 1) {
         throw runtimeException
       }
@@ -127,21 +133,23 @@ class MoleculeStateFlowTest {
 
     count++
     Snapshot.sendApplyNotifications() // Ensure external state mutation is observed.
+    runCurrent()
     clock.sendFrame(0)
+    runCurrent()
     assertSame(runtimeException, exceptionHandler.exceptions.single())
 
-    scope.cancel()
+    job.cancel()
   }
 
-  @Test fun errorInEffect() {
-    val dispatcher = TestCoroutineDispatcher()
+  @Test fun errorInEffect() = runTest {
+    val job = Job()
     val clock = BroadcastFrameClock()
     val exceptionHandler = RecordingExceptionHandler()
-    val scope = CoroutineScope(dispatcher + clock + exceptionHandler)
+    val scope = CoroutineScope(coroutineContext + job + clock + exceptionHandler)
 
     // Use a custom subtype to prevent coroutines from breaking referential equality.
     val runtimeException = object : RuntimeException() {}
-    val flow = scope.launchMolecule(RecompositionClock.ContextClock) {
+    val flow = scope.launchMolecule(ContextClock) {
       LaunchedEffect(Unit) {
         delay(50)
         throw runtimeException
@@ -151,21 +159,20 @@ class MoleculeStateFlowTest {
 
     assertEquals(0, flow.value)
 
-    dispatcher.advanceTimeBy(50)
+    advanceTimeBy(50)
+    runCurrent()
     clock.sendFrame(0)
     assertSame(runtimeException, exceptionHandler.exceptions.single())
 
-    scope.cancel()
+    job.cancel()
   }
 
   @Test
-  fun itemsImmediate() = runBlocking {
-    val dispatcher = TestCoroutineDispatcher()
-    val values = Channel<Int>(Channel.UNLIMITED)
+  fun itemsImmediate() = runTest {
     val job = Job(coroutineContext.job)
-    val scope = this + job + dispatcher
+    val scope = this + job
 
-    val flow = scope.launchMolecule(RecompositionClock.Immediate) {
+    val flow = scope.launchMolecule(Immediate) {
       var count by remember { mutableStateOf(0) }
       LaunchedEffect(Unit) {
         while (true) {
@@ -179,19 +186,22 @@ class MoleculeStateFlowTest {
 
     assertEquals(0, flow.value)
 
-    dispatcher.advanceTimeBy(99)
+    advanceTimeBy(99)
+    runCurrent()
     assertEquals(0, flow.value)
 
-    dispatcher.advanceTimeBy(1)
+    advanceTimeBy(1)
+    runCurrent()
     assertEquals(1, flow.value)
 
-    dispatcher.advanceTimeBy(100)
+    advanceTimeBy(100)
+    runCurrent()
     assertEquals(2, flow.value)
 
     job.cancel()
   }
 
-  @Test fun errorDelayedImmediate() = runBlocking {
+  @Test fun errorDelayedImmediate() = runTest {
     // Use a custom subtype to prevent coroutines from breaking referential equality.
     val runtimeException = object : RuntimeException() {}
     val exceptionHandler = RecordingExceptionHandler()
@@ -201,7 +211,7 @@ class MoleculeStateFlowTest {
       var flow: StateFlow<Int>? = null
 
       val job = launch(start = CoroutineStart.UNDISPATCHED, context = exceptionHandler) {
-        flow = launchMolecule(RecompositionClock.Immediate) {
+        flow = launchMolecule(Immediate) {
           if (count == 1) {
             throw runtimeException
           }
