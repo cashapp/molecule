@@ -15,7 +15,6 @@
  */
 package app.cash.molecule.gradle
 
-import org.gradle.api.Project
 import org.gradle.api.provider.Provider
 import org.jetbrains.kotlin.gradle.plugin.KotlinCompilation
 import org.jetbrains.kotlin.gradle.plugin.KotlinCompilerPluginSupportPlugin
@@ -23,20 +22,6 @@ import org.jetbrains.kotlin.gradle.plugin.SubpluginArtifact
 import org.jetbrains.kotlin.gradle.plugin.SubpluginOption
 
 class MoleculePlugin : KotlinCompilerPluginSupportPlugin {
-  override fun apply(target: Project) {
-    target.configurations.all { configuration ->
-      configuration.resolutionStrategy.eachDependency {
-        if (it.requested.group == "app.cash.molecule" &&
-          it.requested.name == "molecule-testing" &&
-          it.requested.version == ""
-        ) {
-          it.useVersion(moleculeVersion)
-          it.because("Matches the version of the Molecule Gradle plugin and runtime")
-        }
-      }
-    }
-  }
-
   override fun isApplicable(kotlinCompilation: KotlinCompilation<*>): Boolean = true
 
   override fun getCompilerPluginId(): String = "app.cash.molecule"
