@@ -1,0 +1,32 @@
+buildscript {
+  dependencies {
+    classpath libs.kotlin.plugin
+    classpath libs.buildConfig.plugin
+  }
+
+  repositories {
+    mavenCentral()
+    gradlePluginPortal()
+  }
+}
+
+allprojects {
+  repositories {
+    mavenCentral()
+    google()
+  }
+
+  plugins.withId('java-base') {
+    java {
+      toolchain {
+        languageVersion = JavaLanguageVersion.of(11)
+      }
+    }
+  }
+
+  tasks.withType(org.jetbrains.kotlin.gradle.dsl.KotlinJvmCompile).configureEach { task ->
+    task.kotlinOptions {
+      jvmTarget = '11'
+    }
+  }
+}

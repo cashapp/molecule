@@ -2,8 +2,11 @@ buildscript {
   dependencies {
     classpath libs.android.plugin
     classpath libs.kotlin.plugin
+    classpath libs.maven.publish.plugin
+    classpath libs.dokka.plugin
     classpath libs.spotless.plugin
     classpath libs.kotlinter.plugin
+    classpath libs.buildConfig.plugin
 
     // Normally you would declare a version here, but we use dependency substitution in
     // settings.gradle to use the version built from inside the repo.
@@ -17,6 +20,8 @@ buildscript {
   }
 }
 
+apply plugin: 'org.jetbrains.dokka'
+
 allprojects {
   repositories {
     mavenCentral()
@@ -25,6 +30,15 @@ allprojects {
 }
 
 subprojects {
+  tasks.withType(Test).configureEach {
+    testLogging {
+      if (System.getenv("CI") == "true") {
+        events = ["failed", "skipped", "passed"]
+      }
+      exceptionFormat "full"
+    }
+  }
+
   plugins.withId('java-base') {
     java {
       toolchain {
@@ -64,5 +78,24 @@ subprojects {
     disabledRules = [
       'filename',
     ]
+  }
+
+  plugins.withId('maven-publish') {
+    publishing {
+      repositories {
+        maven {
+          name = "installLocally"
+          url = "${rootProject.buildDir}/localMaven"
+        }
+      }
+    }
+  }
+
+  plugins.withId('signing') {
+    signing {
+      def signingKey = findProperty('signingKey')
+      def signingPassword = ''
+      useInMemoryPgpKeys(signingKey, signingPassword)
+    }
   }
 }
