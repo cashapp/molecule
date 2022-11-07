@@ -21,19 +21,15 @@ jobs:
           distribution: 'zulu'
           java-version: 11
 
-      # Main library
-      - run: ./gradlew -p molecule build assembleAndroidTest dokkaHtmlMultiModule
-
-      # Sample
-      - run: ./gradlew build
+      - run: ./gradlew build assembleAndroidTest dokkaHtmlMultiModule
 
       - name: Run Tests
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 24
-          script: ./gradlew -p molecule connectedCheck
+          script: ./gradlew connectedCheck
 
-      - run: ./gradlew -p molecule publish
+      - run: ./gradlew publish
         if: ${{ github.ref == 'refs/heads/trunk' && github.repository == 'cashapp/molecule' }}
         env:
           ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.SONATYPE_NEXUS_USERNAME }}
@@ -45,6 +41,6 @@ jobs:
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           BRANCH: site
-          FOLDER: molecule/build/dokka/htmlMultiModule
+          FOLDER: build/dokka/htmlMultiModule
           TARGET_FOLDER: docs/latest/
           CLEAN: true

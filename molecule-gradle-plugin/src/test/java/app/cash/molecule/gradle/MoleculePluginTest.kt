@@ -27,7 +27,7 @@ class MoleculePluginTest {
   private fun createRunner(fixture: String): GradleRunner {
     val fixtureDir = File("src/test/fixtures", fixture)
     val gradleRoot = File(fixtureDir, "gradle").also { it.mkdir() }
-    File("../../gradle/wrapper").copyRecursively(File(gradleRoot, "wrapper"), true)
+    File("../gradle/wrapper").copyRecursively(File(gradleRoot, "wrapper"), true)
     return GradleRunner.create()
       .withProjectDir(fixtureDir)
       .withArguments("clean", "build", "--stacktrace", "-PmoleculeVersion=$moleculeVersion")

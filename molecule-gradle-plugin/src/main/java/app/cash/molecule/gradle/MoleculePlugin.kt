@@ -39,8 +39,18 @@ class MoleculePlugin : KotlinCompilerPluginSupportPlugin {
   )
 
   override fun applyToCompilation(kotlinCompilation: KotlinCompilation<*>): Provider<List<SubpluginOption>> {
+    val project = kotlinCompilation.target.project
+
     kotlinCompilation.dependencies {
-      implementation("app.cash.molecule:molecule-runtime:$moleculeVersion")
+      // Indicates when the plugin is applied inside the Molecule repo to Molecule's own modules.
+      val isInternalBuild = project.properties["app.cash.molecule.internal"].toString() == "true"
+      if (isInternalBuild) {
+        if (project.name != "molecule-runtime") {
+          implementation(project(":molecule-runtime"))
+        }
+      } else {
+        implementation("app.cash.molecule:molecule-runtime:$moleculeVersion")
+      }
     }
 
     when (kotlinCompilation.platformType) {
@@ -55,6 +65,6 @@ class MoleculePlugin : KotlinCompilerPluginSupportPlugin {
       }
     }
 
-    return kotlinCompilation.target.project.provider { emptyList() }
+    return project.provider { emptyList() }
   }
 }
