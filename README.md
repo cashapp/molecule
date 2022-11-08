@@ -171,7 +171,7 @@ buildscript {
     mavenCentral()
   }
   dependencies {
-    classpath 'app.cash.molecule:molecule-gradle-plugin:0.5.0'
+    classpath 'app.cash.molecule:molecule-gradle-plugin:0.6.0'
   }
 }
 
@@ -191,7 +191,7 @@ buildscript {
     }
   }
   dependencies {
-    classpath 'app.cash.molecule:molecule-gradle-plugin:0.6.0-SNAPSHOT'
+    classpath 'app.cash.molecule:molecule-gradle-plugin:0.7.0-SNAPSHOT'
   }
 }
 

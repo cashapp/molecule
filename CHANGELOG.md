@@ -3,6 +3,18 @@
 ## [Unreleased]
 
 
+## [0.6.0] - 2022-11-08
+
+New:
+- Support for Kotlin 1.7.20
+- Update to JetBrains Compose runtime 1.2.1 (AndroidX Compose runtime 1.2.1).
+- Switch to JetBrains Compose compiler 1.3.2.1 (AndroidX Compose compiler 1.3.2 + JS fix)
+
+Fixed:
+- When applying the Compose compiler plugin to Kotlin/JS targets, ensure decoys are used.
+- Add `cacheKind=none` Gradle configuration which ensures downstream Kotlin/Native projects can link.
+
+
 ## [0.5.0] - 2022-10-13
 
 New:
@@ -79,7 +91,8 @@ Initial release
 
 
 
-[Unreleased]: https://github.com/cashapp/molecule/compare/0.5.0...HEAD
+[Unreleased]: https://github.com/cashapp/molecule/compare/0.6.0...HEAD
+[0.6.0]: https://github.com/cashapp/molecule/releases/tag/0.6.0
 [0.5.0]: https://github.com/cashapp/molecule/releases/tag/0.5.0
 [0.5.0-beta01]: https://github.com/cashapp/molecule/releases/tag/0.5.0-beta01
 [0.4.0]: https://github.com/cashapp/molecule/releases/tag/0.4.0
