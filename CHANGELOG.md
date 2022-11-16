@@ -3,6 +3,12 @@
 ## [Unreleased]
 
 
+## [0.6.1] - 2022-11-16
+
+New:
+- Add support for `watchosArm32` and `watchosX86` native targets.
+
+
 ## [0.6.0] - 2022-11-08
 
 New:
@@ -91,7 +97,8 @@ Initial release
 
 
 
-[Unreleased]: https://github.com/cashapp/molecule/compare/0.6.0...HEAD
+[Unreleased]: https://github.com/cashapp/molecule/compare/0.6.1...HEAD
+[0.6.1]: https://github.com/cashapp/molecule/releases/tag/0.6.1
 [0.6.0]: https://github.com/cashapp/molecule/releases/tag/0.6.0
 [0.5.0]: https://github.com/cashapp/molecule/releases/tag/0.5.0
 [0.5.0-beta01]: https://github.com/cashapp/molecule/releases/tag/0.5.0-beta01
