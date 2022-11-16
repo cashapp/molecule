@@ -61,7 +61,7 @@ sealed interface ProfileModel {
 class ProfilePresenter(
   private val db: Db,
 ) {
-  fun transform(events: Flow<Nothing>): Flow<ProfileModel> {
+  fun transform(): Flow<ProfileModel> {
     return combine(
       db.users().onStart { emit(null) },
       db.balances().onStart { emit(0L) },
