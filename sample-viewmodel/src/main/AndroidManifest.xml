@@ -1,0 +1,20 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+  package="com.example.molecule.viewmodel">
+  <uses-permission android:name="android.permission.INTERNET"/>
+
+  <application
+    android:label="ViewModel Sample"
+    android:theme="@android:style/Theme.DeviceDefault.NoActionBar"
+    >
+    <activity
+      android:name=".RandomDogActivity"
+      android:exported="true"
+      >
+      <intent-filter>
+        <action android:name="android.intent.action.MAIN"/>
+        <category android:name="android.intent.category.LAUNCHER"/>
+        <category android:name="android.intent.category.DEFAULT"/>
+      </intent-filter>
+    </activity>
+  </application>
+</manifest>
