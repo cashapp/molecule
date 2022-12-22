@@ -32,7 +32,7 @@ kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-c
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutine" }
 kotlinx-coroutines-rx2 = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-rx2", version.ref = "coroutine" }
 
-maven-publish-plugin = { module = "com.vanniktech:gradle-maven-publish-plugin", version = "0.18.0" }
+maven-publish-plugin = { module = "com.vanniktech:gradle-maven-publish-plugin", version = "0.22.0" }
 
 rx2 = { module = "io.reactivex.rxjava2:rxjava", version = "2.2.21" }
 
