@@ -2,7 +2,7 @@
 compileSdk = "33"
 minSdk = "21"
 
-compose = "1.3.2.1"
+compose = "1.3.2.2"
 coroutine = "1.6.4"
 
 kotlin = "1.7.20"
