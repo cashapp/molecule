@@ -11,7 +11,7 @@ squareup-okhttp = "4.9.2"
 squareup-retrofit = "2.9.0"
 
 [libraries]
-android-plugin = { module = "com.android.tools.build:gradle", version = "7.2.2" }
+android-plugin = { module = "com.android.tools.build:gradle", version = "7.3.1" }
 androidx-core = { module = "androidx.core:core-ktx", version = "1.2.0" }
 androidx-test-runner = { module = "androidx.test:runner", version = "1.5.1" }
 
