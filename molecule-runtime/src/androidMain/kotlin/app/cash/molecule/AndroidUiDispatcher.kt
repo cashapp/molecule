@@ -91,7 +91,9 @@ public class AndroidUiDispatcher private constructor(
         if (toRunTrampolined.isEmpty()) {
           scheduledTrampolineDispatch = false
           false
-        } else true
+        } else {
+          true
+        }
       }
     )
   }
@@ -155,8 +157,11 @@ public class AndroidUiDispatcher private constructor(
      */
     public val Main: CoroutineContext by lazy {
       val dispatcher = AndroidUiDispatcher(
-        if (isMainThread()) Choreographer.getInstance()
-        else runBlocking(Dispatchers.Main) { Choreographer.getInstance() },
+        if (isMainThread()) {
+          Choreographer.getInstance()
+        } else {
+          runBlocking(Dispatchers.Main) { Choreographer.getInstance() }
+        },
         HandlerCompat.createAsync(Looper.getMainLooper()),
       )
 
