@@ -7,7 +7,7 @@ coroutine = "1.6.4"
 
 kotlin = "1.7.20"
 
-squareup-okhttp = "4.9.2"
+squareup-okhttp = "4.10.0"
 squareup-retrofit = "2.9.0"
 
 [libraries]
