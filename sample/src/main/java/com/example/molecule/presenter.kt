@@ -21,6 +21,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshots.Snapshot
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -51,8 +52,11 @@ fun CounterPresenter(
         Randomize -> {
           loading = true
           launch {
-            count = randomService.get(-20, 20)
-            loading = false
+            // We want to observe these two state changes atomically.
+            Snapshot.withMutableSnapshot {
+              count = randomService.get(-20, 20)
+              loading = false
+            }
           }
         }
       }
