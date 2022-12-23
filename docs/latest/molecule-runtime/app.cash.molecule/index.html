@@ -1,134 +1,154 @@
+<!doctype html>
 <html>
-  <head>
+<head>
     <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
     <title>app.cash.molecule</title>
-</head><body><link href="../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../";</script>
-    <script type="text/javascript" src="../../scripts/sourceset_dependencies.js" async></script><link href="../../styles/style.css" rel="Stylesheet"><link href="../../styles/jetbrains-mono.css" rel="Stylesheet"><link href="../../styles/main.css" rel="Stylesheet"><link href="../../styles/prism.css" rel="Stylesheet"><link href="../../styles/logo-styles.css" rel="Stylesheet"><script type="text/javascript" src="../../scripts/clipboard.js" async></script><script type="text/javascript" src="../../scripts/navigation-loader.js" async></script><script type="text/javascript" src="../../scripts/platform-content-handler.js" async></script><script type="text/javascript" src="../../scripts/main.js" defer></script><script type="text/javascript" src="../../scripts/prism.js" async></script><script>const storage = localStorage.getItem("dokka-dark-mode")
-const savedDarkMode = storage ? JSON.parse(storage) : false
-if(savedDarkMode === true){
-    document.getElementsByTagName("html")[0].classList.add("theme-dark")
-}</script>
-
-  
-    <div class="navigation-wrapper" id="navigation-wrapper">
-      <div id="leftToggler"><span class="icon-toggler"></span></div>
-      <div class="library-name"><a href="../../index.html"><span>molecule</span></a></div>
-      <div></div>
-      <div class="pull-right d-flex">
-        <div class="filter-section" id="filter-section"><button class="platform-tag platform-selector jvm-like" data-active="" data-filter=":molecule-runtime:dokkaHtmlPartial/androidMain">android</button><button class="platform-tag platform-selector common-like" data-active="" data-filter=":molecule-runtime:dokkaHtmlPartial/commonMain">common</button></div>
-<button id="theme-toggle-button"><span id="theme-toggle"></span></button>
-        <div id="searchBar"></div>
-      </div>
+<link href="../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../";</script>    <script>const storage = localStorage.getItem("dokka-dark-mode")
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
+<script type="text/javascript" src="../../scripts/sourceset_dependencies.js" async></script>
+<link href="../../styles/style.css" rel="Stylesheet">
+<link href="../../styles/jetbrains-mono.css" rel="Stylesheet">
+<link href="../../styles/main.css" rel="Stylesheet">
+<link href="../../styles/prism.css" rel="Stylesheet">
+<link href="../../styles/logo-styles.css" rel="Stylesheet">
+<script type="text/javascript" src="../../scripts/clipboard.js" async></script>
+<script type="text/javascript" src="../../scripts/navigation-loader.js" async></script>
+<script type="text/javascript" src="../../scripts/platform-content-handler.js" async></script>
+<script type="text/javascript" src="../../scripts/main.js" defer></script>
+<script type="text/javascript" src="../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../scripts/symbol-parameters-wrapper_deferred.js" defer></script></head>
+<body>
+<div class="navigation-wrapper" id="navigation-wrapper">
+    <div id="leftToggler"><span class="icon-toggler"></span></div>
+    <div class="library-name">
+<a href="../../index.html">
+<span>molecule</span>            </a>    </div>
+    <div>
     </div>
-    <div id="container">
-      <div id="leftColumn">
+    <div class="pull-right d-flex">
+        <div class="filter-section" id="filter-section">
+                <button class="platform-tag platform-selector jvm-like" data-active="" data-filter=":molecule-runtime:dokkaHtmlPartial/androidMain">android</button>
+                <button class="platform-tag platform-selector common-like" data-active="" data-filter=":molecule-runtime:dokkaHtmlPartial/commonMain">common</button>
+        </div>
+        <button id="theme-toggle-button"><span id="theme-toggle"></span></button>
+        <div id="searchBar"></div>
+    </div>
+</div>
+<div id="container">
+    <div id="leftColumn">
         <div id="sideMenu"></div>
-      </div>
-      <div id="main">
-        <div class="main-content" id="content" pageids="molecule-runtime::app.cash.molecule////PointingToDeclaration//-71755210">
-          <div class="breadcrumbs"><a href="../index.html">molecule-runtime</a>/<a href="index.html">app.cash.molecule</a></div>
-          <div class="cover ">
-            <h1 class="cover"><span><span>Package</span></span> <span>app.</span><wbr><span>cash.</span><wbr><span>molecule</span></h1>
-          </div>
-          <div class="tabbedcontent">
-            <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="Types">Types</button><button class="section-tab" data-togglable="Functions">Functions</button></div>
-            <div class="tabs-section-body">
-              <h2 class="">Types</h2>
-              <div class="table" data-togglable="Types"><a data-name="2017556866%2FClasslikes%2F2137152568" anchor-label="AndroidUiDispatcher" id="2017556866%2FClasslikes%2F2137152568" data-filterable-set=":molecule-runtime:dokkaHtmlPartial/androidMain"></a>
-                <div class="table-row" data-filterable-current=":molecule-runtime:dokkaHtmlPartial/androidMain" data-filterable-set=":molecule-runtime:dokkaHtmlPartial/androidMain">
-                  <div class="main-subrow keyValue ">
-                    <div class=""><span class="inline-flex">
-                        <div><a href="-android-ui-dispatcher/index.html"><span>Android</span><wbr><span>Ui</span><wbr><span><span>Dispatcher</span></span></a></div>
+    </div>
+    <div id="main">
+<div class="main-content" id="content" pageids="molecule-runtime::app.cash.molecule////PointingToDeclaration//-71755210">
+  <div class="breadcrumbs"><a href="../index.html">molecule-runtime</a><span class="delimiter">/</span><span class="current">app.cash.molecule</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span><span>Package-level</span></span> <span><span>declarations</span></span></h1>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="Types">Types</button><button class="section-tab" data-togglable="Functions">Functions</button></div>
+    <div class="tabs-section-body">
+      <h2 class="">Types</h2>
+      <div class="table" data-togglable="Types"><a data-name="2017556866%2FClasslikes%2F2137152568" anchor-label="AndroidUiDispatcher" id="2017556866%2FClasslikes%2F2137152568" data-filterable-set=":molecule-runtime:dokkaHtmlPartial/androidMain"></a>
+        <div class="table-row" data-filterable-current=":molecule-runtime:dokkaHtmlPartial/androidMain" data-filterable-set=":molecule-runtime:dokkaHtmlPartial/androidMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="-android-ui-dispatcher/index.html"><span>Android</span><wbr><span>Ui</span><wbr><span><span>Dispatcher</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2017556866%2FClasslikes%2F2137152568"></span>
-                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                        </span></span></div>
-                    <div>
-                      <div class="title">
-                        <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
-                          <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark jvm-like" data-filterable-current=":molecule-runtime:dokkaHtmlPartial/androidMain" data-filterable-set=":molecule-runtime:dokkaHtmlPartial/androidMain" data-active="" data-toggle=":molecule-runtime:dokkaHtmlPartial/androidMain">android</button></div>
-<div class="content sourceset-depenent-content" data-active="" data-togglable=":molecule-runtime:dokkaHtmlPartial/androidMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="-android-ui-dispatcher/index.html">AndroidUiDispatcher</a> : <span data-unresolved-link="kotlinx.coroutines/CoroutineDispatcher///PointingToDeclaration/">CoroutineDispatcher</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">A <span data-unresolved-link="kotlinx.coroutines/CoroutineDispatcher///PointingToDeclaration/">CoroutineDispatcher</span> that will perform dispatch during a <a href="../../molecule-runtime/app.cash.molecule/-android-ui-dispatcher/handler.html">handler</a> callback or <a href="-android-ui-dispatcher/choreographer.html">choreographer</a>'s animation frame stage, whichever comes first. Use <a href="-android-ui-dispatcher/-companion/-main.html">Main</a> to obtain a dispatcher for the process's main thread (i.e. the activity thread).</p></div></div>                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-<a data-name="-1226964280%2FClasslikes%2F2137152568" anchor-label="AndroidUiFrameClock" id="-1226964280%2FClasslikes%2F2137152568" data-filterable-set=":molecule-runtime:dokkaHtmlPartial/androidMain"></a>
-                <div class="table-row" data-filterable-current=":molecule-runtime:dokkaHtmlPartial/androidMain" data-filterable-set=":molecule-runtime:dokkaHtmlPartial/androidMain">
-                  <div class="main-subrow keyValue ">
-                    <div class=""><span class="inline-flex">
-                        <div><a href="-android-ui-frame-clock/index.html"><span>Android</span><wbr><span>Ui</span><wbr><span>Frame</span><wbr><span><span>Clock</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1226964280%2FClasslikes%2F2137152568"></span>
-                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                        </span></span></div>
-                    <div>
-                      <div class="title">
-                        <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
-                          <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark jvm-like" data-filterable-current=":molecule-runtime:dokkaHtmlPartial/androidMain" data-filterable-set=":molecule-runtime:dokkaHtmlPartial/androidMain" data-active="" data-toggle=":molecule-runtime:dokkaHtmlPartial/androidMain">android</button></div>
-<div class="content sourceset-depenent-content" data-active="" data-togglable=":molecule-runtime:dokkaHtmlPartial/androidMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="-android-ui-frame-clock/index.html">AndroidUiFrameClock</a><span class="token punctuation">(</span>choreographer<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/android/view/Choreographer.html">Choreographer</a><span class="token punctuation">)</span> : <span data-unresolved-link="androidx.compose.runtime/MonotonicFrameClock///PointingToDeclaration/">MonotonicFrameClock</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div>                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-<a data-name="881537407%2FClasslikes%2F1485394274" anchor-label="RecompositionClock" id="881537407%2FClasslikes%2F1485394274" data-filterable-set=":molecule-runtime:dokkaHtmlPartial/commonMain"></a>
-                <div class="table-row" data-filterable-current=":molecule-runtime:dokkaHtmlPartial/commonMain" data-filterable-set=":molecule-runtime:dokkaHtmlPartial/commonMain">
-                  <div class="main-subrow keyValue ">
-                    <div class=""><span class="inline-flex">
-                        <div><a href="-recomposition-clock/index.html"><span>Recomposition</span><wbr><span><span>Clock</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="881537407%2FClasslikes%2F1485394274"></span>
-                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                        </span></span></div>
-                    <div>
-                      <div class="title">
-                        <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
-                          <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark common-like" data-filterable-current=":molecule-runtime:dokkaHtmlPartial/commonMain" data-filterable-set=":molecule-runtime:dokkaHtmlPartial/commonMain" data-active="" data-toggle=":molecule-runtime:dokkaHtmlPartial/commonMain">common</button></div>
-<div class="content sourceset-depenent-content" data-active="" data-togglable=":molecule-runtime:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">enum </span><a href="-recomposition-clock/index.html">RecompositionClock</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-enum/index.html">Enum</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-recomposition-clock/index.html">RecompositionClock</a><span class="token operator">&gt; </span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div>                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <h2 class="">Functions</h2>
-              <div class="table" data-togglable="Functions"><a data-name="-1273112546%2FFunctions%2F1485394274" anchor-label="launchMolecule" id="-1273112546%2FFunctions%2F1485394274" data-filterable-set=":molecule-runtime:dokkaHtmlPartial/commonMain"></a>
-                <div class="table-row" data-filterable-current=":molecule-runtime:dokkaHtmlPartial/commonMain" data-filterable-set=":molecule-runtime:dokkaHtmlPartial/commonMain">
-                  <div class="main-subrow keyValue ">
-                    <div class=""><span class="inline-flex">
-                        <div><a href="launch-molecule.html"><span>launch</span><wbr><span><span>Molecule</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1273112546%2FFunctions%2F1485394274"></span>
-                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                        </span></span></div>
-                    <div>
-                      <div class="title">
-                        <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
-                          <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark common-like" data-filterable-current=":molecule-runtime:dokkaHtmlPartial/commonMain" data-filterable-set=":molecule-runtime:dokkaHtmlPartial/commonMain" data-active="" data-toggle=":molecule-runtime:dokkaHtmlPartial/commonMain">common</button></div>
-<div class="content sourceset-depenent-content" data-active="" data-togglable=":molecule-runtime:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="launch-molecule.html">T</a><span class="token operator">&gt; </span><span data-unresolved-link="/<ERROR CLASS>///PointingToDeclaration/">&lt;ERROR CLASS&gt;</span><span class="token punctuation">.</span><a href="launch-molecule.html"><span class="token function">launchMolecule</span></a><span class="token punctuation">(</span>clock<span class="token operator">: </span><a href="-recomposition-clock/index.html">RecompositionClock</a><span class="token punctuation">, </span>body<span class="token operator">: </span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="launch-molecule.html">T</a><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="/<ERROR CLASS>///PointingToDeclaration/">&lt;ERROR CLASS&gt;</span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="launch-molecule.html">T</a><span class="token operator">&gt;</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">Launch a coroutine into this CoroutineScope which will continually recompose <code class="lang-kotlin">body</code> to produce a StateFlow stream of <a href="launch-molecule.html">T</a> values.</p></div><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="launch-molecule.html">T</a><span class="token operator">&gt; </span><span data-unresolved-link="/<ERROR CLASS>///PointingToDeclaration/">&lt;ERROR CLASS&gt;</span><span class="token punctuation">.</span><a href="launch-molecule.html"><span class="token function">launchMolecule</span></a><span class="token punctuation">(</span>clock<span class="token operator">: </span><a href="-recomposition-clock/index.html">RecompositionClock</a><span class="token punctuation">, </span>emitter<span class="token operator">: </span><span class="token punctuation">(</span><span class="token keyword"></span><a href="launch-molecule.html">T</a><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a><span class="token punctuation">, </span>body<span class="token operator">: </span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="launch-molecule.html">T</a><span class="token punctuation">)</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">Launch a coroutine into this CoroutineScope which will continually recompose <code class="lang-kotlin">body</code> to invoke <a href="launch-molecule.html">emitter</a> with each returned <a href="launch-molecule.html">T</a> value.</p></div></div>                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-<a data-name="-2091170082%2FFunctions%2F1485394274" anchor-label="moleculeFlow" id="-2091170082%2FFunctions%2F1485394274" data-filterable-set=":molecule-runtime:dokkaHtmlPartial/commonMain"></a>
-                <div class="table-row" data-filterable-current=":molecule-runtime:dokkaHtmlPartial/commonMain" data-filterable-set=":molecule-runtime:dokkaHtmlPartial/commonMain">
-                  <div class="main-subrow keyValue ">
-                    <div class=""><span class="inline-flex">
-                        <div><a href="molecule-flow.html"><span>molecule</span><wbr><span><span>Flow</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2091170082%2FFunctions%2F1485394274"></span>
-                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                        </span></span></div>
-                    <div>
-                      <div class="title">
-                        <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
-                          <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark common-like" data-filterable-current=":molecule-runtime:dokkaHtmlPartial/commonMain" data-filterable-set=":molecule-runtime:dokkaHtmlPartial/commonMain" data-active="" data-toggle=":molecule-runtime:dokkaHtmlPartial/commonMain">common</button></div>
-<div class="content sourceset-depenent-content" data-active="" data-togglable=":molecule-runtime:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="molecule-flow.html">T</a><span class="token operator">&gt; </span><a href="molecule-flow.html"><span class="token function">moleculeFlow</span></a><span class="token punctuation">(</span>clock<span class="token operator">: </span><a href="-recomposition-clock/index.html">RecompositionClock</a><span class="token punctuation">, </span>body<span class="token operator">: </span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="molecule-flow.html">T</a><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="/<ERROR CLASS>///PointingToDeclaration/">&lt;ERROR CLASS&gt;</span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="molecule-flow.html">T</a><span class="token operator">&gt;</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">Create a Flow which will continually recompose <code class="lang-kotlin">body</code> to produce a stream of <a href="molecule-flow.html">T</a> values when collected.</p></div></div>                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                  <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":molecule-runtime:dokkaHtmlPartial/androidMain" data-filterable-set=":molecule-runtime:dokkaHtmlPartial/androidMain" data-active="" data-toggle=":molecule-runtime:dokkaHtmlPartial/androidMain">android</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":molecule-runtime:dokkaHtmlPartial/androidMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="-android-ui-dispatcher/index.html">AndroidUiDispatcher</a> : <span data-unresolved-link="kotlinx.coroutines/CoroutineDispatcher///PointingToDeclaration/">CoroutineDispatcher</span></div><div class="brief "><p class="paragraph">A <span data-unresolved-link="kotlinx.coroutines/CoroutineDispatcher///PointingToDeclaration/">CoroutineDispatcher</span> that will perform dispatch during a <a href="../../molecule-runtime/app.cash.molecule/-android-ui-dispatcher/handler.html">handler</a> callback or <a href="-android-ui-dispatcher/choreographer.html">choreographer</a>'s animation frame stage, whichever comes first. Use <a href="-android-ui-dispatcher/-companion/-main.html">Main</a> to obtain a dispatcher for the process's main thread (i.e. the activity thread).</p></div></div>                </div>
               </div>
             </div>
           </div>
         </div>
-        <div class="footer"><span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2022 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span></div>
+<a data-name="-1226964280%2FClasslikes%2F2137152568" anchor-label="AndroidUiFrameClock" id="-1226964280%2FClasslikes%2F2137152568" data-filterable-set=":molecule-runtime:dokkaHtmlPartial/androidMain"></a>
+        <div class="table-row" data-filterable-current=":molecule-runtime:dokkaHtmlPartial/androidMain" data-filterable-set=":molecule-runtime:dokkaHtmlPartial/androidMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="-android-ui-frame-clock/index.html"><span>Android</span><wbr><span>Ui</span><wbr><span>Frame</span><wbr><span><span>Clock</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1226964280%2FClasslikes%2F2137152568"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                  <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":molecule-runtime:dokkaHtmlPartial/androidMain" data-filterable-set=":molecule-runtime:dokkaHtmlPartial/androidMain" data-active="" data-toggle=":molecule-runtime:dokkaHtmlPartial/androidMain">android</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":molecule-runtime:dokkaHtmlPartial/androidMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="-android-ui-frame-clock/index.html">AndroidUiFrameClock</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">choreographer<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/android/view/Choreographer.html">Choreographer</a></span></span><span class="token punctuation">)</span> : <a href="https://developer.android.com/reference/kotlin/androidx/compose/runtime/MonotonicFrameClock.html">MonotonicFrameClock</a></div></div>                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="881537407%2FClasslikes%2F1485394274" anchor-label="RecompositionClock" id="881537407%2FClasslikes%2F1485394274" data-filterable-set=":molecule-runtime:dokkaHtmlPartial/commonMain"></a>
+        <div class="table-row" data-filterable-current=":molecule-runtime:dokkaHtmlPartial/commonMain" data-filterable-set=":molecule-runtime:dokkaHtmlPartial/commonMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="-recomposition-clock/index.html"><span>Recomposition</span><wbr><span><span>Clock</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="881537407%2FClasslikes%2F1485394274"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":molecule-runtime:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">enum </span><a href="-recomposition-clock/index.html">RecompositionClock</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-enum/index.html">Enum</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-recomposition-clock/index.html">RecompositionClock</a><span class="token operator">&gt; </span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <h2 class="">Functions</h2>
+      <div class="table" data-togglable="Functions"><a data-name="1815741356%2FFunctions%2F1485394274" anchor-label="launchMolecule" id="1815741356%2FFunctions%2F1485394274" data-filterable-set=":molecule-runtime:dokkaHtmlPartial/commonMain"></a>
+        <div class="table-row" data-filterable-current=":molecule-runtime:dokkaHtmlPartial/commonMain" data-filterable-set=":molecule-runtime:dokkaHtmlPartial/commonMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="launch-molecule.html"><span>launch</span><wbr><span><span>Molecule</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1815741356%2FFunctions%2F1485394274"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":molecule-runtime:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="launch-molecule.html">T</a><span class="token operator">&gt; </span><span data-unresolved-link="kotlinx.coroutines/CoroutineScope///PointingToDeclaration/">CoroutineScope</span><span class="token punctuation">.</span><a href="launch-molecule.html"><span class="token function">launchMolecule</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">clock<span class="token operator">: </span><a href="-recomposition-clock/index.html">RecompositionClock</a><span class="token punctuation">, </span></span><span class="parameter ">body<span class="token operator">: </span><span><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/compose/runtime/Composable.html"><span class="token annotation builtin">Composable</span></a>&nbsp;</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="launch-molecule.html">T</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="kotlinx.coroutines.flow/StateFlow///PointingToDeclaration/">StateFlow</span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="launch-molecule.html">T</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Launch a coroutine into this <span data-unresolved-link="kotlinx.coroutines/CoroutineScope///PointingToDeclaration/">CoroutineScope</span> which will continually recompose <code class="lang-kotlin">body</code> to produce a <span data-unresolved-link="kotlinx.coroutines.flow/StateFlow///PointingToDeclaration/">StateFlow</span> stream of <a href="launch-molecule.html">T</a> values.</p></div><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="launch-molecule.html">T</a><span class="token operator">&gt; </span><span data-unresolved-link="kotlinx.coroutines/CoroutineScope///PointingToDeclaration/">CoroutineScope</span><span class="token punctuation">.</span><a href="launch-molecule.html"><span class="token function">launchMolecule</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">clock<span class="token operator">: </span><a href="-recomposition-clock/index.html">RecompositionClock</a><span class="token punctuation">, </span></span><span class="parameter ">emitter<span class="token operator">: </span><span class="token punctuation">(</span><span class="token keyword"></span>value<span class="token operator">: </span><a href="launch-molecule.html">T</a><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a><span class="token punctuation">, </span></span><span class="parameter ">body<span class="token operator">: </span><span><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/compose/runtime/Composable.html"><span class="token annotation builtin">Composable</span></a>&nbsp;</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="launch-molecule.html">T</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Launch a coroutine into this <span data-unresolved-link="kotlinx.coroutines/CoroutineScope///PointingToDeclaration/">CoroutineScope</span> which will continually recompose <code class="lang-kotlin">body</code> to invoke <a href="launch-molecule.html">emitter</a> with each returned <a href="launch-molecule.html">T</a> value.</p></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-2091170082%2FFunctions%2F1485394274" anchor-label="moleculeFlow" id="-2091170082%2FFunctions%2F1485394274" data-filterable-set=":molecule-runtime:dokkaHtmlPartial/commonMain"></a>
+        <div class="table-row" data-filterable-current=":molecule-runtime:dokkaHtmlPartial/commonMain" data-filterable-set=":molecule-runtime:dokkaHtmlPartial/commonMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="molecule-flow.html"><span>molecule</span><wbr><span><span>Flow</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2091170082%2FFunctions%2F1485394274"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":molecule-runtime:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="molecule-flow.html">T</a><span class="token operator">&gt; </span><a href="molecule-flow.html"><span class="token function">moleculeFlow</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">clock<span class="token operator">: </span><a href="-recomposition-clock/index.html">RecompositionClock</a><span class="token punctuation">, </span></span><span class="parameter ">body<span class="token operator">: </span><span><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/compose/runtime/Composable.html"><span class="token annotation builtin">Composable</span></a>&nbsp;</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="molecule-flow.html">T</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="kotlinx.coroutines.flow/Flow///PointingToDeclaration/">Flow</span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="molecule-flow.html">T</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Create a <span data-unresolved-link="kotlinx.coroutines.flow/Flow///PointingToDeclaration/">Flow</span> which will continually recompose <code class="lang-kotlin">body</code> to produce a stream of <a href="molecule-flow.html">T</a> values when collected.</p></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
-  
-</body></html>
+  </div>
+</div>
+      <div class="footer">
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2022 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+      </div>
+    </div>
+</div>
 
+</body></html>
 
