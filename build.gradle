@@ -58,6 +58,7 @@ subprojects {
     android.compileSdkVersion libs.versions.compileSdk.get().toInteger()
     android.defaultConfig {
       minSdkVersion libs.versions.minSdk.get().toInteger()
+      targetSdkVersion libs.versions.compileSdk.get().toInteger()
     }
     android.lintOptions {
       checkDependencies true
