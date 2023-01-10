@@ -4,6 +4,7 @@ include ':molecule-gradle-plugin'
 include ':molecule-runtime'
 
 include ':sample'
+include ':sample-viewmodel'
 
 enableFeaturePreview('TYPESAFE_PROJECT_ACCESSORS')
 
