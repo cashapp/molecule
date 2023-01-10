@@ -7,7 +7,7 @@
     android:theme="@android:style/Theme.DeviceDefault.NoActionBar"
     >
     <activity
-      android:name=".RandomDogActivity"
+      android:name=".MainActivity"
       android:exported="true"
       >
       <intent-filter>
