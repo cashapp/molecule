@@ -33,7 +33,7 @@ class MoleculePlugin : KotlinCompilerPluginSupportPlugin {
   override fun getCompilerPluginId(): String = "app.cash.molecule"
 
   override fun getPluginArtifact(): SubpluginArtifact = SubpluginArtifact(
-    "org.jetbrains.compose.compiler",
+    "androidx.compose.compiler",
     "compiler",
     composeVersion,
   )
