@@ -55,6 +55,66 @@ kotlin {
         implementation libs.androidx.core
       }
     }
+
+    darwinMain {
+      dependsOn(commonMain)
+    }
+
+    quartzCoreMain {
+      dependsOn(darwinMain)
+    }
+
+    iosArm64Main {
+      dependsOn(quartzCoreMain)
+    }
+
+    iosSimulatorArm64Main {
+      dependsOn(quartzCoreMain)
+    }
+
+    iosX64Main {
+      dependsOn(quartzCoreMain)
+    }
+
+    tvosArm64Main {
+      dependsOn(quartzCoreMain)
+    }
+
+    tvosSimulatorArm64Main {
+      dependsOn(quartzCoreMain)
+    }
+
+    tvosX64Main {
+      dependsOn(quartzCoreMain)
+    }
+
+    macosMain {
+      dependsOn(darwinMain)
+    }
+
+    macosArm64Main {
+      dependsOn(macosMain)
+    }
+
+    macosX64Main {
+      dependsOn(macosMain)
+    }
+
+    darwinTest {
+      dependsOn(commonTest)
+    }
+
+    macosTest {
+      dependsOn(darwinTest)
+    }
+
+    macosArm64Test {
+      dependsOn(macosTest)
+    }
+
+    macosX64Test {
+      dependsOn(macosTest)
+    }
   }
 }
 
