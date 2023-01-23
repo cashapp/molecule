@@ -3,13 +3,11 @@ package app.cash.molecule
 import androidx.compose.runtime.BroadcastFrameClock
 import androidx.compose.runtime.MonotonicFrameClock
 import kotlinx.cinterop.alloc
-import kotlinx.cinterop.allocPointerTo
 import kotlinx.cinterop.nativeHeap
 import kotlinx.cinterop.ptr
 import kotlinx.cinterop.staticCFunction
 import kotlinx.cinterop.value
 import platform.CoreVideo.CVDisplayLinkCreateWithActiveCGDisplays
-import platform.CoreVideo.CVDisplayLinkRef
 import platform.CoreVideo.CVDisplayLinkRefVar
 import platform.CoreVideo.CVDisplayLinkSetOutputCallback
 import platform.CoreVideo.CVDisplayLinkStart
