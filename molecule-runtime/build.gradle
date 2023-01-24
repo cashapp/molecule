@@ -99,6 +99,22 @@ kotlin {
     macosX64Main {
       dependsOn(macosMain)
     }
+
+    darwinTest {
+      dependsOn(commonTest)
+    }
+
+    macosTest {
+      dependsOn(darwinTest)
+    }
+
+    macosArm64Test {
+      dependsOn(macosTest)
+    }
+
+    macosX64Test {
+      dependsOn(macosTest)
+    }
   }
 }
 

@@ -39,10 +39,13 @@ public actual object DisplayLinkClock : MonotonicFrameClock {
     return clock.withFrameNanos(onFrame)
   }
 
+  // The following function must remain public to be a valid candidate for the call to
+  // NSSelectorString above.
   @ObjCAction public fun tickClock() {
+    clock.sendFrame(0L)
+
     // Remove the DisplayLink from the run loop. It will get added again if new frame awaiters
     // appear.
     displayLink.removeFromRunLoop(NSRunLoop.currentRunLoop, NSRunLoop.currentRunLoop.currentMode)
-    clock.sendFrame(0L)
   }
 }

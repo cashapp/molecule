@@ -48,6 +48,7 @@ public actual object DisplayLinkClock : MonotonicFrameClock {
         displayLink.value,
         staticCFunction { _, _, _, _, _, _ ->
           clock.sendFrame(0L)
+
           // A frame was delivered. Stop the DisplayLink callback. It will get started again
           // when new frame awaiters appear.
           CVDisplayLinkStop(displayLink.value)
