@@ -14,7 +14,7 @@ kotlin {
   iosX64()
 
   js {
-    nodejs()
+    browser()
   }
 
   jvm()
