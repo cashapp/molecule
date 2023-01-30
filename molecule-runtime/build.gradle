@@ -59,6 +59,9 @@ kotlin {
     darwinMain {
       dependsOn(commonMain)
     }
+    darwinTest {
+      dependsOn(commonTest)
+    }
 
     quartzCoreMain {
       dependsOn(darwinMain)
@@ -69,10 +72,22 @@ kotlin {
   }
 
   targets.each { target ->
-    if (target.name.startsWith('ios') || target.name.startsWith('tvos')) {
+    if (target.name.startsWith('ios')) { // || target.name.startsWith('tvos')) {
       target.compilations.main.defaultSourceSet.dependsOn(sourceSets.quartzCoreMain)
+
+      target.compilations.test.defaultSourceSet.dependsOn(sourceSets.darwinTest)
+      target.compilations.test.cinterops {
+        create("xctest")
+      }
     } else if (target.name.startsWith('macos')) {
       target.compilations.main.defaultSourceSet.dependsOn(sourceSets.macosMain)
+      target.compilations.test.defaultSourceSet.dependsOn(sourceSets.darwinTest)
+    }
+  }
+
+  targets.withType(org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTargetWithTests).configureEach {
+    it.binaries.configureEach {
+      it.freeCompilerArgs += ['-trw']
     }
   }
 }

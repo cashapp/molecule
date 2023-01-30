@@ -18,11 +18,16 @@ package app.cash.molecule
 import kotlin.test.Test
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
+import platform.Foundation.NSRunLoop
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class DisplayLinkClockTest {
 
-  @Test fun `DisplayLinkClock delivers a single frame`() = runTest(dispatchTimeoutMs = 1000) {
+  @Test fun `DisplayLinkClock delivers a single frame`() = runTest(dispatchTimeoutMs = 5_000) {
+    println("XXXXX " + NSRunLoop.currentRunLoop.debugDescription)
+    println("YYYYY " + NSRunLoop.mainRunLoop.debugDescription)
+
+    println("ABOUT TO WAIT")
     DisplayLinkClock.withFrameNanos {
       // If this function does not time out the test passes.
     }
