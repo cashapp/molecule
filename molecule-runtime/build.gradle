@@ -63,57 +63,16 @@ kotlin {
     quartzCoreMain {
       dependsOn(darwinMain)
     }
-
-    iosArm64Main {
-      dependsOn(quartzCoreMain)
-    }
-
-    iosSimulatorArm64Main {
-      dependsOn(quartzCoreMain)
-    }
-
-    iosX64Main {
-      dependsOn(quartzCoreMain)
-    }
-
-    tvosArm64Main {
-      dependsOn(quartzCoreMain)
-    }
-
-    tvosSimulatorArm64Main {
-      dependsOn(quartzCoreMain)
-    }
-
-    tvosX64Main {
-      dependsOn(quartzCoreMain)
-    }
-
     macosMain {
       dependsOn(darwinMain)
     }
+  }
 
-    macosArm64Main {
-      dependsOn(macosMain)
-    }
-
-    macosX64Main {
-      dependsOn(macosMain)
-    }
-
-    darwinTest {
-      dependsOn(commonTest)
-    }
-
-    macosTest {
-      dependsOn(darwinTest)
-    }
-
-    macosArm64Test {
-      dependsOn(macosTest)
-    }
-
-    macosX64Test {
-      dependsOn(macosTest)
+  targets.each { target ->
+    if (target.name.startsWith('ios') || target.name.startsWith('tvos')) {
+      target.compilations.main.defaultSourceSet.dependsOn(sourceSets.quartzCoreMain)
+    } else if (target.name.startsWith('macos')) {
+      target.compilations.main.defaultSourceSet.dependsOn(sourceSets.macosMain)
     }
   }
 }
