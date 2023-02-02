@@ -5,7 +5,7 @@ minSdk = "21"
 composeCompiler = "1.4.0"
 coroutine = "1.6.4"
 
-kotlin = "1.8.0"
+kotlin = "1.8.10"
 
 squareup-okhttp = "4.10.0"
 squareup-retrofit = "2.9.0"
