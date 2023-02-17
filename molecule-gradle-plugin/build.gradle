@@ -53,6 +53,8 @@ buildConfig {
   }
 
   packageName('app.cash.molecule.gradle')
-  buildConfigField("String", "composeVersion", "\"${libs.versions.composeCompiler.get()}\"")
+  buildConfigField("String", "composeCompilerGroupId", "\"${libs.compose.compiler.get().module.group}\"")
+  buildConfigField("String", "composeCompilerArtifactId", "\"${libs.compose.compiler.get().module.name}\"")
+  buildConfigField("String", "composeCompilerVersion", "\"${libs.compose.compiler.get().version}\"")
   buildConfigField("String", "moleculeVersion", "\"${project.version}\"")
 }

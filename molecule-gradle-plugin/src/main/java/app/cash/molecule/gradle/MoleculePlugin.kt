@@ -33,9 +33,9 @@ class MoleculePlugin : KotlinCompilerPluginSupportPlugin {
   override fun getCompilerPluginId(): String = "app.cash.molecule"
 
   override fun getPluginArtifact(): SubpluginArtifact = SubpluginArtifact(
-    "androidx.compose.compiler",
-    "compiler",
-    composeVersion,
+    composeCompilerGroupId,
+    composeCompilerArtifactId,
+    composeCompilerVersion,
   )
 
   override fun applyToCompilation(kotlinCompilation: KotlinCompilation<*>): Provider<List<SubpluginOption>> {
