@@ -15,7 +15,12 @@
  */
 package app.cash.molecule.gradle
 
+import org.gradle.api.Project
+import org.gradle.api.plugins.JavaPlugin.API_CONFIGURATION_NAME
 import org.gradle.api.provider.Provider
+import org.jetbrains.kotlin.gradle.dsl.KotlinAndroidProjectExtension
+import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
+import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.KotlinCompilation
 import org.jetbrains.kotlin.gradle.plugin.KotlinCompilerPluginSupportPlugin
 import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType.androidJvm
@@ -24,6 +29,7 @@ import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType.js
 import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType.jvm
 import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType.native
 import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType.wasm
+import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSet.Companion.COMMON_MAIN_SOURCE_SET_NAME
 import org.jetbrains.kotlin.gradle.plugin.SubpluginArtifact
 import org.jetbrains.kotlin.gradle.plugin.SubpluginOption
 
@@ -38,21 +44,45 @@ class MoleculePlugin : KotlinCompilerPluginSupportPlugin {
     composeCompilerVersion,
   )
 
-  override fun applyToCompilation(kotlinCompilation: KotlinCompilation<*>): Provider<List<SubpluginOption>> {
-    val project = kotlinCompilation.target.project
+  override fun apply(target: Project) {
+    super.apply(target)
 
-    kotlinCompilation.dependencies {
-      // Indicates when the plugin is applied inside the Molecule repo to Molecule's own modules.
-      val isInternalBuild = project.properties["app.cash.molecule.internal"].toString() == "true"
-      if (isInternalBuild) {
-        if (project.name != "molecule-runtime") {
-          implementation(project(":molecule-runtime"))
-        }
-      } else {
-        implementation("app.cash.molecule:molecule-runtime:$moleculeVersion")
-      }
+    if (target.isInternal() && target.path == ":molecule-runtime") {
+      // Being lazy and using our own plugin to configure the Compose compiler on our runtime.
+      // Bail out because otherwise we create a circular dependency reference on ourselves!
+      return
     }
 
+    target.afterEvaluate {
+      val android = target.extensions.findByType(KotlinAndroidProjectExtension::class.java)
+      val jvm = target.extensions.findByType(KotlinJvmProjectExtension::class.java)
+      val multiplatform = target.extensions.findByType(KotlinMultiplatformExtension::class.java)
+
+      val dependency: Any = if (target.isInternal()) {
+        target.dependencies.project(mapOf("path" to ":molecule-runtime"))
+      } else {
+        "app.cash.molecule:molecule-runtime:$moleculeVersion"
+      }
+
+      if (jvm != null || android != null) {
+        target.dependencies.add(API_CONFIGURATION_NAME, dependency)
+      } else if (multiplatform != null) {
+        multiplatform.sourceSets.getByName(COMMON_MAIN_SOURCE_SET_NAME) { sourceSet ->
+          sourceSet.dependencies {
+            api(dependency)
+          }
+        }
+      } else {
+        throw IllegalStateException("No supported Kotlin plugin detected!")
+      }
+    }
+  }
+
+  private fun Project.isInternal(): Boolean {
+    return properties["app.cash.molecule.internal"].toString() == "true"
+  }
+
+  override fun applyToCompilation(kotlinCompilation: KotlinCompilation<*>): Provider<List<SubpluginOption>> {
     when (kotlinCompilation.platformType) {
       js -> {
         // This enables a workaround for Compose lambda generation to function correctly in JS.
@@ -65,6 +95,6 @@ class MoleculePlugin : KotlinCompilerPluginSupportPlugin {
       }
     }
 
-    return project.provider { emptyList() }
+    return kotlinCompilation.target.project.provider { emptyList() }
   }
 }
