@@ -5,7 +5,6 @@ buildscript {
     classpath libs.maven.publish.plugin
     classpath libs.dokka.plugin
     classpath libs.spotless.plugin
-    classpath libs.kotlinter.plugin
     classpath libs.buildConfig.plugin
 
     // Normally you would declare a version here, but we use dependency substitution in
@@ -70,15 +69,11 @@ subprojects {
   spotless {
     kotlin {
       target("src/**/*.kt")
+      ktlint().editorConfigOverride([
+        'ktlint_standard_filename': 'disabled',
+      ])
       licenseHeaderFile(rootProject.file('gradle/license-header.txt'))
     }
-  }
-
-  apply plugin: 'org.jmailen.kotlinter'
-  kotlinter {
-    disabledRules = [
-      'filename',
-    ]
   }
 
   plugins.withId('maven-publish') {
