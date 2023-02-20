@@ -15,6 +15,7 @@
  */
 package app.cash.molecule.gradle
 
+import com.google.common.truth.Truth.assertThat
 import java.io.File
 import org.gradle.testkit.runner.GradleRunner
 import org.junit.Test
@@ -22,6 +23,11 @@ import org.junit.Test
 class MoleculePluginTest {
   @Test fun testingModuleWithoutVersion() {
     createRunner("runtime-added-automatically").build()
+  }
+
+  @Test fun noSupportedPluginFails() {
+    val result = createRunner("no-supported-plugin-fails").buildAndFail()
+    assertThat(result.output).contains("No supported Kotlin plugin detected!")
   }
 
   private fun createRunner(fixture: String): GradleRunner {

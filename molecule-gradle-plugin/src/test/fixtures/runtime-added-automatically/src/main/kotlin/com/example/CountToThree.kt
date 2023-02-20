@@ -15,19 +15,24 @@
  */
 package com.example
 
-import app.cash.molecule.RecompositionClock.Immediate
-import app.cash.molecule.launchMolecule
-import app.cash.turbine.test
-import org.junit.Assert.assertEquals
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import kotlinx.coroutines.delay
 
-class CountToThreeTest {
-  @Test fun counts() {
-    launchMolecule(Immediate) {
-      CountToThree()
-    }.test {
-      assertEquals(1, awaitItem())
-      assertEquals(2, awaitItem())
-      assertEquals(3, awaitItem())
-    }
+@Composable
+fun CountToThree(): Int {
+  var count by remember { mutableStateOf(1) }
+
+  LaunchedEffect(Unit) {
+    delay(100)
+    count++
+    delay(100)
+    count++
   }
+
+  return count
 }

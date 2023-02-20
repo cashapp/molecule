@@ -1,6 +1,5 @@
 buildscript {
   dependencies {
-    classpath libs.android.plugin
     classpath "app.cash.molecule:molecule-gradle-plugin:$moleculeVersion"
   }
   repositories {
@@ -8,12 +7,9 @@ buildscript {
       url "file://${projectDir.absolutePath}/../../../../../build/localMaven"
     }
     mavenCentral()
-    google()
   }
 }
 
-apply plugin: 'com.android.library'
-apply plugin: 'org.jetbrains.kotlin.android'
 apply plugin: 'app.cash.molecule'
 
 repositories {
@@ -21,13 +17,4 @@ repositories {
     url "file://${projectDir.absolutePath}/../../../../../build/localMaven"
   }
   mavenCentral()
-  google()
-}
-
-android {
-  compileSdkVersion libs.versions.compileSdk.get().toInteger()
-
-  defaultConfig {
-    minSdkVersion libs.versions.minSdk.get().toInteger()
-  }
 }
