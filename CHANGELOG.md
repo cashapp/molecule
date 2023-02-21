@@ -3,6 +3,15 @@
 ## [Unreleased]
 
 
+## [0.7.1] - 2023-02-20
+
+New:
+- Add `WindowAnimationFrameClock` for use in browser-based JS environments.
+
+Changed:
+- Switch to JetBrains Compose compiler which has better support for JS and native targets.
+
+
 ## [0.7.0] - 2023-01-17
 
 New:
@@ -104,7 +113,8 @@ Initial release
 
 
 
-[Unreleased]: https://github.com/cashapp/molecule/compare/0.7.0...HEAD
+[Unreleased]: https://github.com/cashapp/molecule/compare/0.7.1...HEAD
+[0.7.1]: https://github.com/cashapp/molecule/releases/tag/0.7.1
 [0.7.0]: https://github.com/cashapp/molecule/releases/tag/0.7.0
 [0.6.1]: https://github.com/cashapp/molecule/releases/tag/0.6.1
 [0.6.0]: https://github.com/cashapp/molecule/releases/tag/0.6.0
