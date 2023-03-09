@@ -9,4 +9,14 @@ dependencies {
   implementation libs.coil.compose
   implementation libs.squareup.retrofit.client
   implementation libs.squareup.retrofit.converter.moshi
+
+  testImplementation libs.junit
+  testImplementation libs.kotlinx.coroutines.test
+  testImplementation libs.turbine
+}
+
+android {
+  testOptions {
+    unitTests.returnDefaultValues = true
+  }
 }
