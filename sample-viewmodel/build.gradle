@@ -16,6 +16,8 @@ dependencies {
 }
 
 android {
+  namespace 'com.example.molecule.viewmodel'
+
   testOptions {
     unitTests.returnDefaultValues = true
   }

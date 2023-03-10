@@ -14,6 +14,8 @@ dependencies {
 }
 
 android {
+  namespace 'com.example.molecule'
+
   buildFeatures {
     viewBinding true
   }
