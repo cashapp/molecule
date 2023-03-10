@@ -2,6 +2,13 @@
 
 ## [Unreleased]
 
+## [0.8.0] - 2023-03-09
+
+New:
+- Support for Kotlin 1.8.10
+- Update to JetBrains Compose runtime 1.3.1 (AndroidX Compose runtime 1.2.1).
+- Switch to JetBrains Compose compiler 1.3.2.1 (AndroidX Compose compiler 1.3.2 + JS fix)
+
 
 ## [0.7.1] - 2023-02-20
 
@@ -113,7 +120,8 @@ Initial release
 
 
 
-[Unreleased]: https://github.com/cashapp/molecule/compare/0.7.1...HEAD
+[Unreleased]: https://github.com/cashapp/molecule/compare/0.8.0...HEAD
+[0.8.0]: https://github.com/cashapp/molecule/releases/tag/0.8.0
 [0.7.1]: https://github.com/cashapp/molecule/releases/tag/0.7.1
 [0.7.0]: https://github.com/cashapp/molecule/releases/tag/0.7.0
 [0.6.1]: https://github.com/cashapp/molecule/releases/tag/0.6.1
