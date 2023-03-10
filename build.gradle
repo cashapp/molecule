@@ -46,7 +46,7 @@ subprojects {
     }
   }
 
-  tasks.withType(org.jetbrains.kotlin.gradle.dsl.KotlinJvmCompile).configureEach { task ->
+  tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile).configureEach { task ->
     task.kotlinOptions {
       jvmTarget = '11'
     }
@@ -58,6 +58,10 @@ subprojects {
     android.defaultConfig {
       minSdkVersion libs.versions.minSdk.get().toInteger()
       targetSdkVersion libs.versions.compileSdk.get().toInteger()
+    }
+    android.compileOptions {
+      sourceCompatibility JavaVersion.VERSION_11
+      targetCompatibility JavaVersion.VERSION_11
     }
     android.lintOptions {
       checkDependencies true
