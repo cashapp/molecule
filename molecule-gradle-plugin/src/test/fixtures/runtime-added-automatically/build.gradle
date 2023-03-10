@@ -30,4 +30,9 @@ android {
   defaultConfig {
     minSdkVersion libs.versions.minSdk.get().toInteger()
   }
+
+  compileOptions {
+    sourceCompatibility JavaVersion.VERSION_11
+    targetCompatibility JavaVersion.VERSION_11
+  }
 }
