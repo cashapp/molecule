@@ -178,6 +178,19 @@ buildscript {
 apply plugin: 'app.cash.molecule'
 ```
 
+Since Kotlin compiler plugins are an unstable API, certain versions of Molecule only work with
+certain versions of Kotlin.
+
+| Kotlin | Molecule      |
+|--------|---------------|
+| 1.8.10 | 0.8.0         |
+| 1.8.0  | 0.7.0 - 0.7.1 |
+| 1.7.20 | 0.6.0 - 0.6.1 |
+| 1.7.10 | 0.4.0 - 0.5.0 |
+| 1.7.0  | 0.3.0 - 0.3.1 |
+| 1.6.10 | 0.2.0         |
+| 1.5.31 | 0.1.0         |
+
 <details>
 <summary>Snapshots of the development version are available in Sonatype's snapshots repository.</summary>
 <p>

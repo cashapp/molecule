@@ -8,7 +8,8 @@
    3. Add a new `Unreleased` section to the top.
 
 3. Update the `README.md` so the "Usage" section reflects the new release version and the
-   snapshot section reflects the next "SNAPSHOT" version.
+   snapshot section reflects the next "SNAPSHOT" version. Update the Kotlin compatibility
+   table with the new version.
 
 4. Commit
 
