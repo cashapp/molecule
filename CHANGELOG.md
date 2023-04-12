@@ -2,6 +2,14 @@
 
 ## [Unreleased]
 
+## [0.9.0] - 2023-04-12
+
+New:
+- Support for Kotlin 1.8.20
+- Update to JetBrains Compose runtime 1.4.0 (AndroidX Compose runtime 1.4.0).
+- Switch to JetBrains Compose compiler 1.4.5 (as yet unreleased AndroidX Compose compiler, probably 1.4.5)
+
+
 ## [0.8.0] - 2023-03-09
 
 New:
