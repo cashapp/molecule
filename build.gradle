@@ -92,12 +92,4 @@ subprojects {
       }
     }
   }
-
-  plugins.withId('signing') {
-    signing {
-      def signingKey = findProperty('signingKey')
-      def signingPassword = ''
-      useInMemoryPgpKeys(signingKey, signingPassword)
-    }
-  }
 }
