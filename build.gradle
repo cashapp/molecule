@@ -40,12 +40,9 @@ subprojects {
     }
   }
 
-  plugins.withId('java-base') {
-    java {
-      toolchain {
-        languageVersion = JavaLanguageVersion.of(11)
-      }
-    }
+  tasks.withType(JavaCompile).configureEach { task ->
+    task.sourceCompatibility = '11'
+    task.targetCompatibility = '11'
   }
 
   tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile).configureEach { task ->

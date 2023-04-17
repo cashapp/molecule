@@ -21,7 +21,7 @@ import org.gradle.testkit.runner.GradleRunner
 import org.junit.Test
 
 class MoleculePluginTest {
-  @Test fun testingModuleWithoutVersion() {
+  @Test fun runtimeAddedAutomatically() {
     createRunner("runtime-added-automatically").build()
   }
 
