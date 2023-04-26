@@ -40,12 +40,9 @@ subprojects {
     }
   }
 
-  plugins.withId('java-base') {
-    java {
-      toolchain {
-        languageVersion = JavaLanguageVersion.of(11)
-      }
-    }
+  tasks.withType(JavaCompile).configureEach { task ->
+    task.sourceCompatibility = '11'
+    task.targetCompatibility = '11'
   }
 
   tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile).configureEach { task ->
@@ -54,8 +51,8 @@ subprojects {
     }
   }
 
-  plugins.withType(com.android.build.gradle.BasePlugin).configureEach { plugin ->
-    def android = plugin.extension
+  plugins.withType(com.android.build.gradle.BasePlugin).configureEach {
+    def android = extensions.getByName("android") as com.android.build.gradle.BaseExtension
     android.compileSdkVersion libs.versions.compileSdk.get().toInteger()
     android.defaultConfig {
       minSdkVersion libs.versions.minSdk.get().toInteger()
