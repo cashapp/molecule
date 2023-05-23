@@ -1,6 +1,6 @@
 $dokka.format:html-v1
 $dokka.linkExtension:html
-
+$dokka.location:app.cash.molecule/DisplayLinkClock/withFrameNanos/#kotlin.Function1[kotlin.Long,TypeParam(bounds=[kotlin.Any?])]/PointingToDeclaration/molecule-runtime/app.cash.molecule/-display-link-clock/[quartz-core]with-frame-nanos.html
 module:molecule-gradle-plugin
 app.cash.molecule.gradle
 module:molecule-runtime
