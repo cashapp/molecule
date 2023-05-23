@@ -55,6 +55,31 @@ kotlin {
         implementation libs.androidx.core
       }
     }
+
+    darwinMain {
+      dependsOn(commonMain)
+    }
+    darwinTest {
+      dependsOn(commonTest)
+    }
+
+    quartzCoreMain {
+      dependsOn(darwinMain)
+    }
+    macosMain {
+      dependsOn(darwinMain)
+    }
+  }
+
+  targets.each { target ->
+    if (target.name.startsWith('ios') || target.name.startsWith('tvos')) {
+      target.compilations.main.defaultSourceSet.dependsOn(sourceSets.quartzCoreMain)
+      // TODO Link against XCTest in order to get frame pulses on iOS/tvOS.
+      // target.compilations.test.defaultSourceSet.dependsOn(sourceSets.darwinTest)
+    } else if (target.name.startsWith('macos')) {
+      target.compilations.main.defaultSourceSet.dependsOn(sourceSets.macosMain)
+      target.compilations.test.defaultSourceSet.dependsOn(sourceSets.darwinTest)
+    }
   }
 }
 
