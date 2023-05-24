@@ -72,7 +72,7 @@ subprojects {
   spotless {
     kotlin {
       target("src/**/*.kt")
-      ktlint().editorConfigOverride([
+      ktlint(libs.ktlint.get().version).editorConfigOverride([
         'ktlint_standard_filename': 'disabled',
       ])
       licenseHeaderFile(rootProject.file('gradle/license-header.txt'))
