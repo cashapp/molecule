@@ -5,11 +5,19 @@
   ],
   "packageRules": [
     {
-      // Compose compiler is tightly coupled to Kotlin version
-      "groupName": "Kotlin and Compose",
+      // Compose compiler is tightly coupled to Kotlin version.
+      "groupName": "Kotlin/Compose",
       "matchPackagePrefixes": [
         "org.jetbrains.compose.compiler",
         "org.jetbrains.kotlin:kotlin",
+      ],
+    },
+    {
+      // ktlint breaks their API constantly and regularly needs a Spotless update to work.
+      "groupName": "Spotless/ktlint",
+      "matchPackagePrefixes": [
+        "com.diffplug.spotless",
+        "com.pinterest:ktlint",
       ],
     },
   ],
