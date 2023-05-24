@@ -21,13 +21,14 @@ import kotlinx.cinterop.ObjCAction
 import platform.Foundation.NSRunLoop
 import platform.Foundation.NSSelectorFromString
 import platform.QuartzCore.CADisplayLink
+import platform.darwin.NSObject
 
 public actual object DisplayLinkClock : MonotonicFrameClock {
 
-  @Suppress("unused") // This registers a DisplayLink listener.
-  private val displayLink: CADisplayLink = CADisplayLink.displayLinkWithTarget(
-    target = this,
-    selector = NSSelectorFromString(this::tickClock.name),
+  private val target = SelectorTarget(this)
+  private val displayLink = CADisplayLink.displayLinkWithTarget(
+    target = target,
+    selector = NSSelectorFromString(SelectorTarget::tickClock.name),
   )
 
   private val clock = BroadcastFrameClock {
@@ -39,13 +40,23 @@ public actual object DisplayLinkClock : MonotonicFrameClock {
     return clock.withFrameNanos(onFrame)
   }
 
-  // The following function must remain public to be a valid candidate for the call to
-  // NSSelectorString above.
-  @ObjCAction public fun tickClock() {
+  private fun tickClock() {
     clock.sendFrame(0L)
 
-    // Remove the DisplayLink from the run loop. It will get added again if new frame awaiters
-    // appear.
+    // Detach from the run loop. We will re-attach if new frame awaiters appear.
     displayLink.removeFromRunLoop(NSRunLoop.currentRunLoop, NSRunLoop.currentRunLoop.currentMode)
+  }
+
+  /**
+   * Selectors can only target subtypes of [NSObject] which is why this helper exists.
+   * We cannot subclass it on [DisplayLinkClock] directly because it implements a Kotlin
+   * interface, but we also don't want to leak it into public API. The contained function
+   * must be public for the selector to work.
+   */
+  private class SelectorTarget(private val target: DisplayLinkClock) : NSObject() {
+    @ObjCAction
+    fun tickClock() {
+      target.tickClock()
+    }
   }
 }
