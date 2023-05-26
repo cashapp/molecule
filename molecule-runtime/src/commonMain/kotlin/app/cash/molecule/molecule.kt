@@ -38,7 +38,7 @@ import kotlinx.coroutines.plus
  * Create a [Flow] which will continually recompose `body` to produce a stream of [T] values
  * when collected.
  */
-fun <T> moleculeFlow(clock: RecompositionClock, body: @Composable () -> T): Flow<T> {
+public fun <T> moleculeFlow(clock: RecompositionClock, body: @Composable () -> T): Flow<T> {
   return when (clock) {
     RecompositionClock.ContextClock -> contextClockFlow(body)
     RecompositionClock.Immediate -> immediateClockFlow(body)
@@ -99,7 +99,7 @@ private fun <T> immediateClockFlow(body: @Composable () -> T): Flow<T> = flow {
  * Launch a coroutine into this [CoroutineScope] which will continually recompose `body`
  * to produce a [StateFlow] stream of [T] values.
  */
-fun <T> CoroutineScope.launchMolecule(
+public fun <T> CoroutineScope.launchMolecule(
   clock: RecompositionClock,
   body: @Composable () -> T,
 ): StateFlow<T> {
@@ -128,7 +128,7 @@ fun <T> CoroutineScope.launchMolecule(
  * [launchMolecule]'s [emitter] is always free-running and will not respect backpressure.
  * Use [moleculeFlow] to create a backpressure-capable flow.
  */
-fun <T> CoroutineScope.launchMolecule(
+public fun <T> CoroutineScope.launchMolecule(
   clock: RecompositionClock,
   emitter: (value: T) -> Unit,
   body: @Composable () -> T,
