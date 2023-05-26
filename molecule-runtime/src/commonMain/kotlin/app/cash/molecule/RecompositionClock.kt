@@ -15,7 +15,7 @@
  */
 package app.cash.molecule
 
-enum class RecompositionClock {
+public enum class RecompositionClock {
   /**
    * Use the MonotonicFrameClock that already exists in the calling CoroutineContext.
    * If none exists, an exception is thrown.

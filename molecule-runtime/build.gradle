@@ -5,6 +5,8 @@ apply plugin: 'org.jetbrains.dokka'
 apply plugin: 'app.cash.molecule'
 
 kotlin {
+  explicitApi()
+
   android {
     publishLibraryVariants('release')
   }
