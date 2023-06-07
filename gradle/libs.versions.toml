@@ -15,7 +15,7 @@ androidx-core = { module = "androidx.core:core-ktx", version = "1.10.1" }
 androidx-test-runner = { module = "androidx.test:runner", version = "1.5.2" }
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version = "1.7.2" }
 
-androidx-compose-bom = { module = "androidx.compose:compose-bom", version = "2023.05.01" }
+androidx-compose-bom = { module = "androidx.compose:compose-bom", version = "2023.06.00" }
 androidx-compose-material3 = { module = "androidx.compose.material3:material3" }
 
 coil-compose = "io.coil-kt:coil-compose:2.4.0"
