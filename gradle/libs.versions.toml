@@ -52,4 +52,4 @@ squareup-retrofit-converter-scalars = { module = "com.squareup.retrofit2:convert
 squareup-retrofit-converter-moshi = { module = "com.squareup.retrofit2:converter-moshi", version.ref = "squareup-retrofit" }
 
 truth = { module = "com.google.truth:truth", version = "1.1.5" }
-turbine = { module = "app.cash.turbine:turbine", version = "0.13.0" }
+turbine = { module = "app.cash.turbine:turbine", version = "1.0.0" }
