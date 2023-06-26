@@ -4,7 +4,7 @@ minSdk = "21"
 
 coroutine = "1.7.1"
 
-kotlin = "1.8.20"
+kotlin = "1.8.22"
 
 squareup-okhttp = "4.11.0"
 squareup-retrofit = "2.9.0"
@@ -20,7 +20,7 @@ androidx-compose-material3 = { module = "androidx.compose.material3:material3" }
 
 coil-compose = "io.coil-kt:coil-compose:2.4.0"
 
-compose-compiler = { module = "org.jetbrains.compose.compiler:compiler", version = "1.4.5" }
+compose-compiler = { module = "org.jetbrains.compose.compiler:compiler", version = "1.4.7" }
 compose-runtime = { module = "org.jetbrains.compose.runtime:runtime", version = "1.4.1" }
 compose-rx2 = { module = "androidx.compose.runtime:runtime-rxjava2", version = "1.4.3" }
 
