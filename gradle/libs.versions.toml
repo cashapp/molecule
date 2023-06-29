@@ -2,7 +2,7 @@
 compileSdk = "33"
 minSdk = "21"
 
-coroutine = "1.7.1"
+coroutine = "1.7.2"
 
 kotlin = "1.8.21"
 
