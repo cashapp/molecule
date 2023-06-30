@@ -2,6 +2,13 @@
 
 ## [Unreleased]
 
+## [0.11.0] - 2023-06-30
+
+New:
+- Support for Kotlin 1.8.22
+- Switch to JetBrains Compose compiler 1.4.8 (AndroidX Compose compiler 1.4.8)
+
+
 ## [0.10.0] - 2023-06-26
 
 New:
@@ -136,7 +143,10 @@ Initial release
 
 
 
-[Unreleased]: https://github.com/cashapp/molecule/compare/0.8.0...HEAD
+[Unreleased]: https://github.com/cashapp/molecule/compare/0.11.0...HEAD
+[0.11.0]: https://github.com/cashapp/molecule/releases/tag/0.11.0
+[0.10.0]: https://github.com/cashapp/molecule/releases/tag/0.10.0
+[0.9.0]: https://github.com/cashapp/molecule/releases/tag/0.9.0
 [0.8.0]: https://github.com/cashapp/molecule/releases/tag/0.8.0
 [0.7.1]: https://github.com/cashapp/molecule/releases/tag/0.7.1
 [0.7.0]: https://github.com/cashapp/molecule/releases/tag/0.7.0
