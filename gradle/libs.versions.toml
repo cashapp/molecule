@@ -39,7 +39,7 @@ kotlinx-coroutines-rx2 = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-rx
 
 ktlint = "com.pinterest:ktlint:0.49.1"
 
-maven-publish-plugin = { module = "com.vanniktech:gradle-maven-publish-plugin", version = "0.25.2" }
+maven-publish-plugin = { module = "com.vanniktech:gradle-maven-publish-plugin", version = "0.25.3" }
 
 rx2 = { module = "io.reactivex.rxjava2:rxjava", version = "2.2.21" }
 
