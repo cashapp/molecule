@@ -24,11 +24,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.Snapshot
 import app.cash.molecule.RecompositionClock.ContextClock
 import app.cash.molecule.RecompositionClock.Immediate
+import assertk.assertFailure
+import assertk.assertThat
+import assertk.assertions.isEqualTo
+import assertk.assertions.isSameAs
 import kotlin.coroutines.CoroutineContext
 import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertFailsWith
-import kotlin.test.assertSame
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
@@ -64,25 +65,25 @@ class MoleculeStateFlowTest {
       count
     }
 
-    assertEquals(0, flow.value)
+    assertThat(flow.value).isEqualTo(0)
 
     clock.sendFrame(0)
-    assertEquals(0, flow.value)
+    assertThat(flow.value).isEqualTo(0)
 
     advanceTimeBy(99)
     runCurrent()
     clock.sendFrame(0)
-    assertEquals(0, flow.value)
+    assertThat(flow.value).isEqualTo(0)
 
     advanceTimeBy(1)
     runCurrent()
     clock.sendFrame(0)
-    assertEquals(1, flow.value)
+    assertThat(flow.value).isEqualTo(1)
 
     advanceTimeBy(100)
     runCurrent()
     clock.sendFrame(0)
-    assertEquals(2, flow.value)
+    assertThat(flow.value).isEqualTo(2)
 
     job.cancel()
   }
@@ -93,12 +94,11 @@ class MoleculeStateFlowTest {
 
     // Use a custom subtype to prevent coroutines from breaking referential equality.
     val runtimeException = object : RuntimeException() {}
-    val t = assertFailsWith<RuntimeException> {
+    assertFailure {
       scope.launchMolecule(ContextClock) {
         throw runtimeException
       }
-    }
-    assertSame(runtimeException, t)
+    }.isSameAs(runtimeException)
 
     scope.cancel()
   }
@@ -129,14 +129,14 @@ class MoleculeStateFlowTest {
       count
     }
 
-    assertEquals(0, flow.value)
+    assertThat(flow.value).isEqualTo(0)
 
     count++
     Snapshot.sendApplyNotifications() // Ensure external state mutation is observed.
     runCurrent()
     clock.sendFrame(0)
     runCurrent()
-    assertSame(runtimeException, exceptionHandler.exceptions.single())
+    assertThat(exceptionHandler.exceptions.single()).isSameAs(runtimeException)
 
     job.cancel()
   }
@@ -157,12 +157,12 @@ class MoleculeStateFlowTest {
       0
     }
 
-    assertEquals(0, flow.value)
+    assertThat(flow.value).isEqualTo(0)
 
     advanceTimeBy(50)
     runCurrent()
     clock.sendFrame(0)
-    assertSame(runtimeException, exceptionHandler.exceptions.single())
+    assertThat(exceptionHandler.exceptions.single()).isSameAs(runtimeException)
 
     job.cancel()
   }
@@ -184,19 +184,19 @@ class MoleculeStateFlowTest {
       count
     }
 
-    assertEquals(0, flow.value)
+    assertThat(flow.value).isEqualTo(0)
 
     advanceTimeBy(99)
     runCurrent()
-    assertEquals(0, flow.value)
+    assertThat(flow.value).isEqualTo(0)
 
     advanceTimeBy(1)
     runCurrent()
-    assertEquals(1, flow.value)
+    assertThat(flow.value).isEqualTo(1)
 
     advanceTimeBy(100)
     runCurrent()
-    assertEquals(2, flow.value)
+    assertThat(flow.value).isEqualTo(2)
 
     job.cancel()
   }
@@ -219,13 +219,13 @@ class MoleculeStateFlowTest {
         }
       }
 
-      assertEquals(0, flow!!.value)
+      assertThat(flow!!.value).isEqualTo(0)
 
       count++
 
       job.join()
 
-      assertSame(runtimeException, exceptionHandler.exceptions.single())
+      assertThat(exceptionHandler.exceptions.single()).isSameAs(runtimeException)
     }
   }
 }

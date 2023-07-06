@@ -18,10 +18,11 @@ package com.example.molecule
 import app.cash.molecule.RecompositionClock
 import app.cash.molecule.moleculeFlow
 import app.cash.turbine.test
+import assertk.assertThat
+import assertk.assertions.isEqualTo
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.test.runTest
-import org.junit.Assert.assertEquals
 import org.junit.Test
 
 class CounterPresenterTest {
@@ -34,13 +35,13 @@ class CounterPresenterTest {
       CounterPresenter(events.receiveAsFlow(), randomService)
     }
       .test {
-        assertEquals(CounterModel(0, false), awaitItem())
+        assertThat(awaitItem()).isEqualTo(CounterModel(0, false))
         events.send(Change(+1))
-        assertEquals(CounterModel(1, false), awaitItem())
+        assertThat(awaitItem()).isEqualTo(CounterModel(1, false))
         events.send(Change(+1))
-        assertEquals(CounterModel(2, false), awaitItem())
+        assertThat(awaitItem()).isEqualTo(CounterModel(2, false))
         events.send(Change(-10))
-        assertEquals(CounterModel(-8, false), awaitItem())
+        assertThat(awaitItem()).isEqualTo(CounterModel(-8, false))
       }
   }
 
@@ -51,13 +52,13 @@ class CounterPresenterTest {
       CounterPresenter(events.receiveAsFlow(), randomService)
     }
       .test {
-        assertEquals(CounterModel(0, false), awaitItem())
+        assertThat(awaitItem()).isEqualTo(CounterModel(0, false))
         events.send(Randomize)
-        assertEquals(CounterModel(0, true), awaitItem())
-        assertEquals(CounterModel(18, false), awaitItem())
+        assertThat(awaitItem()).isEqualTo(CounterModel(0, true))
+        assertThat(awaitItem()).isEqualTo(CounterModel(18, false))
         events.send(Randomize)
-        assertEquals(CounterModel(18, true), awaitItem())
-        assertEquals(CounterModel(-4, false), awaitItem())
+        assertThat(awaitItem()).isEqualTo(CounterModel(18, true))
+        assertThat(awaitItem()).isEqualTo(CounterModel(-4, false))
       }
   }
 }

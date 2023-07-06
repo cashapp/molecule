@@ -15,7 +15,8 @@
  */
 package app.cash.molecule.gradle
 
-import com.google.common.truth.Truth.assertThat
+import assertk.assertThat
+import assertk.assertions.contains
 import java.io.File
 import org.gradle.testkit.runner.GradleRunner
 import org.junit.Test
