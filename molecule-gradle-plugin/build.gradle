@@ -17,7 +17,7 @@ dependencies {
   api libs.kotlin.plugin
 
   testImplementation libs.junit
-  testImplementation libs.truth
+  testImplementation libs.assertk
   testImplementation gradleTestKit()
 }
 
