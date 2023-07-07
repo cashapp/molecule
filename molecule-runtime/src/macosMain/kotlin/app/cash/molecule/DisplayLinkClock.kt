@@ -18,6 +18,7 @@ package app.cash.molecule
 import androidx.compose.runtime.BroadcastFrameClock
 import androidx.compose.runtime.MonotonicFrameClock
 import kotlinx.cinterop.alloc
+import kotlinx.cinterop.convert
 import kotlinx.cinterop.nativeHeap
 import kotlinx.cinterop.ptr
 import kotlinx.cinterop.staticCFunction
@@ -28,6 +29,8 @@ import platform.CoreVideo.CVDisplayLinkSetOutputCallback
 import platform.CoreVideo.CVDisplayLinkStart
 import platform.CoreVideo.CVDisplayLinkStop
 import platform.CoreVideo.kCVReturnSuccess
+import platform.posix.CLOCK_MONOTONIC_RAW
+import platform.posix.clock_gettime_nsec_np
 
 public actual object DisplayLinkClock : MonotonicFrameClock {
 
@@ -47,7 +50,8 @@ public actual object DisplayLinkClock : MonotonicFrameClock {
       CVDisplayLinkSetOutputCallback(
         displayLink.value,
         staticCFunction { _, _, _, _, _, _ ->
-          clock.sendFrame(0L)
+          val nanos = clock_gettime_nsec_np(CLOCK_MONOTONIC_RAW).convert<Long>()
+          clock.sendFrame(nanos)
 
           // A frame was delivered. Stop the DisplayLink callback. It will get started again
           // when new frame awaiters appear.
@@ -61,8 +65,8 @@ public actual object DisplayLinkClock : MonotonicFrameClock {
   override suspend fun <R> withFrameNanos(onFrame: (frameTimeNanos: Long) -> R): R {
     return clock.withFrameNanos(onFrame)
   }
-}
 
-private fun checkDisplayLink(code: Int) {
-  check(code == kCVReturnSuccess) { "Could not initialize CVDisplayLink. Error code $code." }
+  private fun checkDisplayLink(code: Int) {
+    check(code == kCVReturnSuccess) { "Could not initialize CVDisplayLink. Error code $code." }
+  }
 }
