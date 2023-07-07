@@ -41,7 +41,7 @@ kotlin {
   sourceSets {
     commonMain {
       dependencies {
-        api libs.compose.runtime
+        api libs.jetbrains.compose.runtime
         api libs.kotlinx.coroutines.core
       }
     }
