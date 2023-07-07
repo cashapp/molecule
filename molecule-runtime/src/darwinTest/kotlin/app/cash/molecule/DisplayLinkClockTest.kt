@@ -15,14 +15,20 @@
  */
 package app.cash.molecule
 
+import assertk.all
+import assertk.assertThat
+import assertk.assertions.isLessThan
+import assertk.assertions.isPositive
 import kotlin.test.Test
 import kotlinx.coroutines.test.runTest
 
 class DisplayLinkClockTest {
-
-  @Test fun `DisplayLinkClock delivers a single frame`() = runTest {
-    DisplayLinkClock.withFrameNanos {
-      // If this function does not time out the test passes.
+  @Test fun ticksWithTime() = runTest {
+    val frameTimeA = DisplayLinkClock.withFrameNanos { it }
+    val frameTimeB = DisplayLinkClock.withFrameNanos { it }
+    assertThat(frameTimeA).all {
+      isPositive()
+      isLessThan(frameTimeB)
     }
   }
 }
