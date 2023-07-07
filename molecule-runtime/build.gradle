@@ -62,15 +62,19 @@ kotlin {
     darwinMain {
       dependsOn(commonMain)
     }
-    darwinTest {
+
+    displayLinkMain {
+      dependsOn(darwinMain)
+    }
+    displayLinkTest {
       dependsOn(commonTest)
     }
 
     quartzCoreMain {
-      dependsOn(darwinMain)
+      dependsOn(displayLinkMain)
     }
     macosMain {
-      dependsOn(darwinMain)
+      dependsOn(displayLinkMain)
     }
   }
 
@@ -78,10 +82,12 @@ kotlin {
     if (target.name.startsWith('ios') || target.name.startsWith('tvos')) {
       target.compilations.main.defaultSourceSet.dependsOn(sourceSets.quartzCoreMain)
       // TODO Link against XCTest in order to get frame pulses on iOS/tvOS.
-      // target.compilations.test.defaultSourceSet.dependsOn(sourceSets.darwinTest)
+      // target.compilations.test.defaultSourceSet.dependsOn(sourceSets.displayLinkTest)
     } else if (target.name.startsWith('macos')) {
       target.compilations.main.defaultSourceSet.dependsOn(sourceSets.macosMain)
-      target.compilations.test.defaultSourceSet.dependsOn(sourceSets.darwinTest)
+      target.compilations.test.defaultSourceSet.dependsOn(sourceSets.displayLinkTest)
+    } else if (target.name.startsWith('watchos')) {
+      target.compilations.main.defaultSourceSet.dependsOn(sourceSets.darwinMain)
     }
   }
 }
