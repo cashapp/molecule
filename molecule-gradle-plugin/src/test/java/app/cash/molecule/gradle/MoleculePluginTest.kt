@@ -31,6 +31,13 @@ class MoleculePluginTest {
     assertThat(result.output).contains("No supported Kotlin plugin detected!")
   }
 
+  @Test fun jetbrainsComposePluginFails() {
+    val result = createRunner("jetbrains-compose-plugin-fails").buildAndFail()
+    assertThat(result.output).contains(
+      "The Molecule Gradle plugin cannot be applied to the same project as the JetBrains Compose Gradle plugin.",
+    )
+  }
+
   private fun createRunner(fixture: String): GradleRunner {
     val fixtureDir = File("src/test/fixtures", fixture)
     val gradleRoot = File(fixtureDir, "gradle").also { it.mkdir() }
