@@ -47,7 +47,7 @@ internal class GatedFrameClock(scope: CoroutineScope) : MonotonicFrameClock {
     }
 
   private fun sendFrame() {
-    clock.sendFrame(0L)
+    clock.sendFrame(nanoTime())
   }
 
   private val clock = BroadcastFrameClock {

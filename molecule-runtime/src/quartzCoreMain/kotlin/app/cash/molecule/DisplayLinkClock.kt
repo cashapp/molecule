@@ -18,13 +18,10 @@ package app.cash.molecule
 import androidx.compose.runtime.BroadcastFrameClock
 import androidx.compose.runtime.MonotonicFrameClock
 import kotlinx.cinterop.ObjCAction
-import kotlinx.cinterop.convert
 import platform.Foundation.NSRunLoop
 import platform.Foundation.NSSelectorFromString
 import platform.QuartzCore.CADisplayLink
 import platform.darwin.NSObject
-import platform.posix.CLOCK_MONOTONIC_RAW
-import platform.posix.clock_gettime_nsec_np
 
 public actual object DisplayLinkClock : MonotonicFrameClock {
 
@@ -44,8 +41,7 @@ public actual object DisplayLinkClock : MonotonicFrameClock {
   }
 
   private fun tickClock() {
-    val nanos = clock_gettime_nsec_np(CLOCK_MONOTONIC_RAW).convert<Long>()
-    clock.sendFrame(nanos)
+    clock.sendFrame(nanoTime())
 
     // Detach from the run loop. We will re-attach if new frame awaiters appear.
     displayLink.removeFromRunLoop(NSRunLoop.currentRunLoop, NSRunLoop.currentRunLoop.currentMode)
