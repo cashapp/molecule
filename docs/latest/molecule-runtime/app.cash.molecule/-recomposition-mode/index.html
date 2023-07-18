@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
-    <title>RecompositionClock</title>
+    <title>RecompositionMode</title>
 <link href="../../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../../";</script>    <script>const storage = localStorage.getItem("dokka-dark-mode")
     if (storage == null) {
         const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
@@ -49,43 +49,43 @@
         <div id="sideMenu"></div>
     </div>
     <div id="main">
-<div class="main-content" data-page-type="classlike" id="content" pageids="molecule-runtime::app.cash.molecule/RecompositionClock///PointingToDeclaration//1485394274">
-  <div class="breadcrumbs"><a href="../../index.html">molecule-runtime</a><span class="delimiter">/</span><a href="../index.html">app.cash.molecule</a><span class="delimiter">/</span><span class="current">RecompositionClock</span></div>
+<div class="main-content" data-page-type="classlike" id="content" pageids="molecule-runtime::app.cash.molecule/RecompositionMode///PointingToDeclaration//1485394274">
+  <div class="breadcrumbs"><a href="../../index.html">molecule-runtime</a><span class="delimiter">/</span><a href="../index.html">app.cash.molecule</a><span class="delimiter">/</span><span class="current">RecompositionMode</span></div>
   <div class="cover ">
-    <h1 class="cover"><span>Recomposition</span><wbr><span><span>Clock</span></span></h1>
-    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":molecule-runtime:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">enum </span><a href="index.html">RecompositionClock</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-enum/index.html">Enum</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">RecompositionClock</a><span class="token operator">&gt; </span></div></div></div>
+    <h1 class="cover"><span>Recomposition</span><wbr><span><span>Mode</span></span></h1>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":molecule-runtime:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">enum </span><a href="index.html">RecompositionMode</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-enum/index.html">Enum</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">RecompositionMode</a><span class="token operator">&gt; </span></div><p class="paragraph">The different recomposition modes of Molecule.</p></div></div>
   </div>
   <div class="tabbedcontent">
     <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION">Members</button><button class="section-tab" data-togglable="ENTRY">Entries</button></div>
     <div class="tabs-section-body">
       <div data-togglable="ENTRY">
         <h2 class="">Entries</h2>
-        <div class="table"><a data-name="1896967567%2FClasslikes%2F1485394274" anchor-label="ContextClock" id="1896967567%2FClasslikes%2F1485394274" data-filterable-set=":molecule-runtime:dokkaHtmlPartial/commonMain"></a>
+        <div class="table"><a data-name="-1754717150%2FClasslikes%2F1485394274" anchor-label="ContextClock" id="-1754717150%2FClasslikes%2F1485394274" data-filterable-set=":molecule-runtime:dokkaHtmlPartial/commonMain"></a>
           <div class="table-row" data-togglable="ENTRY" data-filterable-current=":molecule-runtime:dokkaHtmlPartial/commonMain" data-filterable-set=":molecule-runtime:dokkaHtmlPartial/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="-context-clock/index.html">ContextClock</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1896967567%2FClasslikes%2F1485394274"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1754717150%2FClasslikes%2F1485394274"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":molecule-runtime:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><div class="block"><a href="-context-clock/index.html">ContextClock</a></div></div><div class="brief "><p class="paragraph">Use the MonotonicFrameClock that already exists in the calling CoroutineContext. If none exists, an exception is thrown.</p></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":molecule-runtime:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><div class="block"><a href="-context-clock/index.html">ContextClock</a></div></div><div class="brief "><p class="paragraph">When a recomposition is needed, use a <a href="https://developer.android.com/reference/kotlin/androidx/compose/runtime/MonotonicFrameClock.html">MonotonicFrameClock</a> pulled from the calling <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.coroutines/-coroutine-context/index.html">CoroutineContext</a> to determine when to run. If no clock is found in the context, an exception is thrown.</p></div></div></div>
                 </div>
               </div>
             </div>
           </div>
-<a data-name="1908485737%2FClasslikes%2F1485394274" anchor-label="Immediate" id="1908485737%2FClasslikes%2F1485394274" data-filterable-set=":molecule-runtime:dokkaHtmlPartial/commonMain"></a>
+<a data-name="-659015498%2FClasslikes%2F1485394274" anchor-label="Immediate" id="-659015498%2FClasslikes%2F1485394274" data-filterable-set=":molecule-runtime:dokkaHtmlPartial/commonMain"></a>
           <div class="table-row" data-togglable="ENTRY" data-filterable-current=":molecule-runtime:dokkaHtmlPartial/commonMain" data-filterable-set=":molecule-runtime:dokkaHtmlPartial/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="-immediate/index.html">Immediate</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1908485737%2FClasslikes%2F1485394274"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-659015498%2FClasslikes%2F1485394274"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":molecule-runtime:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><div class="block"><a href="-immediate/index.html">Immediate</a></div></div><div class="brief "><p class="paragraph">Install an eagerly recomposing clock. This clock will provide a new frame immediately whenever one is requested. The resulting flow will emit a new item every time the snapshot state is invalidated.</p></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":molecule-runtime:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><div class="block"><a href="-immediate/index.html">Immediate</a></div></div><div class="brief "><p class="paragraph">Run recomposition eagerly whenever one is needed. Molecule will emit a new item every time the snapshot state is invalidated.</p></div></div></div>
                 </div>
               </div>
             </div>
@@ -128,32 +128,32 @@
       </div>
       <div data-togglable="FUNCTION">
         <h2 class="">Functions</h2>
-        <div class="table"><a data-name="584412978%2FFunctions%2F1485394274" anchor-label="valueOf" id="584412978%2FFunctions%2F1485394274" data-filterable-set=":molecule-runtime:dokkaHtmlPartial/commonMain"></a>
+        <div class="table"><a data-name="1523918783%2FFunctions%2F1485394274" anchor-label="valueOf" id="1523918783%2FFunctions%2F1485394274" data-filterable-set=":molecule-runtime:dokkaHtmlPartial/commonMain"></a>
           <div class="table-row" data-filterable-current=":molecule-runtime:dokkaHtmlPartial/commonMain" data-filterable-set=":molecule-runtime:dokkaHtmlPartial/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="value-of.html"><span>value</span><wbr><span><span>Of</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="584412978%2FFunctions%2F1485394274"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1523918783%2FFunctions%2F1485394274"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":molecule-runtime:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="value-of.html"><span class="token function">valueOf</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">value<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">RecompositionClock</a></div><div class="brief "><p class="paragraph">Returns the enum constant of this type with the specified name. The string must match exactly an identifier used to declare an enum constant in this type. (Extraneous whitespace characters are not permitted.)</p></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":molecule-runtime:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="value-of.html"><span class="token function">valueOf</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">value<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">RecompositionMode</a></div><div class="brief "><p class="paragraph">Returns the enum constant of this type with the specified name. The string must match exactly an identifier used to declare an enum constant in this type. (Extraneous whitespace characters are not permitted.)</p></div></div></div>
                 </div>
               </div>
             </div>
           </div>
-<a data-name="1201920958%2FFunctions%2F1485394274" anchor-label="values" id="1201920958%2FFunctions%2F1485394274" data-filterable-set=":molecule-runtime:dokkaHtmlPartial/commonMain"></a>
+<a data-name="31842059%2FFunctions%2F1485394274" anchor-label="values" id="31842059%2FFunctions%2F1485394274" data-filterable-set=":molecule-runtime:dokkaHtmlPartial/commonMain"></a>
           <div class="table-row" data-filterable-current=":molecule-runtime:dokkaHtmlPartial/commonMain" data-filterable-set=":molecule-runtime:dokkaHtmlPartial/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="values.html"><span><span>values</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1201920958%2FFunctions%2F1485394274"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="31842059%2FFunctions%2F1485394274"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":molecule-runtime:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="values.html"><span class="token function">values</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html">Array</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">RecompositionClock</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Returns an array containing the constants of this enum type, in the order they're declared.</p></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":molecule-runtime:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="values.html"><span class="token function">values</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html">Array</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">RecompositionMode</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Returns an array containing the constants of this enum type, in the order they're declared.</p></div></div></div>
                 </div>
               </div>
             </div>
