@@ -26,8 +26,8 @@ import androidx.compose.runtime.snapshots.Snapshot
 import app.cash.molecule.MoleculeTest.DisposableEffectState.DISPOSED
 import app.cash.molecule.MoleculeTest.DisposableEffectState.LAUNCHED
 import app.cash.molecule.MoleculeTest.DisposableEffectState.NOT_LAUNCHED
-import app.cash.molecule.RecompositionClock.ContextClock
-import app.cash.molecule.RecompositionClock.Immediate
+import app.cash.molecule.RecompositionMode.ContextClock
+import app.cash.molecule.RecompositionMode.Immediate
 import assertk.assertFailure
 import assertk.assertThat
 import assertk.assertions.isEqualTo
@@ -253,7 +253,7 @@ class MoleculeTest {
     val values = Channel<Int>()
 
     val job = launch {
-      moleculeFlow(clock = Immediate) {
+      moleculeFlow(mode = Immediate) {
         var count by remember { mutableStateOf(0) }
         LaunchedEffect(Unit) {
           while (true) {
@@ -292,7 +292,7 @@ class MoleculeTest {
     // Use a custom subtype to prevent coroutines from breaking referential equality.
     val runtimeException = object : RuntimeException() {}
     assertFailure {
-      moleculeFlow(clock = Immediate) {
+      moleculeFlow(mode = Immediate) {
         throw runtimeException
       }.collect()
     }.isSameAs(runtimeException)
@@ -307,7 +307,7 @@ class MoleculeTest {
     var count by mutableStateOf(0)
     launch {
       val exception = kotlin.runCatching {
-        moleculeFlow(clock = Immediate) {
+        moleculeFlow(mode = Immediate) {
           if (count == 1) {
             throw runtimeException
           }
@@ -333,7 +333,7 @@ class MoleculeTest {
     val runtimeException = object : RuntimeException() {}
     launch {
       val exception = kotlin.runCatching {
-        moleculeFlow(clock = Immediate) {
+        moleculeFlow(mode = Immediate) {
           LaunchedEffect(Unit) {
             delay(50)
             throw runtimeException
@@ -358,7 +358,7 @@ class MoleculeTest {
     var state: DisposableEffectState = NOT_LAUNCHED
 
     val job = launch {
-      moleculeFlow(clock = Immediate) {
+      moleculeFlow(mode = Immediate) {
         DisposableEffect(Unit) {
           state = LAUNCHED
 

@@ -15,7 +15,7 @@
  */
 package com.example.molecule.viewmodel
 
-import app.cash.molecule.RecompositionClock
+import app.cash.molecule.RecompositionMode
 import app.cash.molecule.moleculeFlow
 import app.cash.turbine.Turbine
 import app.cash.turbine.test
@@ -33,7 +33,7 @@ class PupperPicsPresenterTest {
   @Test
   fun `on launch, breeds are loaded followed by an image url`() = runBlocking {
     val picsService = FakePicsService()
-    moleculeFlow(clock = RecompositionClock.Immediate) {
+    moleculeFlow(mode = RecompositionMode.Immediate) {
       PupperPicsPresenter(emptyFlow(), picsService)
     }.distinctUntilChanged().test {
       assertEquals(
@@ -77,7 +77,7 @@ class PupperPicsPresenterTest {
   fun `selecting breed updates dropdown text and fetches new image`() = runBlocking {
     val picsService = FakePicsService()
     val events = Channel<Event>()
-    moleculeFlow(clock = RecompositionClock.Immediate) {
+    moleculeFlow(mode = RecompositionMode.Immediate) {
       PupperPicsPresenter(events.receiveAsFlow(), picsService)
     }.distinctUntilChanged().test {
       picsService.breeds.add(listOf("akita", "boxer", "corgi"))
@@ -126,7 +126,7 @@ class PupperPicsPresenterTest {
   fun `fetching again requests a new image`() = runBlocking {
     val picsService = FakePicsService()
     val events = Channel<Event>()
-    moleculeFlow(clock = RecompositionClock.Immediate) {
+    moleculeFlow(mode = RecompositionMode.Immediate) {
       PupperPicsPresenter(events.receiveAsFlow(), picsService)
     }.distinctUntilChanged().test {
       picsService.breeds.add(listOf("akita", "boxer", "corgi"))

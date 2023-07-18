@@ -2,6 +2,12 @@
 
 ## [Unreleased]
 
+Changed:
+- `RecompositionClock` is now named `RecompositionMode` to better reflect that it is not itself the clock,
+  but the mode by which Molecule will perform recomposition. A clock is always used internally as that is the
+  underlying mechanism of Compose.
+
+
 ## [0.11.0] - 2023-06-30
 
 New:

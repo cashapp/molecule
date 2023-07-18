@@ -15,18 +15,22 @@
  */
 package app.cash.molecule
 
-public enum class RecompositionClock {
+import androidx.compose.runtime.MonotonicFrameClock
+import kotlin.coroutines.CoroutineContext
+
+/** The different recomposition modes of Molecule. */
+public enum class RecompositionMode {
   /**
-   * Use the MonotonicFrameClock that already exists in the calling CoroutineContext.
-   * If none exists, an exception is thrown.
+   * When a recomposition is needed, use a [MonotonicFrameClock] pulled from the calling [CoroutineContext]
+   * to determine when to run. If no clock is found in the context, an exception is thrown.
    *
-   * Use this option to drive Molecule with the built-in Android frame clock.
+   * Use this option to drive Molecule with a built-in frame clock or a custom one.
    */
   ContextClock,
 
   /**
-   * Install an eagerly recomposing clock. This clock will provide a new frame immediately whenever
-   * one is requested. The resulting flow will emit a new item every time the snapshot state is invalidated.
+   * Run recomposition eagerly whenever one is needed.
+   * Molecule will emit a new item every time the snapshot state is invalidated.
    */
   Immediate,
 }
