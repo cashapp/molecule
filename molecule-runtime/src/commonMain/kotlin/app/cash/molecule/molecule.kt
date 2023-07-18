@@ -38,16 +38,16 @@ import kotlinx.coroutines.plus
  * Create a [Flow] which will continually recompose `body` to produce a stream of [T] values
  * when collected.
  */
-public fun <T> moleculeFlow(clock: RecompositionClock, body: @Composable () -> T): Flow<T> {
-  return when (clock) {
-    RecompositionClock.ContextClock -> contextClockFlow(body)
-    RecompositionClock.Immediate -> immediateClockFlow(body)
+public fun <T> moleculeFlow(mode: RecompositionMode, body: @Composable () -> T): Flow<T> {
+  return when (mode) {
+    RecompositionMode.ContextClock -> contextClockFlow(body)
+    RecompositionMode.Immediate -> immediateClockFlow(body)
   }
 }
 
 private fun <T> contextClockFlow(body: @Composable () -> T) = channelFlow {
   launchMolecule(
-    clock = RecompositionClock.ContextClock,
+    mode = RecompositionMode.ContextClock,
     emitter = {
       trySend(it).getOrThrow()
     },
@@ -62,7 +62,7 @@ private fun <T> immediateClockFlow(body: @Composable () -> T): Flow<T> = flow {
 
     launch(clock, start = UNDISPATCHED) {
       launchMolecule(
-        clock = RecompositionClock.ContextClock,
+        mode = RecompositionMode.ContextClock,
         emitter = {
           clock.isRunning = false
           outputBuffer.trySend(it).getOrThrow()
@@ -100,13 +100,13 @@ private fun <T> immediateClockFlow(body: @Composable () -> T): Flow<T> = flow {
  * to produce a [StateFlow] stream of [T] values.
  */
 public fun <T> CoroutineScope.launchMolecule(
-  clock: RecompositionClock,
+  mode: RecompositionMode,
   body: @Composable () -> T,
 ): StateFlow<T> {
   var flow: MutableStateFlow<T>? = null
 
   launchMolecule(
-    clock = clock,
+    mode = mode,
     emitter = { value ->
       val outputFlow = flow
       if (outputFlow != null) {
@@ -129,13 +129,13 @@ public fun <T> CoroutineScope.launchMolecule(
  * Use [moleculeFlow] to create a backpressure-capable flow.
  */
 public fun <T> CoroutineScope.launchMolecule(
-  clock: RecompositionClock,
+  mode: RecompositionMode,
   emitter: (value: T) -> Unit,
   body: @Composable () -> T,
 ) {
-  val clockContext = when (clock) {
-    RecompositionClock.ContextClock -> EmptyCoroutineContext
-    RecompositionClock.Immediate -> GatedFrameClock(this)
+  val clockContext = when (mode) {
+    RecompositionMode.ContextClock -> EmptyCoroutineContext
+    RecompositionMode.Immediate -> GatedFrameClock(this)
   }
 
   with(this + clockContext) {

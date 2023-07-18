@@ -3,7 +3,7 @@
 Build a `StateFlow` or `Flow` stream using Jetpack Compose[^1].
 
 ```kotlin
-fun CoroutineScope.launchCounter(): StateFlow<Int> = launchMolecule(clock = ContextClock) {
+fun CoroutineScope.launchCounter(): StateFlow<Int> = launchMolecule(mode = ContextClock) {
   var count by remember { mutableStateOf(0) }
 
   LaunchedEffect(Unit) {
@@ -108,7 +108,7 @@ This model-producing composable function can be run with `launchMolecule`.
 ```kotlin
 val userFlow = db.users()
 val balanceFlow = db.balances()
-val models: StateFlow<ProfileModel> = scope.launchMolecule(clock = ContextClock) {
+val models: StateFlow<ProfileModel> = scope.launchMolecule(mode = ContextClock) {
   ProfilePresenter(userFlow, balanceFlow)
 }
 ```
@@ -138,14 +138,14 @@ Here is the presenter example updated to use a regular `Flow`:
 ```kotlin
 val userFlow = db.users()
 val balanceFlow = db.balances()
-val models: Flow<ProfileModel> = moleculeFlow(clock = Immediate) {
+val models: Flow<ProfileModel> = moleculeFlow(mode = Immediate) {
   ProfilePresenter(userFlow, balanceFlow)
 }
 ```
 
 And the counter example:
 ```kotlin
-fun counter(): Flow<Int> = moleculeFlow(clock = Immediate) {
+fun counter(): Flow<Int> = moleculeFlow(mode = Immediate) {
   var count by remember { mutableStateOf(0) }
 
   LaunchedEffect(Unit) {
@@ -241,7 +241,7 @@ So all Molecule APIs require you to specify your preferred clock behavior:
 
 ### Testing
 
-Use `moleculeFlow(clock = Immediate)` and test using [Turbine](https://github.com/cashapp/turbine/). Your `moleculeFlow` will run just like any other flow does in Turbine.
+Use `moleculeFlow(mode = Immediate)` and test using [Turbine](https://github.com/cashapp/turbine/). Your `moleculeFlow` will run just like any other flow does in Turbine.
 
 ```kotlin
 @Test fun counter() = runTest {

@@ -19,7 +19,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.AndroidUiDispatcher
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import app.cash.molecule.RecompositionClock.ContextClock
+import app.cash.molecule.RecompositionMode.ContextClock
 import app.cash.molecule.launchMolecule
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
@@ -34,7 +34,7 @@ abstract class MoleculeViewModel<Event, Model> : ViewModel() {
   private val events = MutableSharedFlow<Event>(extraBufferCapacity = 20)
 
   val models: StateFlow<Model> by lazy(LazyThreadSafetyMode.NONE) {
-    scope.launchMolecule(clock = ContextClock) {
+    scope.launchMolecule(mode = ContextClock) {
       models(events)
     }
   }

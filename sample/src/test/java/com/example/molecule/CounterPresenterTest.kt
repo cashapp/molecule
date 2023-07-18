@@ -15,7 +15,7 @@
  */
 package com.example.molecule
 
-import app.cash.molecule.RecompositionClock
+import app.cash.molecule.RecompositionMode
 import app.cash.molecule.moleculeFlow
 import app.cash.turbine.test
 import assertk.assertThat
@@ -31,7 +31,7 @@ class CounterPresenterTest {
   @Test
   fun localChanges() = runTest {
     val events = Channel<CounterEvent>()
-    moleculeFlow(clock = RecompositionClock.Immediate) {
+    moleculeFlow(mode = RecompositionMode.Immediate) {
       CounterPresenter(events.receiveAsFlow(), randomService)
     }
       .test {
@@ -48,7 +48,7 @@ class CounterPresenterTest {
   @Test
   fun randomChange() = runTest {
     val events = Channel<CounterEvent>()
-    moleculeFlow(clock = RecompositionClock.Immediate) {
+    moleculeFlow(mode = RecompositionMode.Immediate) {
       CounterPresenter(events.receiveAsFlow(), randomService)
     }
       .test {

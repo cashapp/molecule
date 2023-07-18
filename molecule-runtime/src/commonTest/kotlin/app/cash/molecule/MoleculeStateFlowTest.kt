@@ -22,8 +22,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.Snapshot
-import app.cash.molecule.RecompositionClock.ContextClock
-import app.cash.molecule.RecompositionClock.Immediate
+import app.cash.molecule.RecompositionMode.ContextClock
+import app.cash.molecule.RecompositionMode.Immediate
 import assertk.assertFailure
 import assertk.assertThat
 import assertk.assertions.isEqualTo
