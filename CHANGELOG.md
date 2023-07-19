@@ -2,10 +2,15 @@
 
 ## [Unreleased]
 
+
+## [1.0.0] - 2023-07-19
+
 Changed:
 - `RecompositionClock` is now named `RecompositionMode` to better reflect that it is not itself the clock,
   but the mode by which Molecule will perform recomposition. A clock is always used internally as that is the
   underlying mechanism of Compose.
+- Darwin frame clock and the internal frame clock used with `RecompositionMode.Immediate` now correctly
+  send actual frame times.
 
 
 ## [0.11.0] - 2023-06-30
@@ -149,7 +154,8 @@ Initial release
 
 
 
-[Unreleased]: https://github.com/cashapp/molecule/compare/0.11.0...HEAD
+[Unreleased]: https://github.com/cashapp/molecule/compare/1.0.0...HEAD
+[1.0.0]: https://github.com/cashapp/molecule/releases/tag/1.0.0
 [0.11.0]: https://github.com/cashapp/molecule/releases/tag/0.11.0
 [0.10.0]: https://github.com/cashapp/molecule/releases/tag/0.10.0
 [0.9.0]: https://github.com/cashapp/molecule/releases/tag/0.9.0
