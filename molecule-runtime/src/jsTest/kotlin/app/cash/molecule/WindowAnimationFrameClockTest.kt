@@ -15,18 +15,20 @@
  */
 package app.cash.molecule
 
+import assertk.all
+import assertk.assertThat
+import assertk.assertions.isLessThan
+import assertk.assertions.isPositive
 import kotlin.test.Test
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.test.runTest
 
-@OptIn(ExperimentalCoroutinesApi::class)
 class WindowAnimationFrameClockTest {
-  @Test fun ticks() = runTest {
-    val job = Job()
-    WindowAnimationFrameClock.withFrameNanos {
-      job.complete()
+  @Test fun ticksWithTime() = runTest {
+    val frameTimeA = WindowAnimationFrameClock.withFrameNanos { it }
+    val frameTimeB = WindowAnimationFrameClock.withFrameNanos { it }
+    assertThat(frameTimeA).all {
+      isPositive()
+      isLessThan(frameTimeB)
     }
-    job.join()
   }
 }

@@ -47,7 +47,7 @@ public actual object DisplayLinkClock : MonotonicFrameClock {
       CVDisplayLinkSetOutputCallback(
         displayLink.value,
         staticCFunction { _, _, _, _, _, _ ->
-          clock.sendFrame(0L)
+          clock.sendFrame(nanoTime())
 
           // A frame was delivered. Stop the DisplayLink callback. It will get started again
           // when new frame awaiters appear.
@@ -61,8 +61,8 @@ public actual object DisplayLinkClock : MonotonicFrameClock {
   override suspend fun <R> withFrameNanos(onFrame: (frameTimeNanos: Long) -> R): R {
     return clock.withFrameNanos(onFrame)
   }
-}
 
-private fun checkDisplayLink(code: Int) {
-  check(code == kCVReturnSuccess) { "Could not initialize CVDisplayLink. Error code $code." }
+  private fun checkDisplayLink(code: Int) {
+    check(code == kCVReturnSuccess) { "Could not initialize CVDisplayLink. Error code $code." }
+  }
 }

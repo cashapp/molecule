@@ -33,6 +33,8 @@ import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSet.Companion.COMMON_MAIN_
 import org.jetbrains.kotlin.gradle.plugin.SubpluginArtifact
 import org.jetbrains.kotlin.gradle.plugin.SubpluginOption
 
+private const val moleculeRuntime = "app.cash.molecule:molecule-runtime:$moleculeVersion"
+
 class MoleculePlugin : KotlinCompilerPluginSupportPlugin {
   override fun isApplicable(kotlinCompilation: KotlinCompilation<*>): Boolean = true
 
@@ -53,6 +55,27 @@ class MoleculePlugin : KotlinCompilerPluginSupportPlugin {
       return
     }
 
+    target.pluginManager.withPlugin("org.jetbrains.compose") {
+      throw IllegalStateException(
+        """
+        |The Molecule Gradle plugin cannot be applied to the same project as the JetBrains Compose Gradle plugin.
+        |
+        |Both plugins attempt to configure the Compose compiler plugin which is incompatible. To use Molecule
+        |within a JetBrains Compose project you only need to add the runtime dependency:
+        |
+        |    kotlin {
+        |      sourceSets {
+        |        commonMain {
+        |          dependencies {
+        |            implementation("$moleculeRuntime")
+        |          }
+        |        }
+        |      }
+        |    }
+        """.trimMargin(),
+      )
+    }
+
     target.afterEvaluate {
       val android = target.extensions.findByType(KotlinAndroidProjectExtension::class.java)
       val jvm = target.extensions.findByType(KotlinJvmProjectExtension::class.java)
@@ -61,7 +84,7 @@ class MoleculePlugin : KotlinCompilerPluginSupportPlugin {
       val dependency: Any = if (target.isInternal()) {
         target.dependencies.project(mapOf("path" to ":molecule-runtime"))
       } else {
-        "app.cash.molecule:molecule-runtime:$moleculeVersion"
+        moleculeRuntime
       }
 
       if (jvm != null || android != null) {

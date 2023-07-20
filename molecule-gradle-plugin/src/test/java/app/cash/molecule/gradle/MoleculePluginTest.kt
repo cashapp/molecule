@@ -15,7 +15,8 @@
  */
 package app.cash.molecule.gradle
 
-import com.google.common.truth.Truth.assertThat
+import assertk.assertThat
+import assertk.assertions.contains
 import java.io.File
 import org.gradle.testkit.runner.GradleRunner
 import org.junit.Test
@@ -28,6 +29,13 @@ class MoleculePluginTest {
   @Test fun noSupportedPluginFails() {
     val result = createRunner("no-supported-plugin-fails").buildAndFail()
     assertThat(result.output).contains("No supported Kotlin plugin detected!")
+  }
+
+  @Test fun jetbrainsComposePluginFails() {
+    val result = createRunner("jetbrains-compose-plugin-fails").buildAndFail()
+    assertThat(result.output).contains(
+      "The Molecule Gradle plugin cannot be applied to the same project as the JetBrains Compose Gradle plugin.",
+    )
   }
 
   private fun createRunner(fixture: String): GradleRunner {

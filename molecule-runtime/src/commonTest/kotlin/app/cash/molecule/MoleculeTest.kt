@@ -26,13 +26,14 @@ import androidx.compose.runtime.snapshots.Snapshot
 import app.cash.molecule.MoleculeTest.DisposableEffectState.DISPOSED
 import app.cash.molecule.MoleculeTest.DisposableEffectState.LAUNCHED
 import app.cash.molecule.MoleculeTest.DisposableEffectState.NOT_LAUNCHED
-import app.cash.molecule.RecompositionClock.ContextClock
-import app.cash.molecule.RecompositionClock.Immediate
+import app.cash.molecule.RecompositionMode.ContextClock
+import app.cash.molecule.RecompositionMode.Immediate
+import assertk.assertFailure
+import assertk.assertThat
+import assertk.assertions.isEqualTo
+import assertk.assertions.isSameAs
 import kotlin.coroutines.CoroutineContext
 import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertFailsWith
-import kotlin.test.assertSame
 import kotlin.test.fail
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
@@ -69,25 +70,25 @@ class MoleculeTest {
       count
     }
 
-    assertEquals(0, value)
+    assertThat(value).isEqualTo(0)
 
     clock.sendFrame(0)
-    assertEquals(0, value)
+    assertThat(value).isEqualTo(0)
 
     advanceTimeBy(99)
     runCurrent()
     clock.sendFrame(0)
-    assertEquals(0, value)
+    assertThat(value).isEqualTo(0)
 
     advanceTimeBy(1)
     runCurrent()
     clock.sendFrame(0)
-    assertEquals(1, value)
+    assertThat(value).isEqualTo(1)
 
     advanceTimeBy(100)
     runCurrent()
     clock.sendFrame(0)
-    assertEquals(2, value)
+    assertThat(value).isEqualTo(2)
 
     job.cancel()
   }
@@ -98,12 +99,11 @@ class MoleculeTest {
 
     // Use a custom subtype to prevent coroutines from breaking referential equality.
     val runtimeException = object : RuntimeException() {}
-    val t = assertFailsWith<RuntimeException> {
+    assertFailure {
       scope.launchMolecule(ContextClock, emitter = { fail() }) {
         throw runtimeException
       }
-    }
-    assertSame(runtimeException, t)
+    }.isSameAs(runtimeException)
 
     scope.cancel()
   }
@@ -134,14 +134,14 @@ class MoleculeTest {
       count
     }
 
-    assertEquals(0, value)
+    assertThat(value).isEqualTo(0)
 
     count++
     Snapshot.sendApplyNotifications() // Ensure external state mutation is observed.
     runCurrent()
     clock.sendFrame(0)
     runCurrent()
-    assertSame(runtimeException, exceptionHandler.exceptions.single())
+    assertThat(exceptionHandler.exceptions.single()).isSameAs(runtimeException)
 
     job.cancel()
   }
@@ -163,12 +163,12 @@ class MoleculeTest {
       0
     }
 
-    assertEquals(0, value)
+    assertThat(value).isEqualTo(0)
 
     advanceTimeBy(50)
     runCurrent()
     clock.sendFrame(0)
-    assertSame(runtimeException, exceptionHandler.exceptions.single())
+    assertThat(exceptionHandler.exceptions.single()).isSameAs(runtimeException)
 
     job.cancel()
   }
@@ -179,13 +179,11 @@ class MoleculeTest {
 
     // Use a custom subtype to prevent coroutines from breaking referential equality.
     val runtimeException = object : RuntimeException() {}
-    val t = assertFailsWith<RuntimeException> {
+    assertFailure {
       scope.launchMolecule(ContextClock, emitter = { throw runtimeException }) {
         0
       }
-    }
-
-    assertSame(runtimeException, t)
+    }.isSameAs(runtimeException)
 
     scope.cancel()
   }
@@ -212,14 +210,14 @@ class MoleculeTest {
       count
     }
 
-    assertEquals(0, value)
+    assertThat(value).isEqualTo(0)
 
     count++
     Snapshot.sendApplyNotifications() // Ensure external state mutation is observed.
     runCurrent()
     clock.sendFrame(0)
     runCurrent()
-    assertSame(runtimeException, exceptionHandler.exceptions.single())
+    assertThat(exceptionHandler.exceptions.single()).isSameAs(runtimeException)
 
     job.cancel()
   }
@@ -243,11 +241,11 @@ class MoleculeTest {
       }
     }
 
-    assertEquals(LAUNCHED, state)
+    assertThat(state).isEqualTo(LAUNCHED)
 
     job.cancel()
     runCurrent()
-    assertEquals(DISPOSED, state)
+    assertThat(state).isEqualTo(DISPOSED)
   }
 
   @Test
@@ -255,7 +253,7 @@ class MoleculeTest {
     val values = Channel<Int>()
 
     val job = launch {
-      moleculeFlow(clock = Immediate) {
+      moleculeFlow(mode = Immediate) {
         var count by remember { mutableStateOf(0) }
         LaunchedEffect(Unit) {
           while (true) {
@@ -269,22 +267,22 @@ class MoleculeTest {
     }
 
     var value = values.awaitValue()
-    assertEquals(0, value)
+    assertThat(value).isEqualTo(0)
 
     advanceTimeBy(100)
     value = values.awaitValue()
-    assertEquals(1, value)
+    assertThat(value).isEqualTo(1)
 
     advanceTimeBy(100)
     value = values.awaitValue()
-    assertEquals(2, value)
+    assertThat(value).isEqualTo(2)
 
     advanceTimeBy(300)
 
     value = values.awaitValue()
-    assertEquals(3, value)
+    assertThat(value).isEqualTo(3)
     value = values.awaitValue()
-    assertEquals(5, value)
+    assertThat(value).isEqualTo(5)
 
     job.cancel()
   }
@@ -293,13 +291,11 @@ class MoleculeTest {
   fun errorsImmediate() = runTest {
     // Use a custom subtype to prevent coroutines from breaking referential equality.
     val runtimeException = object : RuntimeException() {}
-    val t = assertFailsWith<RuntimeException> {
-      moleculeFlow(clock = Immediate) {
+    assertFailure {
+      moleculeFlow(mode = Immediate) {
         throw runtimeException
       }.collect()
-    }
-
-    assertSame(runtimeException, t)
+    }.isSameAs(runtimeException)
   }
 
   @Test
@@ -311,7 +307,7 @@ class MoleculeTest {
     var count by mutableStateOf(0)
     launch {
       val exception = kotlin.runCatching {
-        moleculeFlow(clock = Immediate) {
+        moleculeFlow(mode = Immediate) {
           if (count == 1) {
             throw runtimeException
           }
@@ -320,10 +316,10 @@ class MoleculeTest {
           values.send(it)
         }
       }.exceptionOrNull()
-      assertSame(exception, runtimeException)
+      assertThat(runtimeException).isSameAs(exception)
     }
 
-    assertEquals(0, values.awaitValue())
+    assertThat(values.awaitValue()).isEqualTo(0)
 
     count++
     Snapshot.sendApplyNotifications() // Ensure external state mutation is observed.
@@ -337,7 +333,7 @@ class MoleculeTest {
     val runtimeException = object : RuntimeException() {}
     launch {
       val exception = kotlin.runCatching {
-        moleculeFlow(clock = Immediate) {
+        moleculeFlow(mode = Immediate) {
           LaunchedEffect(Unit) {
             delay(50)
             throw runtimeException
@@ -347,10 +343,10 @@ class MoleculeTest {
           values.send(it)
         }
       }.exceptionOrNull()
-      assertSame(exception, runtimeException)
+      assertThat(runtimeException).isSameAs(exception)
     }
 
-    assertEquals(0, values.awaitValue())
+    assertThat(values.awaitValue()).isEqualTo(0)
 
     Snapshot.sendApplyNotifications() // Ensure external state mutation is observed.
   }
@@ -362,7 +358,7 @@ class MoleculeTest {
     var state: DisposableEffectState = NOT_LAUNCHED
 
     val job = launch {
-      moleculeFlow(clock = Immediate) {
+      moleculeFlow(mode = Immediate) {
         DisposableEffect(Unit) {
           state = LAUNCHED
 
@@ -376,11 +372,11 @@ class MoleculeTest {
       }
     }
 
-    assertEquals(0, values.awaitValue())
+    assertThat(values.awaitValue()).isEqualTo(0)
 
     job.cancelAndJoin()
 
-    assertEquals(DISPOSED, state)
+    assertThat(state).isEqualTo(DISPOSED)
   }
 
   private suspend fun <T> Channel<T>.awaitValue(): T = withTimeout(1000) { receive() }

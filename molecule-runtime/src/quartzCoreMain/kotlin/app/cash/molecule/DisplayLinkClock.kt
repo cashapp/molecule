@@ -41,7 +41,7 @@ public actual object DisplayLinkClock : MonotonicFrameClock {
   }
 
   private fun tickClock() {
-    clock.sendFrame(0L)
+    clock.sendFrame(nanoTime())
 
     // Detach from the run loop. We will re-attach if new frame awaiters appear.
     displayLink.removeFromRunLoop(NSRunLoop.currentRunLoop, NSRunLoop.currentRunLoop.currentMode)

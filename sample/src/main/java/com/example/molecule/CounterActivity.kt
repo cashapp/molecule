@@ -19,13 +19,12 @@ import android.app.Activity
 import android.os.Bundle
 import android.util.Log
 import app.cash.molecule.AndroidUiDispatcher.Companion.Main
-import app.cash.molecule.RecompositionClock
+import app.cash.molecule.RecompositionMode
 import app.cash.molecule.launchMolecule
 import com.example.molecule.databinding.CounterBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart.UNDISPATCHED
 import kotlinx.coroutines.cancel
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
@@ -44,7 +43,7 @@ class CounterActivity : Activity() {
       }
 
     val randomService = RandomService()
-    val models = scope.launchMolecule(clock = RecompositionClock.ContextClock) {
+    val models = scope.launchMolecule(mode = RecompositionMode.ContextClock) {
       CounterPresenter(events, randomService)
     }
 

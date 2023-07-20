@@ -15,10 +15,12 @@
  */
 package com.example.molecule.viewmodel
 
-import app.cash.molecule.RecompositionClock
+import app.cash.molecule.RecompositionMode
 import app.cash.molecule.moleculeFlow
 import app.cash.turbine.Turbine
 import app.cash.turbine.test
+import assertk.assertThat
+import assertk.assertions.isEqualTo
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.emptyFlow
@@ -31,7 +33,7 @@ class PupperPicsPresenterTest {
   @Test
   fun `on launch, breeds are loaded followed by an image url`() = runBlocking {
     val picsService = FakePicsService()
-    moleculeFlow(clock = RecompositionClock.Immediate) {
+    moleculeFlow(mode = RecompositionMode.Immediate) {
       PupperPicsPresenter(emptyFlow(), picsService)
     }.distinctUntilChanged().test {
       assertEquals(
@@ -56,7 +58,7 @@ class PupperPicsPresenterTest {
       )
 
       // After breeds are loaded, the first item in the list should be used to fetch an image URL.
-      assertEquals("akita", picsService.urlRequestArgs.awaitItem())
+      assertThat(picsService.urlRequestArgs.awaitItem()).isEqualTo("akita")
 
       picsService.urls.add("akita.jpg")
       assertEquals(
@@ -75,12 +77,12 @@ class PupperPicsPresenterTest {
   fun `selecting breed updates dropdown text and fetches new image`() = runBlocking {
     val picsService = FakePicsService()
     val events = Channel<Event>()
-    moleculeFlow(clock = RecompositionClock.Immediate) {
+    moleculeFlow(mode = RecompositionMode.Immediate) {
       PupperPicsPresenter(events.receiveAsFlow(), picsService)
     }.distinctUntilChanged().test {
       picsService.breeds.add(listOf("akita", "boxer", "corgi"))
       picsService.urls.add("akita.jpg")
-      assertEquals(picsService.urlRequestArgs.awaitItem(), "akita")
+      assertThat(picsService.urlRequestArgs.awaitItem()).isEqualTo("akita")
       skipItems(3) // Fetching list, fetching fetching url, resolved model.
 
       events.send(Event.SelectBreed("boxer"))
@@ -106,7 +108,7 @@ class PupperPicsPresenterTest {
       )
 
       // We should then see a request for a boxer URL, followed by the model updating.
-      assertEquals(picsService.urlRequestArgs.awaitItem(), "boxer")
+      assertThat(picsService.urlRequestArgs.awaitItem()).isEqualTo("boxer")
       picsService.urls.add("boxer.jpg")
       assertEquals(
         Model(
@@ -124,11 +126,11 @@ class PupperPicsPresenterTest {
   fun `fetching again requests a new image`() = runBlocking {
     val picsService = FakePicsService()
     val events = Channel<Event>()
-    moleculeFlow(clock = RecompositionClock.Immediate) {
+    moleculeFlow(mode = RecompositionMode.Immediate) {
       PupperPicsPresenter(events.receiveAsFlow(), picsService)
     }.distinctUntilChanged().test {
       picsService.breeds.add(listOf("akita", "boxer", "corgi"))
-      assertEquals(picsService.urlRequestArgs.awaitItem(), "akita")
+      assertThat(picsService.urlRequestArgs.awaitItem()).isEqualTo("akita")
       picsService.urls.add("akita1.jpg")
       skipItems(3) // Fetching list, fetching fetching url, resolved model.
 
@@ -143,7 +145,7 @@ class PupperPicsPresenterTest {
         awaitItem(),
       )
 
-      assertEquals(picsService.urlRequestArgs.awaitItem(), "akita")
+      assertThat(picsService.urlRequestArgs.awaitItem()).isEqualTo("akita")
       picsService.urls.add("akita2.jpg")
       assertEquals(
         Model(

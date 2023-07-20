@@ -3,7 +3,7 @@
 Build a `StateFlow` or `Flow` stream using Jetpack Compose[^1].
 
 ```kotlin
-fun CoroutineScope.launchCounter(): StateFlow<Int> = launchMolecule(clock = ContextClock) {
+fun CoroutineScope.launchCounter(): StateFlow<Int> = launchMolecule(mode = ContextClock) {
   var count by remember { mutableStateOf(0) }
 
   LaunchedEffect(Unit) {
@@ -108,7 +108,7 @@ This model-producing composable function can be run with `launchMolecule`.
 ```kotlin
 val userFlow = db.users()
 val balanceFlow = db.balances()
-val models: StateFlow<ProfileModel> = scope.launchMolecule(clock = ContextClock) {
+val models: StateFlow<ProfileModel> = scope.launchMolecule(mode = ContextClock) {
   ProfilePresenter(userFlow, balanceFlow)
 }
 ```
@@ -138,14 +138,14 @@ Here is the presenter example updated to use a regular `Flow`:
 ```kotlin
 val userFlow = db.users()
 val balanceFlow = db.balances()
-val models: Flow<ProfileModel> = moleculeFlow(clock = Immediate) {
+val models: Flow<ProfileModel> = moleculeFlow(mode = Immediate) {
   ProfilePresenter(userFlow, balanceFlow)
 }
 ```
 
 And the counter example:
 ```kotlin
-fun counter(): Flow<Int> = moleculeFlow(clock = Immediate) {
+fun counter(): Flow<Int> = moleculeFlow(mode = Immediate) {
   var count by remember { mutableStateOf(0) }
 
   LaunchedEffect(Unit) {
@@ -171,7 +171,7 @@ buildscript {
     mavenCentral()
   }
   dependencies {
-    classpath 'app.cash.molecule:molecule-gradle-plugin:0.11.0'
+    classpath 'app.cash.molecule:molecule-gradle-plugin:1.0.0'
   }
 }
 
@@ -181,18 +181,18 @@ apply plugin: 'app.cash.molecule'
 Since Kotlin compiler plugins are an unstable API, certain versions of Molecule only work with
 certain versions of Kotlin.
 
-| Kotlin | Molecule      |
-|--------|---------------|
-| 1.8.22 | 0.11.0        |
-| 1.8.21 | 0.10.0        |
-| 1.8.20 | 0.9.0         |
-| 1.8.10 | 0.8.0         |
-| 1.8.0  | 0.7.0 - 0.7.1 |
-| 1.7.20 | 0.6.0 - 0.6.1 |
-| 1.7.10 | 0.4.0 - 0.5.0 |
-| 1.7.0  | 0.3.0 - 0.3.1 |
-| 1.6.10 | 0.2.0         |
-| 1.5.31 | 0.1.0         |
+| Kotlin | Molecule       |
+|--------|----------------|
+| 1.8.22 | 0.11.0 - 1.0.0 |
+| 1.8.21 | 0.10.0         |
+| 1.8.20 | 0.9.0          |
+| 1.8.10 | 0.8.0          |
+| 1.8.0  | 0.7.0 - 0.7.1  |
+| 1.7.20 | 0.6.0 - 0.6.1  |
+| 1.7.10 | 0.4.0 - 0.5.0  |
+| 1.7.0  | 0.3.0 - 0.3.1  |
+| 1.6.10 | 0.2.0          |
+| 1.5.31 | 0.1.0          |
 
 <details>
 <summary>Snapshots of the development version are available in Sonatype's snapshots repository.</summary>
@@ -207,7 +207,7 @@ buildscript {
     }
   }
   dependencies {
-    classpath 'app.cash.molecule:molecule-gradle-plugin:0.12.0-SNAPSHOT'
+    classpath 'app.cash.molecule:molecule-gradle-plugin:1.1.0-SNAPSHOT'
   }
 }
 
@@ -241,7 +241,7 @@ So all Molecule APIs require you to specify your preferred clock behavior:
 
 ### Testing
 
-Use `moleculeFlow(clock = Immediate)` and test using [Turbine](https://github.com/cashapp/turbine/). Your `moleculeFlow` will run just like any other flow does in Turbine.
+Use `moleculeFlow(mode = Immediate)` and test using [Turbine](https://github.com/cashapp/turbine/). Your `moleculeFlow` will run just like any other flow does in Turbine.
 
 ```kotlin
 @Test fun counter() = runTest {

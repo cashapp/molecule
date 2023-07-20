@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 Square, Inc.
+ * Copyright (C) 2023 Square, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,18 +15,4 @@
  */
 package app.cash.molecule
 
-public enum class RecompositionClock {
-  /**
-   * Use the MonotonicFrameClock that already exists in the calling CoroutineContext.
-   * If none exists, an exception is thrown.
-   *
-   * Use this option to drive Molecule with the built-in Android frame clock.
-   */
-  ContextClock,
-
-  /**
-   * Install an eagerly recomposing clock. This clock will provide a new frame immediately whenever
-   * one is requested. The resulting flow will emit a new item every time the snapshot state is invalidated.
-   */
-  Immediate,
-}
+internal expect fun nanoTime(): Long
