@@ -39,6 +39,11 @@ kotlin {
   watchosX86()
 
   sourceSets {
+    configureEach {
+      languageSettings.optIn("kotlinx.cinterop.BetaInteropApi")
+      languageSettings.optIn("kotlinx.cinterop.ExperimentalForeignApi")
+    }
+
     commonMain {
       dependencies {
         api libs.jetbrains.compose.runtime

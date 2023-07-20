@@ -19,4 +19,4 @@ import kotlinx.cinterop.convert
 import platform.posix.CLOCK_MONOTONIC_RAW
 import platform.posix.clock_gettime_nsec_np
 
-internal actual inline fun nanoTime(): Long = clock_gettime_nsec_np(CLOCK_MONOTONIC_RAW).convert<Long>()
+internal actual inline fun nanoTime(): Long = clock_gettime_nsec_np(CLOCK_MONOTONIC_RAW.toUInt()).convert<Long>()
