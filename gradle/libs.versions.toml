@@ -4,7 +4,7 @@ minSdk = "21"
 
 coroutine = "1.7.2"
 
-kotlin = "1.8.22"
+kotlin = "1.9.0"
 
 jetbrains-compose = "1.4.1"
 
@@ -22,7 +22,7 @@ androidx-compose-material3 = { module = "androidx.compose.material3:material3" }
 
 coil-compose = "io.coil-kt:coil-compose:2.4.0"
 
-jetbrains-compose-compiler = { module = "org.jetbrains.compose.compiler:compiler", version = "1.4.8" }
+jetbrains-compose-compiler = { module = "org.jetbrains.compose.compiler:compiler", version = "1.5.0" }
 jetbrains-compose-plugin = { module = "org.jetbrains.compose:compose-gradle-plugin", version.ref = "jetbrains-compose" }
 jetbrains-compose-runtime = { module = "org.jetbrains.compose.runtime:runtime", version.ref = "jetbrains-compose" }
 

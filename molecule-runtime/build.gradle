@@ -7,7 +7,7 @@ apply plugin: 'app.cash.molecule'
 kotlin {
   explicitApi()
 
-  android {
+  androidTarget {
     publishLibraryVariants('release')
   }
 
@@ -39,6 +39,11 @@ kotlin {
   watchosX86()
 
   sourceSets {
+    configureEach {
+      languageSettings.optIn("kotlinx.cinterop.BetaInteropApi")
+      languageSettings.optIn("kotlinx.cinterop.ExperimentalForeignApi")
+    }
+
     commonMain {
       dependencies {
         api libs.jetbrains.compose.runtime
@@ -94,8 +99,19 @@ kotlin {
 
 dependencies {
   androidTestImplementation libs.androidx.test.runner
-  androidTestImplementation libs.kotlin.test
+  androidTestImplementation libs.junit
+  androidTestImplementation libs.assertk
   androidTestImplementation libs.kotlinx.coroutines.test
+
+  // The kotlin.test library provides JVM variants for multiple testing frameworks. When used
+  // as a test dependency this selection is transparent. But since we are using from an Android
+  // configuration we have to select the desired variant via an explicit capability.
+  add("androidTestImplementation", libs.kotlin.test) {
+    capabilities {
+      requireCapability(
+        "org.jetbrains.kotlin:kotlin-test-framework-junit:${libs.versions.kotlin.get()}")
+    }
+  }
 }
 
 android {
