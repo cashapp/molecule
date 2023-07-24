@@ -30,19 +30,23 @@ import org.junit.Assert.assertEquals
 import org.junit.Test
 
 class PupperPicsPresenterTest {
+
+  private val seed: Model = Model(
+    loading = true,
+    breeds = emptyList(),
+    currentBreed = null,
+    currentUrl = null,
+  )
+
   @Test
   fun `on launch, breeds are loaded followed by an image url`() = runBlocking {
     val picsService = FakePicsService()
+    val presenter = PupperPicsPresenter(seed, picsService)
     moleculeFlow(mode = RecompositionMode.Immediate) {
-      PupperPicsPresenter(emptyFlow(), picsService)
+      presenter.present(emptyFlow())
     }.distinctUntilChanged().test {
       assertEquals(
-        Model(
-          loading = true,
-          breeds = emptyList(),
-          dropdownText = "Select breed",
-          currentUrl = null,
-        ),
+        seed,
         awaitItem(),
       )
 
@@ -51,7 +55,7 @@ class PupperPicsPresenterTest {
         Model(
           loading = false,
           breeds = listOf("akita", "boxer", "corgi"),
-          dropdownText = "akita",
+          currentBreed = "akita",
           currentUrl = null,
         ),
         awaitItem(),
@@ -65,7 +69,7 @@ class PupperPicsPresenterTest {
         Model(
           loading = false,
           breeds = listOf("akita", "boxer", "corgi"),
-          dropdownText = "akita",
+          currentBreed = "akita",
           currentUrl = "akita.jpg",
         ),
         awaitItem(),
@@ -77,8 +81,9 @@ class PupperPicsPresenterTest {
   fun `selecting breed updates dropdown text and fetches new image`() = runBlocking {
     val picsService = FakePicsService()
     val events = Channel<Event>()
+    val presenter = PupperPicsPresenter(seed, picsService)
     moleculeFlow(mode = RecompositionMode.Immediate) {
-      PupperPicsPresenter(events.receiveAsFlow(), picsService)
+      presenter.present(events.receiveAsFlow())
     }.distinctUntilChanged().test {
       picsService.breeds.add(listOf("akita", "boxer", "corgi"))
       picsService.urls.add("akita.jpg")
@@ -92,7 +97,7 @@ class PupperPicsPresenterTest {
         Model(
           loading = false,
           breeds = listOf("akita", "boxer", "corgi"),
-          dropdownText = "boxer",
+          currentBreed = "boxer",
           currentUrl = "akita.jpg",
         ),
         awaitItem(),
@@ -101,7 +106,7 @@ class PupperPicsPresenterTest {
         Model(
           loading = false,
           breeds = listOf("akita", "boxer", "corgi"),
-          dropdownText = "boxer",
+          currentBreed = "boxer",
           currentUrl = null,
         ),
         awaitItem(),
@@ -114,7 +119,7 @@ class PupperPicsPresenterTest {
         Model(
           loading = false,
           breeds = listOf("akita", "boxer", "corgi"),
-          dropdownText = "boxer",
+          currentBreed = "boxer",
           currentUrl = "boxer.jpg",
         ),
         awaitItem(),
@@ -126,8 +131,9 @@ class PupperPicsPresenterTest {
   fun `fetching again requests a new image`() = runBlocking {
     val picsService = FakePicsService()
     val events = Channel<Event>()
+    val presenter = PupperPicsPresenter(seed, picsService)
     moleculeFlow(mode = RecompositionMode.Immediate) {
-      PupperPicsPresenter(events.receiveAsFlow(), picsService)
+      presenter.present(events.receiveAsFlow())
     }.distinctUntilChanged().test {
       picsService.breeds.add(listOf("akita", "boxer", "corgi"))
       assertThat(picsService.urlRequestArgs.awaitItem()).isEqualTo("akita")
@@ -139,7 +145,7 @@ class PupperPicsPresenterTest {
         Model(
           loading = false,
           breeds = listOf("akita", "boxer", "corgi"),
-          dropdownText = "akita",
+          currentBreed = "akita",
           currentUrl = null,
         ),
         awaitItem(),
@@ -151,7 +157,7 @@ class PupperPicsPresenterTest {
         Model(
           loading = false,
           breeds = listOf("akita", "boxer", "corgi"),
-          dropdownText = "akita",
+          currentBreed = "akita",
           currentUrl = "akita2.jpg",
         ),
         awaitItem(),
