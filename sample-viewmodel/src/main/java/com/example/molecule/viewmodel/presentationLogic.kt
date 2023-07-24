@@ -38,24 +38,25 @@ data class Model(
 }
 
 class PupperPicsViewModel : MoleculeViewModel<Event, Model>() {
-  override var seed: Model = Model(
+  override val initialState: Model = Model(
     loading = false,
     breeds = emptyList(),
     currentBreed = null,
     currentUrl = null,
   )
 
-  override fun presenterFactory(): MoleculePresenter<Event, Model> {
-    return PupperPicsPresenter(seed, PupperPicsService())
+  @Composable
+  override fun models(seed: Model, events: Flow<Event>): Model {
+    val presenter = remember { PupperPicsPresenter(PupperPicsService()) }
+    return presenter.present(seed, events)
   }
 }
 
 class PupperPicsPresenter(
-  override val seed: Model,
   private val service: PupperPicsService,
 ) : MoleculePresenter<Event, Model> {
   @Composable
-  override fun present(events: Flow<Event>): Model {
+  override fun present(seed: Model, events: Flow<Event>): Model {
     var breeds: List<String> by remember { mutableStateOf(seed.breeds) }
     var currentBreed: String? by remember { mutableStateOf(seed.currentBreed) }
     var currentUrl: String? by remember { mutableStateOf(seed.currentUrl) }
