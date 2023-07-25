@@ -31,25 +31,27 @@ import kotlinx.coroutines.flow.WhileSubscribed
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 
-abstract class MoleculeViewModel<Event, Model> : ViewModel() {
+abstract class MoleculeViewModel<Event, Model>(
+  initialState: Model,
+  started: SharingStarted = SharingStarted.WhileSubscribed(5.seconds),
+  presenter: @Composable (seed: Model, events: Flow<Event>) -> Model,
+) : ViewModel() {
   private val scope = CoroutineScope(viewModelScope.coroutineContext + AndroidUiDispatcher.Main)
 
   // Events have a capacity large enough to handle simultaneous UI events, but
   // small enough to surface issues if they get backed up for some reason.
   private val events = MutableSharedFlow<Event>(extraBufferCapacity = 20)
 
-  abstract val initialState: Model
-
   private var seed: Model = initialState
 
   val models: StateFlow<Model> by lazy(LazyThreadSafetyMode.NONE) {
     moleculeFlow(mode = ContextClock) {
-      models(seed, events)
+      presenter(seed, events)
     }.onEach {
       seed = it
     }.stateIn(
       scope = scope,
-      started = SharingStarted.WhileSubscribed(5.seconds),
+      started = started,
       initialValue = seed,
     )
   }
@@ -59,7 +61,4 @@ abstract class MoleculeViewModel<Event, Model> : ViewModel() {
       error("Event buffer overflow.")
     }
   }
-
-  @Composable
-  protected abstract fun models(seed: Model, events: Flow<Event>): Model
 }
