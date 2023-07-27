@@ -227,14 +227,14 @@ Molecule is just Jetpack Compose under the hood, so it also requires a frame clo
 Unlike Jetpack Compose, however, Molecule will sometimes be run in circumstances that do not provide a `MonotonicFrameClock`.
 So all Molecule APIs require you to specify your preferred clock behavior:
 
-* `RecompositionClock.ContextClock` behaves like Jetpack Compose: it will fish the `MonotonicFrameClock` out of the calling `coroutineContext` and use it for recomposition.
+* `RecompositionMode.ContextClock` behaves like Jetpack Compose: it will fish the `MonotonicFrameClock` out of the calling `coroutineContext` and use it for recomposition.
   If there is no `MonotonicFrameClock`, it will throw an exception.
   `ContextClock` is useful with Android's [`AndroidUiDispatcher.Main`](https://cashapp.github.io/molecule/docs/latest/molecule-runtime/app.cash.molecule/-android-ui-dispatcher/-companion/-main.html).
   `Main` has a built-in `MonotonicFrameClock` that is synchronized with the frame rate of the device.
   So a Molecule run on `Main` with `ContextClock` will run in lock step with the frame rate, too.
   Nifty!
   You can also provide your own `BroadcastFrameClock` to implement your own frame rate.
-* `RecompositionClock.Immediate` will construct an immediate clock.
+* `RecompositionMode.Immediate` will construct an immediate clock.
   This clock will produce a frame whenever the enclosing flow is ready to emit an item.
   (This is always the case for a `StateFlow`.)
   `Immediate` can be used where no clock is available at all without any additional wiring.
@@ -246,7 +246,7 @@ Use `moleculeFlow(mode = Immediate)` and test using [Turbine](https://github.com
 
 ```kotlin
 @Test fun counter() = runTest {
-  moleculeFlow(RecompositionClock.Immediate) {
+  moleculeFlow(RecompositionMode.Immediate) {
     Counter()
   }.test {
     assertEquals(0, awaitItem())
