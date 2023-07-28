@@ -46,8 +46,23 @@ internal class GatedFrameClock(scope: CoroutineScope) : MonotonicFrameClock {
       }
     }
 
+  private var lastNanos = 0L
+  private var lastOffset = 0
+
   private fun sendFrame() {
-    clock.sendFrame(nanoTime())
+    val timeNanos = nanoTime()
+
+    // Since we only have millisecond resolution, ensure the nanos form always increases by
+    // incrementing a nano offset if we collide with the previous timestamp.
+    val offset = if (timeNanos == lastNanos) {
+      lastOffset + 1
+    } else {
+      lastNanos = timeNanos
+      0
+    }
+    lastOffset = offset
+
+    clock.sendFrame(timeNanos + offset)
   }
 
   private val clock = BroadcastFrameClock {
