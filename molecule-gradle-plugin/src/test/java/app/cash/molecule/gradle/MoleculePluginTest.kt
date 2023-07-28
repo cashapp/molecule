@@ -38,6 +38,25 @@ class MoleculePluginTest {
     )
   }
 
+  @Test fun customCompilerCoordinates() {
+    createRunner("custom-compiler-coordinates").build()
+  }
+
+  @Test fun customCompilerInvalid() {
+    val result = createRunner("custom-compiler-invalid").buildAndFail()
+    assertThat(result.output).contains(
+      """
+      |Illegal format of 'molecule.kotlinCompilerPlugin' property.
+      |Expected format: either '<VERSION>' or '<GROUP_ID>:<ARTIFACT_ID>:<VERSION>'
+      |Actual value: 'wrong:format'
+      """.trimMargin(),
+    )
+  }
+
+  @Test fun customCompilerVersion() {
+    createRunner("custom-compiler-version").build()
+  }
+
   private fun createRunner(fixture: String): GradleRunner {
     val fixtureDir = File("src/test/fixtures", fixture)
     val gradleRoot = File(fixtureDir, "gradle").also { it.mkdir() }

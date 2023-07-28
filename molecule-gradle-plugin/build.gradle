@@ -53,8 +53,6 @@ buildConfig {
   }
 
   packageName('app.cash.molecule.gradle')
-  buildConfigField("String", "composeCompilerGroupId", "\"${libs.jetbrains.compose.compiler.get().module.group}\"")
-  buildConfigField("String", "composeCompilerArtifactId", "\"${libs.jetbrains.compose.compiler.get().module.name}\"")
   buildConfigField("String", "composeCompilerVersion", "\"${libs.jetbrains.compose.compiler.get().version}\"")
   buildConfigField("String", "moleculeVersion", "\"${project.version}\"")
 }
