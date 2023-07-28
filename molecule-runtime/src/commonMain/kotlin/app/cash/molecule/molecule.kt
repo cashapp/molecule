@@ -19,8 +19,10 @@ import androidx.compose.runtime.AbstractApplier
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Composition
 import androidx.compose.runtime.Recomposer
+import androidx.compose.runtime.snapshots.ObserverHandle
 import androidx.compose.runtime.snapshots.Snapshot
 import kotlin.coroutines.EmptyCoroutineContext
+import kotlin.coroutines.cancellation.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart.UNDISPATCHED
 import kotlinx.coroutines.channels.Channel
@@ -30,7 +32,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
 
@@ -141,12 +142,18 @@ public fun <T> CoroutineScope.launchMolecule(
   with(this + clockContext) {
     val recomposer = Recomposer(coroutineContext)
     val composition = Composition(UnitApplier, recomposer)
+    var snapshotHandle: ObserverHandle? = null
     launch(start = UNDISPATCHED) {
-      recomposer.runRecomposeAndApplyChanges()
+      try {
+        recomposer.runRecomposeAndApplyChanges()
+      } catch (e: CancellationException) {
+        composition.dispose()
+        snapshotHandle?.dispose()
+      }
     }
 
     var applyScheduled = false
-    val snapshotHandle = Snapshot.registerGlobalWriteObserver {
+    snapshotHandle = Snapshot.registerGlobalWriteObserver {
       if (!applyScheduled) {
         applyScheduled = true
         launch {
@@ -154,10 +161,6 @@ public fun <T> CoroutineScope.launchMolecule(
           Snapshot.sendApplyNotifications()
         }
       }
-    }
-    coroutineContext.job.invokeOnCompletion {
-      composition.dispose()
-      snapshotHandle.dispose()
     }
 
     composition.setContent {
