@@ -15,8 +15,11 @@
  */
 package app.cash.molecule.gradle
 
+import javax.inject.Inject
 import org.gradle.api.Project
+import org.gradle.api.model.ObjectFactory
 import org.gradle.api.plugins.JavaPlugin.API_CONFIGURATION_NAME
+import org.gradle.api.provider.Property
 import org.gradle.api.provider.Provider
 import org.jetbrains.kotlin.gradle.dsl.KotlinAndroidProjectExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
@@ -33,21 +36,27 @@ import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSet.Companion.COMMON_MAIN_
 import org.jetbrains.kotlin.gradle.plugin.SubpluginArtifact
 import org.jetbrains.kotlin.gradle.plugin.SubpluginOption
 
+private const val extensionName = "molecule"
 private const val moleculeRuntime = "app.cash.molecule:molecule-runtime:$moleculeVersion"
 
+private abstract class MoleculeExtensionImpl
+@Inject constructor(objectFactory: ObjectFactory) : MoleculeExtension {
+  override val kotlinCompilerPlugin: Property<String> =
+    objectFactory.property(String::class.java)
+      .convention(composeCompilerVersion)
+}
+
 class MoleculePlugin : KotlinCompilerPluginSupportPlugin {
-  override fun isApplicable(kotlinCompilation: KotlinCompilation<*>): Boolean = true
-
-  override fun getCompilerPluginId(): String = "app.cash.molecule"
-
-  override fun getPluginArtifact(): SubpluginArtifact = SubpluginArtifact(
-    composeCompilerGroupId,
-    composeCompilerArtifactId,
-    composeCompilerVersion,
-  )
+  private lateinit var extension: MoleculeExtension
 
   override fun apply(target: Project) {
     super.apply(target)
+
+    extension = target.extensions.create(
+      MoleculeExtension::class.java,
+      extensionName,
+      MoleculeExtensionImpl::class.java,
+    )
 
     if (target.isInternal() && target.path == ":molecule-runtime") {
       // Being lazy and using our own plugin to configure the Compose compiler on our runtime.
@@ -98,6 +107,26 @@ class MoleculePlugin : KotlinCompilerPluginSupportPlugin {
       } else {
         throw IllegalStateException("No supported Kotlin plugin detected!")
       }
+    }
+  }
+
+  override fun isApplicable(kotlinCompilation: KotlinCompilation<*>): Boolean = true
+
+  override fun getCompilerPluginId(): String = "app.cash.molecule"
+
+  override fun getPluginArtifact(): SubpluginArtifact {
+    val plugin = extension.kotlinCompilerPlugin.get()
+    val parts = plugin.split(":")
+    return when (parts.size) {
+      1 -> SubpluginArtifact("org.jetbrains.compose.compiler", "compiler", parts[0])
+      3 -> SubpluginArtifact(parts[0], parts[1], parts[2])
+      else -> error(
+        """
+        |Illegal format of '$extensionName.${MoleculeExtension::kotlinCompilerPlugin.name}' property.
+        |Expected format: either '<VERSION>' or '<GROUP_ID>:<ARTIFACT_ID>:<VERSION>'
+        |Actual value: '$plugin'
+        """.trimMargin(),
+      )
     }
   }
 

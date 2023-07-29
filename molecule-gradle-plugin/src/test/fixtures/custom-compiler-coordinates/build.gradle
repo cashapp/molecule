@@ -1,0 +1,30 @@
+buildscript {
+  dependencies {
+    classpath "app.cash.molecule:molecule-gradle-plugin:$moleculeVersion"
+    classpath libs.kotlin.plugin
+  }
+
+  repositories {
+    maven {
+      url "file://${rootDir.absolutePath}/../../../../../build/localMaven"
+    }
+    mavenCentral()
+    google()
+  }
+}
+
+apply plugin: 'org.jetbrains.kotlin.jvm'
+apply plugin: 'app.cash.molecule'
+
+molecule {
+  // Use the AndroidX Compose compiler instead of JetBrains Compose compiler.
+  kotlinCompilerPlugin = libs.androidx.compose.compiler.get().toString()
+}
+
+repositories {
+  maven {
+    url "file://${rootDir.absolutePath}/../../../../../build/localMaven"
+  }
+  mavenCentral()
+  google()
+}
