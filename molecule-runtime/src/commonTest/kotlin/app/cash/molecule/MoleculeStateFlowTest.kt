@@ -53,17 +53,20 @@ class MoleculeStateFlowTest {
     val clock = BroadcastFrameClock()
     val scope = CoroutineScope(coroutineContext + job + clock)
 
-    val flow = scope.launchMolecule(ContextClock) {
-      var count by remember { mutableStateOf(0) }
-      LaunchedEffect(Unit) {
-        while (true) {
-          delay(100)
-          count++
+    val flow = scope.launchMolecule(
+      mode = ContextClock,
+      body = {
+        var count by remember { mutableStateOf(0) }
+        LaunchedEffect(Unit) {
+          while (true) {
+            delay(100)
+            count++
+          }
         }
-      }
 
-      count
-    }
+        count
+      },
+    )
 
     assertThat(flow.value).isEqualTo(0)
 
@@ -95,9 +98,12 @@ class MoleculeStateFlowTest {
     // Use a custom subtype to prevent coroutines from breaking referential equality.
     val runtimeException = object : RuntimeException() {}
     assertFailure {
-      scope.launchMolecule(ContextClock) {
-        throw runtimeException
-      }
+      scope.launchMolecule(
+        ContextClock,
+        body = {
+          throw runtimeException
+        },
+      )
     }.isSameAs(runtimeException)
 
     scope.cancel()
@@ -121,13 +127,16 @@ class MoleculeStateFlowTest {
     // Use a custom subtype to prevent coroutines from breaking referential equality.
     val runtimeException = object : RuntimeException() {}
     var count by mutableStateOf(0)
-    val flow = scope.launchMolecule(ContextClock) {
-      println("Sup $count")
-      if (count == 1) {
-        throw runtimeException
-      }
-      count
-    }
+    val flow = scope.launchMolecule(
+      ContextClock,
+      body = {
+        println("Sup $count")
+        if (count == 1) {
+          throw runtimeException
+        }
+        count
+      },
+    )
 
     assertThat(flow.value).isEqualTo(0)
 
@@ -149,13 +158,16 @@ class MoleculeStateFlowTest {
 
     // Use a custom subtype to prevent coroutines from breaking referential equality.
     val runtimeException = object : RuntimeException() {}
-    val flow = scope.launchMolecule(ContextClock) {
-      LaunchedEffect(Unit) {
-        delay(50)
-        throw runtimeException
-      }
-      0
-    }
+    val flow = scope.launchMolecule(
+      ContextClock,
+      body = {
+        LaunchedEffect(Unit) {
+          delay(50)
+          throw runtimeException
+        }
+        0
+      },
+    )
 
     assertThat(flow.value).isEqualTo(0)
 
@@ -172,17 +184,20 @@ class MoleculeStateFlowTest {
     val job = Job(coroutineContext.job)
     val scope = this + job
 
-    val flow = scope.launchMolecule(Immediate) {
-      var count by remember { mutableStateOf(0) }
-      LaunchedEffect(Unit) {
-        while (true) {
-          delay(100)
-          count++
+    val flow = scope.launchMolecule(
+      Immediate,
+      body = {
+        var count by remember { mutableStateOf(0) }
+        LaunchedEffect(Unit) {
+          while (true) {
+            delay(100)
+            count++
+          }
         }
-      }
 
-      count
-    }
+        count
+      },
+    )
 
     assertThat(flow.value).isEqualTo(0)
 
@@ -211,12 +226,15 @@ class MoleculeStateFlowTest {
       var flow: StateFlow<Int>? = null
 
       val job = launch(start = CoroutineStart.UNDISPATCHED, context = exceptionHandler) {
-        flow = launchMolecule(Immediate) {
-          if (count == 1) {
-            throw runtimeException
-          }
-          count
-        }
+        flow = launchMolecule(
+          Immediate,
+          body = {
+            if (count == 1) {
+              throw runtimeException
+            }
+            count
+          },
+        )
       }
 
       assertThat(flow!!.value).isEqualTo(0)

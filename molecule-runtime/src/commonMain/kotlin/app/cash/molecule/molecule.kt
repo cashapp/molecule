@@ -35,17 +35,36 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
 
 /**
+ * Create a [Flow] which will continually recompose `emittingBody` to produce a stream of [T] values
+ * when collected.
+ */
+public fun <T> moleculeFlow(
+  mode: RecompositionMode,
+  emittingBody: @Composable (Emitter<T>) -> Unit,
+): Flow<T> {
+  return when (mode) {
+    RecompositionMode.ContextClock -> contextClockFlow(emittingBody)
+    RecompositionMode.Immediate -> immediateClockFlow(emittingBody)
+  }
+}
+
+/**
  * Create a [Flow] which will continually recompose `body` to produce a stream of [T] values
  * when collected.
  */
 public fun <T> moleculeFlow(mode: RecompositionMode, body: @Composable () -> T): Flow<T> {
+  val emittingBody: @Composable (Emitter<T>) -> Unit = { emitter ->
+    emitter(body())
+  }
   return when (mode) {
-    RecompositionMode.ContextClock -> contextClockFlow(body)
-    RecompositionMode.Immediate -> immediateClockFlow(body)
+    RecompositionMode.ContextClock -> contextClockFlow(emittingBody)
+    RecompositionMode.Immediate -> immediateClockFlow(emittingBody)
   }
 }
 
-private fun <T> contextClockFlow(body: @Composable () -> T) = channelFlow {
+private fun <T> contextClockFlow(
+  body: @Composable (Emitter<T>) -> Unit,
+) = channelFlow {
   launchMolecule(
     mode = RecompositionMode.ContextClock,
     emitter = {
@@ -55,7 +74,9 @@ private fun <T> contextClockFlow(body: @Composable () -> T) = channelFlow {
   )
 }
 
-private fun <T> immediateClockFlow(body: @Composable () -> T): Flow<T> = flow {
+private fun <T> immediateClockFlow(
+  body: @Composable (Emitter<T>) -> Unit,
+): Flow<T> = flow {
   coroutineScope {
     val clock = GatedFrameClock(this)
     val outputBuffer = Channel<T>(1)
@@ -96,6 +117,32 @@ private fun <T> immediateClockFlow(body: @Composable () -> T): Flow<T> = flow {
 }
 
 /**
+ * Launch a coroutine into this [CoroutineScope] which will continually recompose `emittingBody`
+ * to produce a [StateFlow] stream of [T] values.
+ */
+public fun <T> CoroutineScope.launchMolecule(
+  mode: RecompositionMode,
+  emittingBody: @Composable (Emitter<T>) -> Unit,
+): StateFlow<T> {
+  var flow: MutableStateFlow<T>? = null
+
+  launchMolecule(
+    mode = mode,
+    emitter = { value ->
+      val outputFlow = flow
+      if (outputFlow != null) {
+        outputFlow.value = value
+      } else {
+        flow = MutableStateFlow(value)
+      }
+    },
+    body = emittingBody,
+  )
+
+  return flow!!
+}
+
+/**
  * Launch a coroutine into this [CoroutineScope] which will continually recompose `body`
  * to produce a [StateFlow] stream of [T] values.
  */
@@ -115,7 +162,7 @@ public fun <T> CoroutineScope.launchMolecule(
         flow = MutableStateFlow(value)
       }
     },
-    body = body,
+    body = { emitter -> emitter(body()) },
   )
 
   return flow!!
@@ -130,8 +177,8 @@ public fun <T> CoroutineScope.launchMolecule(
  */
 public fun <T> CoroutineScope.launchMolecule(
   mode: RecompositionMode,
-  emitter: (value: T) -> Unit,
-  body: @Composable () -> T,
+  emitter: Emitter<T>,
+  body: @Composable (Emitter<T>) -> Unit,
 ) {
   val clockContext = when (mode) {
     RecompositionMode.ContextClock -> EmptyCoroutineContext
@@ -161,10 +208,12 @@ public fun <T> CoroutineScope.launchMolecule(
     }
 
     composition.setContent {
-      emitter(body())
+      body(emitter)
     }
   }
 }
+
+public typealias Emitter<T> = (value: T) -> Unit
 
 private object UnitApplier : AbstractApplier<Unit>(Unit) {
   override fun insertBottomUp(index: Int, instance: Unit) {}

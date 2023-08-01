@@ -58,7 +58,7 @@ class MoleculeTest {
     val scope = CoroutineScope(coroutineContext + job + clock)
     var value: Int? = null
 
-    scope.launchMolecule(ContextClock, emitter = { value = it }) {
+    scope.launchMolecule(ContextClock, emitter = { value = it }) { emitter ->
       var count by remember { mutableStateOf(0) }
       LaunchedEffect(Unit) {
         while (true) {
@@ -67,7 +67,7 @@ class MoleculeTest {
         }
       }
 
-      count
+      emitter(count)
     }
 
     assertThat(value).isEqualTo(0)
@@ -100,7 +100,7 @@ class MoleculeTest {
     // Use a custom subtype to prevent coroutines from breaking referential equality.
     val runtimeException = object : RuntimeException() {}
     assertFailure {
-      scope.launchMolecule(ContextClock, emitter = { fail() }) {
+      scope.launchMolecule<Nothing>(ContextClock, emitter = { fail() }) {
         throw runtimeException
       }
     }.isSameAs(runtimeException)
@@ -127,11 +127,11 @@ class MoleculeTest {
     // Use a custom subtype to prevent coroutines from breaking referential equality.
     val runtimeException = object : RuntimeException() {}
     var count by mutableStateOf(0)
-    scope.launchMolecule(ContextClock, emitter = { value = it }) {
+    scope.launchMolecule(ContextClock, emitter = { value = it }) { emitter ->
       if (count == 1) {
         throw runtimeException
       }
-      count
+      emitter(count)
     }
 
     assertThat(value).isEqualTo(0)
@@ -155,12 +155,12 @@ class MoleculeTest {
 
     // Use a custom subtype to prevent coroutines from breaking referential equality.
     val runtimeException = object : RuntimeException() {}
-    scope.launchMolecule(ContextClock, emitter = { value = it }) {
+    scope.launchMolecule(ContextClock, emitter = { value = it }) { emitter ->
       LaunchedEffect(Unit) {
         delay(50)
         throw runtimeException
       }
-      0
+      emitter(0)
     }
 
     assertThat(value).isEqualTo(0)
@@ -180,8 +180,8 @@ class MoleculeTest {
     // Use a custom subtype to prevent coroutines from breaking referential equality.
     val runtimeException = object : RuntimeException() {}
     assertFailure {
-      scope.launchMolecule(ContextClock, emitter = { throw runtimeException }) {
-        0
+      scope.launchMolecule(ContextClock, emitter = { throw runtimeException }) { emitter ->
+        emitter(0)
       }
     }.isSameAs(runtimeException)
 
@@ -206,8 +206,8 @@ class MoleculeTest {
         }
         value = it
       },
-    ) {
-      count
+    ) { emitter ->
+      emitter(count)
     }
 
     assertThat(value).isEqualTo(0)
@@ -231,15 +231,18 @@ class MoleculeTest {
 
     var state: DisposableEffectState = NOT_LAUNCHED
 
-    scope.launchMolecule(ContextClock) {
-      DisposableEffect(Unit) {
-        state = LAUNCHED
+    scope.launchMolecule(
+      ContextClock,
+      body = {
+        DisposableEffect(Unit) {
+          state = LAUNCHED
 
-        onDispose {
-          state = DISPOSED
+          onDispose {
+            state = DISPOSED
+          }
         }
-      }
-    }
+      },
+    )
 
     assertThat(state).isEqualTo(LAUNCHED)
 
@@ -253,17 +256,20 @@ class MoleculeTest {
     val values = Channel<Int>()
 
     val job = launch {
-      moleculeFlow(mode = Immediate) {
-        var count by remember { mutableStateOf(0) }
-        LaunchedEffect(Unit) {
-          while (true) {
-            delay(100)
-            count++
+      moleculeFlow(
+        mode = Immediate,
+        body = {
+          var count by remember { mutableStateOf(0) }
+          LaunchedEffect(Unit) {
+            while (true) {
+              delay(100)
+              count++
+            }
           }
-        }
 
-        count
-      }.collect { values.send(it) }
+          count
+        },
+      ).collect { values.send(it) }
     }
 
     var value = values.awaitValue()
@@ -292,9 +298,12 @@ class MoleculeTest {
     // Use a custom subtype to prevent coroutines from breaking referential equality.
     val runtimeException = object : RuntimeException() {}
     assertFailure {
-      moleculeFlow(mode = Immediate) {
-        throw runtimeException
-      }.collect()
+      moleculeFlow(
+        mode = Immediate,
+        body = {
+          throw runtimeException
+        },
+      ).collect()
     }.isSameAs(runtimeException)
   }
 
@@ -307,12 +316,15 @@ class MoleculeTest {
     var count by mutableStateOf(0)
     launch {
       val exception = kotlin.runCatching {
-        moleculeFlow(mode = Immediate) {
-          if (count == 1) {
-            throw runtimeException
-          }
-          count
-        }.collect {
+        moleculeFlow(
+          mode = Immediate,
+          body = {
+            if (count == 1) {
+              throw runtimeException
+            }
+            count
+          },
+        ).collect {
           values.send(it)
         }
       }.exceptionOrNull()
@@ -333,13 +345,16 @@ class MoleculeTest {
     val runtimeException = object : RuntimeException() {}
     launch {
       val exception = kotlin.runCatching {
-        moleculeFlow(mode = Immediate) {
-          LaunchedEffect(Unit) {
-            delay(50)
-            throw runtimeException
-          }
-          0
-        }.collect {
+        moleculeFlow(
+          mode = Immediate,
+          body = {
+            LaunchedEffect(Unit) {
+              delay(50)
+              throw runtimeException
+            }
+            0
+          },
+        ).collect {
           values.send(it)
         }
       }.exceptionOrNull()
@@ -358,16 +373,19 @@ class MoleculeTest {
     var state: DisposableEffectState = NOT_LAUNCHED
 
     val job = launch {
-      moleculeFlow(mode = Immediate) {
-        DisposableEffect(Unit) {
-          state = LAUNCHED
+      moleculeFlow(
+        mode = Immediate,
+        body = {
+          DisposableEffect(Unit) {
+            state = LAUNCHED
 
-          onDispose {
-            state = DISPOSED
+            onDispose {
+              state = DISPOSED
+            }
           }
-        }
-        0
-      }.collect {
+          0
+        },
+      ).collect {
         values.send(it)
       }
     }

@@ -3,6 +3,11 @@
 ## [Unreleased]
 
 
+## [1.2.0]
+
+- Add APIs with exposed emitter.
+
+
 ## [1.1.0] - 2023-07-20
 
 New:
