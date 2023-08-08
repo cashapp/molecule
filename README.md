@@ -165,7 +165,8 @@ For more information see [the `moleculeFlow` documentation](https://cashapp.gith
 
 Add the buildscript dependency and apply the plugin to every module which wants to call `launchMolecule` or define `@Composable` functions for use with Molecule.
 
-![Gradle](/doc/gradle.png)
+##### Groovy <sub><small>build.gradle</small></sub>
+
 ```groovy
 buildscript {
   repositories {
@@ -179,7 +180,8 @@ buildscript {
 apply plugin: 'app.cash.molecule'
 ```
 
-![Gradle](/doc/gradle.png) <sub>(Kotlin DSL)</sub>
+##### Kotlin <sub><small>build.gradle.kts</small></sub>
+
 ```kotlin
 buildscript {
   repositories {
@@ -190,9 +192,7 @@ buildscript {
   }
 }
 
-apply{
-  plugin("app.cash.molecule")
-}
+apply(plugin = "app.cash.molecule")
 ```
 
 Since Kotlin compiler plugins are an unstable API, certain versions of Molecule only work with
@@ -216,6 +216,8 @@ certain versions of Kotlin.
 <summary>Snapshots of the development version are available in Sonatype's snapshots repository.</summary>
 <p>
 
+##### Groovy <sub><small>build.gradle</small></sub>
+
 ```groovy
 buildscript {
   repositories {
@@ -230,6 +232,22 @@ buildscript {
 }
 
 apply plugin: 'app.cash.molecule'
+```
+
+##### Kotlin <sub><small>build.gradle.kts</small></sub>
+
+```kotlin
+buildscript {
+  repositories {
+    mavenCentral()
+    maven("https://oss.sonatype.org/content/repositories/snapshots/")
+  }
+  dependencies {
+    classpath("app.cash.molecule:molecule-gradle-plugin:1.2.0-SNAPSHOT")
+  }
+}
+
+apply(plugin = "app.cash.molecule")
 ```
 
 </p>
@@ -277,13 +295,27 @@ Use `moleculeFlow(mode = Immediate)` and test using [Turbine](https://github.com
 
 If you're unit testing Molecule on the JVM in an Android module, please set below in your project's AGP config.
 
-```gradle
+##### Groovy <sub><small>build.gradle</small></sub>
+
+```groovy
 android {
-  ...
+  // ...
   testOptions {
     unitTests.returnDefaultValues = true
   }
-  ...
+  // ...
+}
+```
+
+##### Kotlin <sub><small>build.gradle.kts</small></sub>
+
+```kotlin
+android {
+  // ...
+  testOptions {
+    unitTests.isReturnDefaultValues = true
+  }
+  // ...
 }
 ```
 
