@@ -179,7 +179,7 @@ buildscript {
 apply plugin: 'app.cash.molecule'
 ```
 
-![Gradle](/doc/gradle.png) (Kotlin DSL)
+![Gradle](/doc/gradle.png) <sub>(Kotlin DSL)</sub>
 ```kotlin
 buildscript {
   repositories {
