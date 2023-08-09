@@ -24,14 +24,14 @@ interface MoleculeExtension {
    *
    * Example: using a custom version of the JetBrains Compose compiler
    * ```kotlin
-   * redwood {
+   * molecule {
    *   kotlinCompilerPlugin.set("1.4.8")
    * }
    * ```
    *
    * Example: using a custom Maven coordinate for the Compose compiler
    * ```kotlin
-   * redwood {
+   * molecule {
    *   kotlinCompilerPlugin.set("com.example:custom-compose-compiler:1.0.0")
    * }
    * ```

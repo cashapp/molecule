@@ -171,7 +171,7 @@ buildscript {
     mavenCentral()
   }
   dependencies {
-    classpath 'app.cash.molecule:molecule-gradle-plugin:1.1.0'
+    classpath 'app.cash.molecule:molecule-gradle-plugin:1.2.0'
   }
 }
 
@@ -183,7 +183,7 @@ certain versions of Kotlin.
 
 | Kotlin | Molecule       |
 |--------|----------------|
-| 1.9.0  | 1.1.0          |
+| 1.9.0  | 1.1.0 - 1.2.0  |
 | 1.8.22 | 0.11.0 - 1.0.0 |
 | 1.8.21 | 0.10.0         |
 | 1.8.20 | 0.9.0          |
@@ -208,7 +208,7 @@ buildscript {
     }
   }
   dependencies {
-    classpath 'app.cash.molecule:molecule-gradle-plugin:1.2.0-SNAPSHOT'
+    classpath 'app.cash.molecule:molecule-gradle-plugin:1.3.0-SNAPSHOT'
   }
 }
 
@@ -269,6 +269,27 @@ android {
   ...
 }
 ```
+
+### Custom Compose Compiler
+
+Each version of Molecule ships with a specific JetBrains Compose compiler version which works with
+a single version of Kotlin (see [version table](#Usage) above). Newer versions of the Compose
+compiler or alternate Compose compilers can be specified using the Gradle extension.
+
+To use a new version of the JetBrains Compose compiler version:
+```kotlin
+molecule {
+  kotlinCompilerPlugin.set("1.4.8")
+}
+```
+
+To use an alternate Compose compiler dependency:
+```kotlin
+molecule {
+  kotlinCompilerPlugin.set("com.example:custom-compose-compiler:1.0.0")
+}
+```
+
 
 ## License
 
