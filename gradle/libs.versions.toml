@@ -1,5 +1,5 @@
 [versions]
-compileSdk = "33"
+compileSdk = "34"
 minSdk = "21"
 
 coroutine = "1.7.3"
