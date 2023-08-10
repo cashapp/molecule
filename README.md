@@ -165,7 +165,7 @@ For more information see [the `moleculeFlow` documentation](https://cashapp.gith
 
 Add the buildscript dependency and apply the plugin to every module which wants to call `launchMolecule` or define `@Composable` functions for use with Molecule.
 
-##### Groovy <sub><small>build.gradle</small></sub>
+##### Groovy
 
 ```groovy
 buildscript {
@@ -180,7 +180,7 @@ buildscript {
 apply plugin: 'app.cash.molecule'
 ```
 
-##### Kotlin <sub><small>build.gradle.kts</small></sub>
+##### Kotlin
 
 ```kotlin
 buildscript {
@@ -216,7 +216,7 @@ certain versions of Kotlin.
 <summary>Snapshots of the development version are available in Sonatype's snapshots repository.</summary>
 <p>
 
-##### Groovy <sub><small>build.gradle</small></sub>
+##### Groovy
 
 ```groovy
 buildscript {
@@ -234,7 +234,7 @@ buildscript {
 apply plugin: 'app.cash.molecule'
 ```
 
-##### Kotlin <sub><small>build.gradle.kts</small></sub>
+##### Kotlin
 
 ```kotlin
 buildscript {
@@ -295,7 +295,7 @@ Use `moleculeFlow(mode = Immediate)` and test using [Turbine](https://github.com
 
 If you're unit testing Molecule on the JVM in an Android module, please set below in your project's AGP config.
 
-##### Groovy <sub><small>build.gradle</small></sub>
+##### Groovy
 
 ```groovy
 android {
@@ -307,7 +307,7 @@ android {
 }
 ```
 
-##### Kotlin <sub><small>build.gradle.kts</small></sub>
+##### Kotlin
 
 ```kotlin
 android {
@@ -326,6 +326,8 @@ a single version of Kotlin (see [version table](#usage) above). Newer versions o
 compiler or alternate Compose compilers can be specified using the Gradle extension.
 
 To use a new version of the JetBrains Compose compiler version:
+
+##### Groovy & Kotlin
 ```kotlin
 molecule {
   kotlinCompilerPlugin.set("1.4.8")
@@ -333,6 +335,7 @@ molecule {
 ```
 
 To use an alternate Compose compiler dependency:
+##### Groovy & Kotlin
 ```kotlin
 molecule {
   kotlinCompilerPlugin.set("com.example:custom-compose-compiler:1.0.0")
