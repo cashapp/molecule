@@ -3,6 +3,24 @@
 ## [Unreleased]
 
 
+## [1.2.0] - 2023-08-09
+
+New:
+- Support for specifying custom Compose compiler versions. This will allow you to use the latest
+  version of Molecule with newer versions of Kotlin than it explicitly supports.
+
+  See [the README](https://github.com/cashapp/molecule/#custom-compose-compiler) for more information.
+
+Fixed:
+- Ensure frame times sent by `RecompositionMode.Immediate` always increase. Previously,
+  when targeting JS, the same frame time could be seen since the clock only has millisecond
+  precision. Since the frame time is in nanoseconds, synthetic nanosecond offsets will be added to
+  ensure each timestamp is strictly greater than the last.
+- Perform teardown of the composition on cancellation within an existing coroutine rather than in
+  a job completion listener. This ensures it executes on the same dispatcher as the rest of the
+  system, rather than on the canceling caller's thread.
+
+
 ## [1.1.0] - 2023-07-20
 
 New:
@@ -161,7 +179,8 @@ Initial release
 
 
 
-[Unreleased]: https://github.com/cashapp/molecule/compare/1.1.0...HEAD
+[Unreleased]: https://github.com/cashapp/molecule/compare/1.2.0...HEAD
+[1.2.0]: https://github.com/cashapp/molecule/releases/tag/1.2.0
 [1.1.0]: https://github.com/cashapp/molecule/releases/tag/1.1.0
 [1.0.0]: https://github.com/cashapp/molecule/releases/tag/1.0.0
 [0.11.0]: https://github.com/cashapp/molecule/releases/tag/0.11.0
