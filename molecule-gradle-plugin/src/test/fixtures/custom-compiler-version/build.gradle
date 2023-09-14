@@ -16,7 +16,8 @@ buildscript {
 }
 
 if (kotlinVersion == libs.kotlin.plugin.get().version) {
-  throw RuntimeException("This test requires a different version of Kotlin then the Molecule build")
+  throw new RuntimeException(
+    "This test requires a different version of Kotlin then the Molecule build")
 }
 
 apply plugin: 'org.jetbrains.kotlin.jvm'
