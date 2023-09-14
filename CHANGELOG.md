@@ -3,6 +3,15 @@
 ## [Unreleased]
 
 
+## [1.2.1] - 2023-09-14
+
+New:
+- Support for Kotlin 1.9.10
+- Switch to JetBrains Compose compiler 1.5.2 (based on AndroidX Compose compiler 1.5.3)
+
+This version works with Kotlin 1.9.10 by default.
+
+
 ## [1.2.0] - 2023-08-09
 
 New:
