@@ -6,7 +6,7 @@ coroutine = "1.7.3"
 
 kotlin = "1.9.10"
 
-jetbrains-compose = "1.5.1"
+jetbrains-compose = "1.5.2"
 
 squareup-okhttp = "4.11.0"
 squareup-retrofit = "2.9.0"
