@@ -27,10 +27,10 @@ import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 class MainActivity : ComponentActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,7 +39,7 @@ class MainActivity : ComponentActivity() {
     val viewModel by viewModels<PupperPicsViewModel>()
     setContent {
       RootContainer {
-        val model by viewModel.models.collectAsState()
+        val model by viewModel.models.collectAsStateWithLifecycle()
         PupperPicsScreen(model) { event -> viewModel.take(event) }
       }
     }

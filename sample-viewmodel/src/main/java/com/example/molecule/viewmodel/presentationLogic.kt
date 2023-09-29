@@ -31,22 +31,40 @@ sealed interface Event {
 data class Model(
   val loading: Boolean,
   val breeds: List<String>,
-  val dropdownText: String,
+  val currentBreed: String?,
   val currentUrl: String?,
-)
-
-class PupperPicsViewModel : MoleculeViewModel<Event, Model>() {
-  @Composable
-  override fun models(events: Flow<Event>): Model {
-    return PupperPicsPresenter(events, PupperPicsService())
-  }
+) {
+  val dropdownText: String = currentBreed ?: "Select breed"
 }
 
+class PupperPicsViewModel(
+  // This service would typically be injected
+  service: PupperPicsService = PupperPicsService(),
+) : MoleculeViewModel<Event, Model>(
+  initialState = Model(
+    loading = false,
+    breeds = emptyList(),
+    currentBreed = null,
+    currentUrl = null,
+  ),
+  presenter = { seed, events ->
+    PupperPicsPresenter(
+      seed = seed,
+      events = events,
+      service = service,
+    )
+  },
+)
+
 @Composable
-fun PupperPicsPresenter(events: Flow<Event>, service: PupperPicsService): Model {
-  var breeds: List<String> by remember { mutableStateOf(emptyList()) }
-  var currentBreed: String? by remember { mutableStateOf(null) }
-  var currentUrl: String? by remember { mutableStateOf(null) }
+fun PupperPicsPresenter(
+  seed: Model,
+  events: Flow<Event>,
+  service: PupperPicsService,
+): Model {
+  var breeds: List<String> by remember { mutableStateOf(seed.breeds) }
+  var currentBreed: String? by remember { mutableStateOf(seed.currentBreed) }
+  var currentUrl: String? by remember { mutableStateOf(seed.currentUrl) }
   var fetchId: Int by remember { mutableStateOf(0) }
 
   // Grab the list of breeds and sets the current selection to the first in the list.
@@ -75,7 +93,7 @@ fun PupperPicsPresenter(events: Flow<Event>, service: PupperPicsService): Model 
   return Model(
     loading = currentBreed == null,
     breeds = breeds,
-    dropdownText = currentBreed ?: "Select breed",
+    currentBreed = currentBreed,
     currentUrl = currentUrl,
   )
 }
