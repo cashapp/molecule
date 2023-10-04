@@ -101,12 +101,14 @@ private fun <T> immediateClockFlow(body: @Composable () -> T): Flow<T> = flow {
  * to produce a [StateFlow] stream of [T] values.
  */
 public fun <T> CoroutineScope.launchMolecule(
+  context: CoroutineContext = EmptyCoroutineContext,
   mode: RecompositionMode,
   body: @Composable () -> T,
 ): StateFlow<T> {
   var flow: MutableStateFlow<T>? = null
 
   launchMolecule(
+    context = context,
     mode = mode,
     emitter = { value ->
       val outputFlow = flow
@@ -124,12 +126,13 @@ public fun <T> CoroutineScope.launchMolecule(
 
 /**
  * Launch a coroutine into this [CoroutineScope] which will continually recompose `body`
- * to invoke [emitter] with each returned [T] value.
+ * in the optional [context] to invoke [emitter] with each returned [T] value.
  *
  * [launchMolecule]'s [emitter] is always free-running and will not respect backpressure.
  * Use [moleculeFlow] to create a backpressure-capable flow.
  */
 public fun <T> CoroutineScope.launchMolecule(
+  context: CoroutineContext = EmptyCoroutineContext,
   mode: RecompositionMode,
   emitter: (value: T) -> Unit,
   body: @Composable () -> T,
@@ -143,7 +146,10 @@ public fun <T> CoroutineScope.launchMolecule(
     val recomposer = Recomposer(coroutineContext)
     val composition = Composition(UnitApplier, recomposer)
     var snapshotHandle: ObserverHandle? = null
-    launch(start = UNDISPATCHED) {
+    launch(
+      context = context,
+      start = UNDISPATCHED
+    ) {
       try {
         recomposer.runRecomposeAndApplyChanges()
       } catch (e: CancellationException) {
@@ -156,7 +162,7 @@ public fun <T> CoroutineScope.launchMolecule(
     snapshotHandle = Snapshot.registerGlobalWriteObserver {
       if (!applyScheduled) {
         applyScheduled = true
-        launch {
+        launch(context = context) {
           applyScheduled = false
           Snapshot.sendApplyNotifications()
         }
