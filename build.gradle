@@ -6,6 +6,7 @@ buildscript {
     classpath libs.dokka.plugin
     classpath libs.spotless.plugin
     classpath libs.buildConfig.plugin
+    classpath libs.kotlinx.binaryCompatibilityValidator
 
     // Normally you would declare a version here, but we use dependency substitution in
     // settings.gradle to use the version built from inside the repo.

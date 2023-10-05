@@ -10,6 +10,7 @@ apply plugin: 'com.github.gmazzo.buildconfig'
 if (rootProject.name == 'molecule') {
   apply plugin: 'com.vanniktech.maven.publish'
   apply plugin: 'org.jetbrains.dokka'
+  apply plugin: 'org.jetbrains.kotlinx.binary-compatibility-validator'
 }
 
 dependencies {

@@ -1,0 +1,14 @@
+public final class app/cash/molecule/MoleculeKt {
+	public static final fun launchMolecule (Lkotlinx/coroutines/CoroutineScope;Lapp/cash/molecule/RecompositionMode;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;)V
+	public static final fun launchMolecule (Lkotlinx/coroutines/CoroutineScope;Lapp/cash/molecule/RecompositionMode;Lkotlin/jvm/functions/Function2;)Lkotlinx/coroutines/flow/StateFlow;
+	public static final fun moleculeFlow (Lapp/cash/molecule/RecompositionMode;Lkotlin/jvm/functions/Function2;)Lkotlinx/coroutines/flow/Flow;
+}
+
+public final class app/cash/molecule/RecompositionMode : java/lang/Enum {
+	public static final field ContextClock Lapp/cash/molecule/RecompositionMode;
+	public static final field Immediate Lapp/cash/molecule/RecompositionMode;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lapp/cash/molecule/RecompositionMode;
+	public static fun values ()[Lapp/cash/molecule/RecompositionMode;
+}
+

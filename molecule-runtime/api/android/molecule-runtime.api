@@ -1,0 +1,37 @@
+public final class app/cash/molecule/AndroidUiDispatcher : kotlinx/coroutines/CoroutineDispatcher {
+	public static final field $stable I
+	public static final field Companion Lapp/cash/molecule/AndroidUiDispatcher$Companion;
+	public synthetic fun <init> (Landroid/view/Choreographer;Landroid/os/Handler;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun dispatch (Lkotlin/coroutines/CoroutineContext;Ljava/lang/Runnable;)V
+	public final fun getChoreographer ()Landroid/view/Choreographer;
+	public final fun getFrameClock ()Landroidx/compose/runtime/MonotonicFrameClock;
+}
+
+public final class app/cash/molecule/AndroidUiDispatcher$Companion {
+	public final fun getMain ()Lkotlin/coroutines/CoroutineContext;
+}
+
+public final class app/cash/molecule/AndroidUiFrameClock : androidx/compose/runtime/MonotonicFrameClock {
+	public static final field $stable I
+	public fun <init> (Landroid/view/Choreographer;)V
+	public fun fold (Ljava/lang/Object;Lkotlin/jvm/functions/Function2;)Ljava/lang/Object;
+	public fun get (Lkotlin/coroutines/CoroutineContext$Key;)Lkotlin/coroutines/CoroutineContext$Element;
+	public fun minusKey (Lkotlin/coroutines/CoroutineContext$Key;)Lkotlin/coroutines/CoroutineContext;
+	public fun plus (Lkotlin/coroutines/CoroutineContext;)Lkotlin/coroutines/CoroutineContext;
+	public fun withFrameNanos (Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class app/cash/molecule/MoleculeKt {
+	public static final fun launchMolecule (Lkotlinx/coroutines/CoroutineScope;Lapp/cash/molecule/RecompositionMode;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;)V
+	public static final fun launchMolecule (Lkotlinx/coroutines/CoroutineScope;Lapp/cash/molecule/RecompositionMode;Lkotlin/jvm/functions/Function2;)Lkotlinx/coroutines/flow/StateFlow;
+	public static final fun moleculeFlow (Lapp/cash/molecule/RecompositionMode;Lkotlin/jvm/functions/Function2;)Lkotlinx/coroutines/flow/Flow;
+}
+
+public final class app/cash/molecule/RecompositionMode : java/lang/Enum {
+	public static final field ContextClock Lapp/cash/molecule/RecompositionMode;
+	public static final field Immediate Lapp/cash/molecule/RecompositionMode;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lapp/cash/molecule/RecompositionMode;
+	public static fun values ()[Lapp/cash/molecule/RecompositionMode;
+}
+

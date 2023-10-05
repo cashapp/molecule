@@ -3,6 +3,7 @@ apply plugin: 'org.jetbrains.kotlin.multiplatform'
 apply plugin: 'com.vanniktech.maven.publish'
 apply plugin: 'org.jetbrains.dokka'
 apply plugin: 'app.cash.molecule'
+apply plugin: 'org.jetbrains.kotlinx.binary-compatibility-validator'
 
 kotlin {
   explicitApi()
