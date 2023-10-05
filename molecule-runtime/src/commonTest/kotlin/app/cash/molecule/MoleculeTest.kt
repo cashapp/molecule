@@ -394,10 +394,11 @@ class MoleculeTest {
     val job = Job()
     val clock = BroadcastFrameClock()
     val expectedCoroutineName = "test_key"
-    val scope =
-      CoroutineScope(CoroutineName(expectedCoroutineName) + coroutineContext + job + clock)
+    val entryScope =
+      CoroutineScope(coroutineContext + job + clock)
+    val passedContext = entryScope.coroutineContext + CoroutineName(expectedCoroutineName)
 
-    scope.launchMolecule(scope.coroutineContext, ContextClock) {
+    entryScope.launchMolecule(passedContext, ContextClock) {
       val compositionScope = rememberCoroutineScope()
       val coroutineName = compositionScope.coroutineContext[CoroutineName]
       assertThat(coroutineName?.name).isEqualTo(expectedCoroutineName)

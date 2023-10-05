@@ -105,7 +105,7 @@ public fun <T> CoroutineScope.launchMolecule(
   mode: RecompositionMode,
   body: @Composable () -> T,
 ): StateFlow<T> = launchMolecule(
-  context = EmptyCoroutineContext,
+  context = coroutineContext,
   mode = mode,
   body = body,
 )
@@ -153,7 +153,7 @@ public fun <T> CoroutineScope.launchMolecule(
   body: @Composable () -> T,
 ) {
   launchMolecule(
-    context = EmptyCoroutineContext,
+    context = coroutineContext,
     mode = mode,
     emitter = emitter,
     body = body,
@@ -181,7 +181,7 @@ public fun <T> CoroutineScope.launchMolecule(
   }
 
   with(this + clockContext) {
-    val recomposer = Recomposer(coroutineContext)
+    val recomposer = Recomposer(context)
     val composition = Composition(UnitApplier, recomposer)
     var snapshotHandle: ObserverHandle? = null
     launch(
