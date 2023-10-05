@@ -107,14 +107,14 @@ public fun <T> CoroutineScope.launchMolecule(
 ): StateFlow<T> = launchMolecule(
   context = EmptyCoroutineContext,
   mode = mode,
-  body = body
+  body = body,
 )
 
 /**
  * Launch a coroutine into this [CoroutineScope] which will continually recompose `body`
  * to produce a [StateFlow] stream of [T] values.
  *
- * Accepts a [CoroutineContext] to launch under.
+ * Accepts a [context] to launch under.
  */
 public fun <T> CoroutineScope.launchMolecule(
   context: CoroutineContext,
@@ -140,6 +140,13 @@ public fun <T> CoroutineScope.launchMolecule(
   return flow!!
 }
 
+/**
+ * Launch a coroutine into this [CoroutineScope] which will continually recompose `body`
+ * in the optional [context] to invoke [emitter] with each returned [T] value.
+ *
+ * [launchMolecule]'s [emitter] is always free-running and will not respect backpressure.
+ * Use [moleculeFlow] to create a backpressure-capable flow.
+ */
 public fun <T> CoroutineScope.launchMolecule(
   mode: RecompositionMode,
   emitter: (value: T) -> Unit,
@@ -149,7 +156,7 @@ public fun <T> CoroutineScope.launchMolecule(
     context = EmptyCoroutineContext,
     mode = mode,
     emitter = emitter,
-    body = body
+    body = body,
   )
 }
 
@@ -159,6 +166,8 @@ public fun <T> CoroutineScope.launchMolecule(
  *
  * [launchMolecule]'s [emitter] is always free-running and will not respect backpressure.
  * Use [moleculeFlow] to create a backpressure-capable flow.
+ *
+ * Accepts a [context] to launch under.
  */
 public fun <T> CoroutineScope.launchMolecule(
   context: CoroutineContext,
