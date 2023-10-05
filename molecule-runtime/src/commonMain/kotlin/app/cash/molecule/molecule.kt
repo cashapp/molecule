@@ -21,6 +21,7 @@ import androidx.compose.runtime.Composition
 import androidx.compose.runtime.Recomposer
 import androidx.compose.runtime.snapshots.ObserverHandle
 import androidx.compose.runtime.snapshots.Snapshot
+import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
 import kotlin.coroutines.cancellation.CancellationException
 import kotlinx.coroutines.CoroutineScope
@@ -101,7 +102,22 @@ private fun <T> immediateClockFlow(body: @Composable () -> T): Flow<T> = flow {
  * to produce a [StateFlow] stream of [T] values.
  */
 public fun <T> CoroutineScope.launchMolecule(
-  context: CoroutineContext = EmptyCoroutineContext,
+  mode: RecompositionMode,
+  body: @Composable () -> T,
+): StateFlow<T> = launchMolecule(
+  context = EmptyCoroutineContext,
+  mode = mode,
+  body = body
+)
+
+/**
+ * Launch a coroutine into this [CoroutineScope] which will continually recompose `body`
+ * to produce a [StateFlow] stream of [T] values.
+ *
+ * Accepts a [CoroutineContext] to launch under.
+ */
+public fun <T> CoroutineScope.launchMolecule(
+  context: CoroutineContext,
   mode: RecompositionMode,
   body: @Composable () -> T,
 ): StateFlow<T> {
@@ -124,6 +140,19 @@ public fun <T> CoroutineScope.launchMolecule(
   return flow!!
 }
 
+public fun <T> CoroutineScope.launchMolecule(
+  mode: RecompositionMode,
+  emitter: (value: T) -> Unit,
+  body: @Composable () -> T,
+) {
+  launchMolecule(
+    context = EmptyCoroutineContext,
+    mode = mode,
+    emitter = emitter,
+    body = body
+  )
+}
+
 /**
  * Launch a coroutine into this [CoroutineScope] which will continually recompose `body`
  * in the optional [context] to invoke [emitter] with each returned [T] value.
@@ -132,7 +161,7 @@ public fun <T> CoroutineScope.launchMolecule(
  * Use [moleculeFlow] to create a backpressure-capable flow.
  */
 public fun <T> CoroutineScope.launchMolecule(
-  context: CoroutineContext = EmptyCoroutineContext,
+  context: CoroutineContext,
   mode: RecompositionMode,
   emitter: (value: T) -> Unit,
   body: @Composable () -> T,
@@ -148,7 +177,7 @@ public fun <T> CoroutineScope.launchMolecule(
     var snapshotHandle: ObserverHandle? = null
     launch(
       context = context,
-      start = UNDISPATCHED
+      start = UNDISPATCHED,
     ) {
       try {
         recomposer.runRecomposeAndApplyChanges()

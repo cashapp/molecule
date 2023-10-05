@@ -21,6 +21,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.Snapshot
 import app.cash.molecule.MoleculeTest.DisposableEffectState.DISPOSED
@@ -36,6 +37,7 @@ import kotlin.coroutines.CoroutineContext
 import kotlin.test.Test
 import kotlin.test.fail
 import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
@@ -52,7 +54,8 @@ import kotlinx.coroutines.withTimeout
 
 @ExperimentalCoroutinesApi
 class MoleculeTest {
-  @Test fun items() = runTest {
+  @Test
+  fun items() = runTest {
     val job = Job()
     val clock = BroadcastFrameClock()
     val scope = CoroutineScope(coroutineContext + job + clock)
@@ -93,7 +96,8 @@ class MoleculeTest {
     job.cancel()
   }
 
-  @Test fun errorImmediately() {
+  @Test
+  fun errorImmediately() {
     val clock = BroadcastFrameClock()
     val scope = CoroutineScope(clock)
 
@@ -114,10 +118,12 @@ class MoleculeTest {
     override fun handleException(context: CoroutineContext, exception: Throwable) {
       _exceptions += exception
     }
+
     override val key get() = CoroutineExceptionHandler
   }
 
-  @Test fun errorDelayed() = runTest {
+  @Test
+  fun errorDelayed() = runTest {
     val job = Job()
     val clock = BroadcastFrameClock()
     val exceptionHandler = RecordingExceptionHandler()
@@ -146,7 +152,8 @@ class MoleculeTest {
     job.cancel()
   }
 
-  @Test fun errorInEffect() = runTest {
+  @Test
+  fun errorInEffect() = runTest {
     val job = Job()
     val clock = BroadcastFrameClock()
     val exceptionHandler = RecordingExceptionHandler()
@@ -173,7 +180,8 @@ class MoleculeTest {
     job.cancel()
   }
 
-  @Test fun errorInEmitterImmediately() {
+  @Test
+  fun errorInEmitterImmediately() {
     val clock = BroadcastFrameClock()
     val scope = CoroutineScope(clock)
 
@@ -188,7 +196,8 @@ class MoleculeTest {
     scope.cancel()
   }
 
-  @Test fun errorInEmitterDelayed() = runTest {
+  @Test
+  fun errorInEmitterDelayed() = runTest {
     val job = Job()
     val clock = BroadcastFrameClock()
     val exceptionHandler = RecordingExceptionHandler()
@@ -224,7 +233,8 @@ class MoleculeTest {
 
   enum class DisposableEffectState { NOT_LAUNCHED, LAUNCHED, DISPOSED }
 
-  @Test fun disposableEffectDisposesWhenScopeIsCancelled() = runTest {
+  @Test
+  fun disposableEffectDisposesWhenScopeIsCancelled() = runTest {
     val job = Job()
     val clock = BroadcastFrameClock()
     val scope = CoroutineScope(coroutineContext + job + clock)
@@ -377,6 +387,23 @@ class MoleculeTest {
     job.cancelAndJoin()
 
     assertThat(state).isEqualTo(DISPOSED)
+  }
+
+  @Test
+  fun coroutineContextUsed() = runTest {
+    val job = Job()
+    val clock = BroadcastFrameClock()
+    val expectedCoroutineName = "test_key"
+    val scope =
+      CoroutineScope(CoroutineName(expectedCoroutineName) + coroutineContext + job + clock)
+
+    scope.launchMolecule(scope.coroutineContext, ContextClock) {
+      val compositionScope = rememberCoroutineScope()
+      val coroutineName = compositionScope.coroutineContext[CoroutineName]
+      assertThat(coroutineName?.name).isEqualTo(expectedCoroutineName)
+    }
+
+    job.cancel()
   }
 
   private suspend fun <T> Channel<T>.awaitValue(): T = withTimeout(1000) { receive() }
