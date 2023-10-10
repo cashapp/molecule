@@ -180,14 +180,11 @@ public fun <T> CoroutineScope.launchMolecule(
     RecompositionMode.Immediate -> GatedFrameClock(this)
   }
 
-  with(this + clockContext) {
-    val recomposer = Recomposer(context)
+  with(this + context + clockContext) {
+    val recomposer = Recomposer(coroutineContext)
     val composition = Composition(UnitApplier, recomposer)
     var snapshotHandle: ObserverHandle? = null
-    launch(
-      context = context,
-      start = UNDISPATCHED,
-    ) {
+    launch(start = UNDISPATCHED) {
       try {
         recomposer.runRecomposeAndApplyChanges()
       } catch (e: CancellationException) {
@@ -200,7 +197,7 @@ public fun <T> CoroutineScope.launchMolecule(
     snapshotHandle = Snapshot.registerGlobalWriteObserver {
       if (!applyScheduled) {
         applyScheduled = true
-        launch(context = context) {
+        launch {
           applyScheduled = false
           Snapshot.sendApplyNotifications()
         }
