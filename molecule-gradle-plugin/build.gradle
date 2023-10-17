@@ -11,6 +11,10 @@ if (rootProject.name == 'molecule') {
   apply plugin: 'com.vanniktech.maven.publish'
   apply plugin: 'org.jetbrains.dokka'
   apply plugin: 'org.jetbrains.kotlinx.binary-compatibility-validator'
+} else {
+  // Move the build directory when included in build-logic so as to not poison the real build.
+  // If we don't there's a chance incorrect build config values (configured below) will be used.
+  layout.buildDirectory = new File(rootDir, "build/molecule-gradle-plugin")
 }
 
 dependencies {
