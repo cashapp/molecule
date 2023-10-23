@@ -17,7 +17,7 @@
       "groupName": "Spotless/ktlint",
       "matchPackagePrefixes": [
         "com.diffplug.spotless",
-        "com.pinterest:ktlint",
+        "com.pinterest.ktlint",
       ],
     },
   ],
