@@ -18,6 +18,7 @@ package app.cash.molecule
 import androidx.compose.runtime.BroadcastFrameClock
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MonotonicFrameClock
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -32,6 +33,7 @@ import app.cash.molecule.RecompositionMode.Immediate
 import assertk.assertFailure
 import assertk.assertThat
 import assertk.assertions.isEqualTo
+import assertk.assertions.isNotSameAs
 import assertk.assertions.isSameAs
 import kotlin.coroutines.CoroutineContext
 import kotlin.test.Test
@@ -54,8 +56,7 @@ import kotlinx.coroutines.withTimeout
 
 @ExperimentalCoroutinesApi
 class MoleculeTest {
-  @Test
-  fun items() = runTest {
+  @Test fun items() = runTest {
     val job = Job()
     val clock = BroadcastFrameClock()
     val scope = CoroutineScope(coroutineContext + job + clock)
@@ -96,8 +97,7 @@ class MoleculeTest {
     job.cancel()
   }
 
-  @Test
-  fun errorImmediately() {
+  @Test fun errorImmediately() {
     val clock = BroadcastFrameClock()
     val scope = CoroutineScope(clock)
 
@@ -118,12 +118,10 @@ class MoleculeTest {
     override fun handleException(context: CoroutineContext, exception: Throwable) {
       _exceptions += exception
     }
-
     override val key get() = CoroutineExceptionHandler
   }
 
-  @Test
-  fun errorDelayed() = runTest {
+  @Test fun errorDelayed() = runTest {
     val job = Job()
     val clock = BroadcastFrameClock()
     val exceptionHandler = RecordingExceptionHandler()
@@ -152,8 +150,7 @@ class MoleculeTest {
     job.cancel()
   }
 
-  @Test
-  fun errorInEffect() = runTest {
+  @Test fun errorInEffect() = runTest {
     val job = Job()
     val clock = BroadcastFrameClock()
     val exceptionHandler = RecordingExceptionHandler()
@@ -180,8 +177,7 @@ class MoleculeTest {
     job.cancel()
   }
 
-  @Test
-  fun errorInEmitterImmediately() {
+  @Test fun errorInEmitterImmediately() {
     val clock = BroadcastFrameClock()
     val scope = CoroutineScope(clock)
 
@@ -196,8 +192,7 @@ class MoleculeTest {
     scope.cancel()
   }
 
-  @Test
-  fun errorInEmitterDelayed() = runTest {
+  @Test fun errorInEmitterDelayed() = runTest {
     val job = Job()
     val clock = BroadcastFrameClock()
     val exceptionHandler = RecordingExceptionHandler()
@@ -233,8 +228,7 @@ class MoleculeTest {
 
   enum class DisposableEffectState { NOT_LAUNCHED, LAUNCHED, DISPOSED }
 
-  @Test
-  fun disposableEffectDisposesWhenScopeIsCancelled() = runTest {
+  @Test fun disposableEffectDisposesWhenScopeIsCancelled() = runTest {
     val job = Job()
     val clock = BroadcastFrameClock()
     val scope = CoroutineScope(coroutineContext + job + clock)
@@ -389,22 +383,24 @@ class MoleculeTest {
     assertThat(state).isEqualTo(DISPOSED)
   }
 
-  @Test
-  fun coroutineContextUsed() = runTest {
-    val job = Job()
-    val clock = BroadcastFrameClock()
-    val expectedCoroutineName = "test_key"
-    val entryScope =
-      CoroutineScope(coroutineContext + job + clock)
-    val passedContext = entryScope.coroutineContext + CoroutineName(expectedCoroutineName)
+  @Test fun coroutineContextUsed() = runTest {
+    val expectedName = CoroutineName("test_key")
 
-    entryScope.launchMolecule(passedContext, ContextClock) {
-      val compositionScope = rememberCoroutineScope()
-      val coroutineName = compositionScope.coroutineContext[CoroutineName]
-      assertThat(coroutineName?.name).isEqualTo(expectedCoroutineName)
+    var actualName: CoroutineName? = null
+    backgroundScope.launchMolecule(Immediate, expectedName) {
+      actualName = rememberCoroutineScope().coroutineContext[CoroutineName]
     }
+    assertThat(actualName).isEqualTo(expectedName)
+  }
 
-    job.cancel()
+  @Test fun coroutineContextClockDoesNotOverrideImmediate() = runTest {
+    val myClock = BroadcastFrameClock()
+
+    var actualClock: MonotonicFrameClock? = null
+    backgroundScope.launchMolecule(Immediate, myClock) {
+      actualClock = rememberCoroutineScope().coroutineContext[MonotonicFrameClock]
+    }
+    assertThat(actualClock).isNotSameAs(myClock)
   }
 
   private suspend fun <T> Channel<T>.awaitValue(): T = withTimeout(1000) { receive() }
