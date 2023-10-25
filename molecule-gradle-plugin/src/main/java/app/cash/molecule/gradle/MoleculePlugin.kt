@@ -36,8 +36,8 @@ import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSet.Companion.COMMON_MAIN_
 import org.jetbrains.kotlin.gradle.plugin.SubpluginArtifact
 import org.jetbrains.kotlin.gradle.plugin.SubpluginOption
 
-private const val extensionName = "molecule"
-private const val moleculeRuntime = "app.cash.molecule:molecule-runtime:$moleculeVersion"
+private const val EXTENSION_NAME = "molecule"
+private const val MOLECULE_RUNTIME = "app.cash.molecule:molecule-runtime:$moleculeVersion"
 
 private abstract class MoleculeExtensionImpl
 @Inject constructor(objectFactory: ObjectFactory) : MoleculeExtension {
@@ -54,7 +54,7 @@ class MoleculePlugin : KotlinCompilerPluginSupportPlugin {
 
     extension = target.extensions.create(
       MoleculeExtension::class.java,
-      extensionName,
+      EXTENSION_NAME,
       MoleculeExtensionImpl::class.java,
     )
 
@@ -76,7 +76,7 @@ class MoleculePlugin : KotlinCompilerPluginSupportPlugin {
         |      sourceSets {
         |        commonMain {
         |          dependencies {
-        |            implementation("$moleculeRuntime")
+        |            implementation("$MOLECULE_RUNTIME")
         |          }
         |        }
         |      }
@@ -93,7 +93,7 @@ class MoleculePlugin : KotlinCompilerPluginSupportPlugin {
       val dependency: Any = if (target.isInternal()) {
         target.dependencies.project(mapOf("path" to ":molecule-runtime"))
       } else {
-        moleculeRuntime
+        MOLECULE_RUNTIME
       }
 
       if (jvm != null || android != null) {
@@ -122,7 +122,7 @@ class MoleculePlugin : KotlinCompilerPluginSupportPlugin {
       3 -> SubpluginArtifact(parts[0], parts[1], parts[2])
       else -> error(
         """
-        |Illegal format of '$extensionName.${MoleculeExtension::kotlinCompilerPlugin.name}' property.
+        |Illegal format of '$EXTENSION_NAME.${MoleculeExtension::kotlinCompilerPlugin.name}' property.
         |Expected format: either '<VERSION>' or '<GROUP_ID>:<ARTIFACT_ID>:<VERSION>'
         |Actual value: '$plugin'
         """.trimMargin(),
