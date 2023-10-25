@@ -1,6 +1,10 @@
 public final class app/cash/molecule/MoleculeKt {
-	public static final fun launchMolecule (Lkotlinx/coroutines/CoroutineScope;Lapp/cash/molecule/RecompositionMode;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;)V
-	public static final fun launchMolecule (Lkotlinx/coroutines/CoroutineScope;Lapp/cash/molecule/RecompositionMode;Lkotlin/jvm/functions/Function2;)Lkotlinx/coroutines/flow/StateFlow;
+	public static final fun launchMolecule (Lkotlinx/coroutines/CoroutineScope;Lapp/cash/molecule/RecompositionMode;Lkotlin/coroutines/CoroutineContext;Lkotlin/jvm/functions/Function2;)Lkotlinx/coroutines/flow/StateFlow;
+	public static final fun launchMolecule (Lkotlinx/coroutines/CoroutineScope;Lapp/cash/molecule/RecompositionMode;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/CoroutineContext;Lkotlin/jvm/functions/Function2;)V
+	public static final synthetic fun launchMolecule (Lkotlinx/coroutines/CoroutineScope;Lapp/cash/molecule/RecompositionMode;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;)V
+	public static final synthetic fun launchMolecule (Lkotlinx/coroutines/CoroutineScope;Lapp/cash/molecule/RecompositionMode;Lkotlin/jvm/functions/Function2;)Lkotlinx/coroutines/flow/StateFlow;
+	public static synthetic fun launchMolecule$default (Lkotlinx/coroutines/CoroutineScope;Lapp/cash/molecule/RecompositionMode;Lkotlin/coroutines/CoroutineContext;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)Lkotlinx/coroutines/flow/StateFlow;
+	public static synthetic fun launchMolecule$default (Lkotlinx/coroutines/CoroutineScope;Lapp/cash/molecule/RecompositionMode;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/CoroutineContext;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
 	public static final fun moleculeFlow (Lapp/cash/molecule/RecompositionMode;Lkotlin/jvm/functions/Function2;)Lkotlinx/coroutines/flow/Flow;
 }
 

@@ -18,9 +18,11 @@ package app.cash.molecule
 import androidx.compose.runtime.BroadcastFrameClock
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MonotonicFrameClock
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.Snapshot
 import app.cash.molecule.MoleculeTest.DisposableEffectState.DISPOSED
@@ -31,11 +33,13 @@ import app.cash.molecule.RecompositionMode.Immediate
 import assertk.assertFailure
 import assertk.assertThat
 import assertk.assertions.isEqualTo
+import assertk.assertions.isNotSameAs
 import assertk.assertions.isSameAs
 import kotlin.coroutines.CoroutineContext
 import kotlin.test.Test
 import kotlin.test.fail
 import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
@@ -377,6 +381,26 @@ class MoleculeTest {
     job.cancelAndJoin()
 
     assertThat(state).isEqualTo(DISPOSED)
+  }
+
+  @Test fun coroutineContextUsed() = runTest {
+    val expectedName = CoroutineName("test_key")
+
+    var actualName: CoroutineName? = null
+    backgroundScope.launchMolecule(Immediate, expectedName) {
+      actualName = rememberCoroutineScope().coroutineContext[CoroutineName]
+    }
+    assertThat(actualName).isEqualTo(expectedName)
+  }
+
+  @Test fun coroutineContextClockDoesNotOverrideImmediate() = runTest {
+    val myClock = BroadcastFrameClock()
+
+    var actualClock: MonotonicFrameClock? = null
+    backgroundScope.launchMolecule(Immediate, myClock) {
+      actualClock = rememberCoroutineScope().coroutineContext[MonotonicFrameClock]
+    }
+    assertThat(actualClock).isNotSameAs(myClock)
   }
 
   private suspend fun <T> Channel<T>.awaitValue(): T = withTimeout(1000) { receive() }

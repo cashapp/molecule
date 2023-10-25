@@ -21,6 +21,8 @@ import androidx.compose.runtime.Composition
 import androidx.compose.runtime.Recomposer
 import androidx.compose.runtime.snapshots.ObserverHandle
 import androidx.compose.runtime.snapshots.Snapshot
+import kotlin.DeprecationLevel.HIDDEN
+import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
 import kotlin.coroutines.cancellation.CancellationException
 import kotlinx.coroutines.CoroutineScope
@@ -33,7 +35,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.plus
 
 /**
  * Create a [Flow] which will continually recompose `body` to produce a stream of [T] values
@@ -96,17 +97,32 @@ private fun <T> immediateClockFlow(body: @Composable () -> T): Flow<T> = flow {
   }
 }
 
+@Deprecated("", level = HIDDEN) // For binary compatibility.
+public fun <T> CoroutineScope.launchMolecule(
+  mode: RecompositionMode,
+  body: @Composable () -> T,
+): StateFlow<T> = launchMolecule(
+  mode = mode,
+  context = EmptyCoroutineContext,
+  body = body,
+)
+
 /**
  * Launch a coroutine into this [CoroutineScope] which will continually recompose `body`
  * to produce a [StateFlow] stream of [T] values.
+ *
+ * The coroutine context is inherited from the [CoroutineScope].
+ * Additional context elements can be specified with [context] argument.
  */
 public fun <T> CoroutineScope.launchMolecule(
   mode: RecompositionMode,
+  context: CoroutineContext = EmptyCoroutineContext,
   body: @Composable () -> T,
 ): StateFlow<T> {
   var flow: MutableStateFlow<T>? = null
 
   launchMolecule(
+    context = context,
     mode = mode,
     emitter = { value ->
       val outputFlow = flow
@@ -122,50 +138,67 @@ public fun <T> CoroutineScope.launchMolecule(
   return flow!!
 }
 
+@Deprecated("", level = HIDDEN) // For binary compatibility.
+public fun <T> CoroutineScope.launchMolecule(
+  mode: RecompositionMode,
+  emitter: (value: T) -> Unit,
+  body: @Composable () -> T,
+) {
+  launchMolecule(
+    mode = mode,
+    emitter = emitter,
+    context = EmptyCoroutineContext,
+    body = body,
+  )
+}
+
 /**
  * Launch a coroutine into this [CoroutineScope] which will continually recompose `body`
- * to invoke [emitter] with each returned [T] value.
+ * in the optional [context] to invoke [emitter] with each returned [T] value.
  *
  * [launchMolecule]'s [emitter] is always free-running and will not respect backpressure.
  * Use [moleculeFlow] to create a backpressure-capable flow.
+ *
+ * The coroutine context is inherited from the [CoroutineScope].
+ * Additional context elements can be specified with [context] argument.
  */
 public fun <T> CoroutineScope.launchMolecule(
   mode: RecompositionMode,
   emitter: (value: T) -> Unit,
+  context: CoroutineContext = EmptyCoroutineContext,
   body: @Composable () -> T,
 ) {
   val clockContext = when (mode) {
     RecompositionMode.ContextClock -> EmptyCoroutineContext
     RecompositionMode.Immediate -> GatedFrameClock(this)
   }
+  val finalContext = coroutineContext + context + clockContext
 
-  with(this + clockContext) {
-    val recomposer = Recomposer(coroutineContext)
-    val composition = Composition(UnitApplier, recomposer)
-    var snapshotHandle: ObserverHandle? = null
-    launch(start = UNDISPATCHED) {
-      try {
-        recomposer.runRecomposeAndApplyChanges()
-      } catch (e: CancellationException) {
-        composition.dispose()
-        snapshotHandle?.dispose()
+  val recomposer = Recomposer(finalContext)
+  val composition = Composition(UnitApplier, recomposer)
+  var snapshotHandle: ObserverHandle? = null
+  launch(finalContext, start = UNDISPATCHED) {
+    try {
+      recomposer.runRecomposeAndApplyChanges()
+    } catch (e: CancellationException) {
+      composition.dispose()
+      snapshotHandle?.dispose()
+    }
+  }
+
+  var applyScheduled = false
+  snapshotHandle = Snapshot.registerGlobalWriteObserver {
+    if (!applyScheduled) {
+      applyScheduled = true
+      launch(finalContext) {
+        applyScheduled = false
+        Snapshot.sendApplyNotifications()
       }
     }
+  }
 
-    var applyScheduled = false
-    snapshotHandle = Snapshot.registerGlobalWriteObserver {
-      if (!applyScheduled) {
-        applyScheduled = true
-        launch {
-          applyScheduled = false
-          Snapshot.sendApplyNotifications()
-        }
-      }
-    }
-
-    composition.setContent {
-      emitter(body())
-    }
+  composition.setContent {
+    emitter(body())
   }
 }
 
