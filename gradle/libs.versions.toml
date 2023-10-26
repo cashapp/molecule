@@ -41,7 +41,7 @@ kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-t
 
 kotlinx-binaryCompatibilityValidator = "org.jetbrains.kotlinx:binary-compatibility-validator:0.13.2"
 
-ktlint = "com.pinterest.ktlint:ktlint:1.0.1"
+ktlint = "com.pinterest.ktlint:ktlint-cli:1.0.1"
 
 maven-publish-plugin = { module = "com.vanniktech:gradle-maven-publish-plugin", version = "0.25.3" }
 
