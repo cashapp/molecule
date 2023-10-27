@@ -163,19 +163,12 @@ For more information see [the `moleculeFlow` documentation](https://cashapp.gith
 
 ## Usage
 
-Add the buildscript dependency and apply the plugin to every module which wants to call `launchMolecule` or define `@Composable` functions for use with Molecule.
+Add the plugin to every module which wants to call `launchMolecule` or define `@Composable` functions for use with Molecule.
 
 ```groovy
-buildscript {
-  repositories {
-    mavenCentral()
-  }
-  dependencies {
-    classpath 'app.cash.molecule:molecule-gradle-plugin:1.2.1'
-  }
+plugins {
+    id("app.cash.molecule") version "1.2.1"
 }
-
-apply plugin: 'app.cash.molecule'
 ```
 
 Since Kotlin compiler plugins are an unstable API, certain versions of Molecule only work with
