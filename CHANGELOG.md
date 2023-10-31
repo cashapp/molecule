@@ -10,6 +10,9 @@ New:
   context that is used for running Compose.
 - Support for Kotlin 1.9.20
 
+Changed:
+- Removed now-unsupported `watchosX86` target.
+
 This version works with Kotlin 1.9.20 by default.
 
 
