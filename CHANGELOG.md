@@ -3,6 +3,16 @@
 ## [Unreleased]
 
 
+## [1.3.0] - 2023-10-31 🎃
+
+New:
+- Add `CoroutineContext` parameter to `launchMolecule` to contribute elements to the combined
+  context that is used for running Compose.
+- Support for Kotlin 1.9.20
+
+This version works with Kotlin 1.9.20 by default.
+
+
 ## [1.2.1] - 2023-09-14
 
 New:
