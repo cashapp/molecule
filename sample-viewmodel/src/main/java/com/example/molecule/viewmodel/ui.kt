@@ -65,9 +65,9 @@ import coil.compose.AsyncImage
 import coil.compose.AsyncImagePainter
 
 @Composable
-fun PupperPicsScreen(model: Model, onEvent: (Event) -> Unit) {
+fun PupperPicsScreen(model: Model, modifier: Modifier = Modifier, onEvent: (Event) -> Unit) {
   Box(
-    modifier = Modifier
+    modifier = modifier
       .fillMaxSize()
       .background(MaterialTheme.colorScheme.background),
   ) {
@@ -183,7 +183,7 @@ private fun BreedSelectionList(model: Model, onBreedClick: (String) -> Unit) {
 }
 
 @Composable
-private fun Content(model: Model, modifier: Modifier) {
+private fun Content(model: Model, modifier: Modifier = Modifier) {
   var imageLoading by remember { mutableStateOf(true) }
 
   Box(modifier) {
@@ -201,7 +201,7 @@ private fun Content(model: Model, modifier: Modifier) {
 }
 
 @Composable
-private fun Loading(modifier: Modifier) {
+private fun Loading(modifier: Modifier = Modifier) {
   val rotation by rememberInfiniteTransition().animateFloat(
     initialValue = 0f,
     targetValue = 360f,

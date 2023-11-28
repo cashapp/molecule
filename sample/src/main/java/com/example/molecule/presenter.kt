@@ -23,7 +23,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.Snapshot
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 sealed interface CounterEvent
@@ -36,7 +35,7 @@ data class CounterModel(
 )
 
 @Composable
-fun CounterPresenter(
+fun counterPresenter(
   events: Flow<CounterEvent>,
   randomService: RandomService,
 ): CounterModel {

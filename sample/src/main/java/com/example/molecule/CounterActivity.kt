@@ -44,7 +44,7 @@ class CounterActivity : Activity() {
 
     val randomService = RandomService()
     val models = scope.launchMolecule(mode = RecompositionMode.ContextClock) {
-      CounterPresenter(events, randomService)
+      counterPresenter(events, randomService)
     }
 
     scope.launch(start = UNDISPATCHED) {

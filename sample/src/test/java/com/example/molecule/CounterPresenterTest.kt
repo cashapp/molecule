@@ -32,7 +32,7 @@ class CounterPresenterTest {
   fun localChanges() = runTest {
     val events = Channel<CounterEvent>()
     moleculeFlow(mode = RecompositionMode.Immediate) {
-      CounterPresenter(events.receiveAsFlow(), randomService)
+      counterPresenter(events.receiveAsFlow(), randomService)
     }
       .test {
         assertThat(awaitItem()).isEqualTo(CounterModel(0, false))
@@ -49,7 +49,7 @@ class CounterPresenterTest {
   fun randomChange() = runTest {
     val events = Channel<CounterEvent>()
     moleculeFlow(mode = RecompositionMode.Immediate) {
-      CounterPresenter(events.receiveAsFlow(), randomService)
+      counterPresenter(events.receiveAsFlow(), randomService)
     }
       .test {
         assertThat(awaitItem()).isEqualTo(CounterModel(0, false))

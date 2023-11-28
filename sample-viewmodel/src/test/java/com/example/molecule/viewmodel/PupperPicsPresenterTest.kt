@@ -34,7 +34,7 @@ class PupperPicsPresenterTest {
   fun `on launch, breeds are loaded followed by an image url`() = runBlocking {
     val picsService = FakePicsService()
     moleculeFlow(mode = RecompositionMode.Immediate) {
-      PupperPicsPresenter(emptyFlow(), picsService)
+      pupperPicsPresenter(emptyFlow(), picsService)
     }.distinctUntilChanged().test {
       assertEquals(
         Model(
@@ -78,7 +78,7 @@ class PupperPicsPresenterTest {
     val picsService = FakePicsService()
     val events = Channel<Event>()
     moleculeFlow(mode = RecompositionMode.Immediate) {
-      PupperPicsPresenter(events.receiveAsFlow(), picsService)
+      pupperPicsPresenter(events.receiveAsFlow(), picsService)
     }.distinctUntilChanged().test {
       picsService.breeds.add(listOf("akita", "boxer", "corgi"))
       picsService.urls.add("akita.jpg")
@@ -127,7 +127,7 @@ class PupperPicsPresenterTest {
     val picsService = FakePicsService()
     val events = Channel<Event>()
     moleculeFlow(mode = RecompositionMode.Immediate) {
-      PupperPicsPresenter(events.receiveAsFlow(), picsService)
+      pupperPicsPresenter(events.receiveAsFlow(), picsService)
     }.distinctUntilChanged().test {
       picsService.breeds.add(listOf("akita", "boxer", "corgi"))
       assertThat(picsService.urlRequestArgs.awaitItem()).isEqualTo("akita")
