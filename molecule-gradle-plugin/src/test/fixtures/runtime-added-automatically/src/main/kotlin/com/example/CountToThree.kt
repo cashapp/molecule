@@ -24,7 +24,7 @@ import androidx.compose.runtime.setValue
 import kotlinx.coroutines.delay
 
 @Composable
-fun CountToThree(): Int {
+fun countToThree(): Int {
   var count by remember { mutableStateOf(1) }
 
   LaunchedEffect(Unit) {

@@ -38,12 +38,12 @@ data class Model(
 class PupperPicsViewModel : MoleculeViewModel<Event, Model>() {
   @Composable
   override fun models(events: Flow<Event>): Model {
-    return PupperPicsPresenter(events, PupperPicsService())
+    return pupperPicsPresenter(events, PupperPicsService())
   }
 }
 
 @Composable
-fun PupperPicsPresenter(events: Flow<Event>, service: PupperPicsService): Model {
+fun pupperPicsPresenter(events: Flow<Event>, service: PupperPicsService): Model {
   var breeds: List<String> by remember { mutableStateOf(emptyList()) }
   var currentBreed: String? by remember { mutableStateOf(null) }
   var currentUrl: String? by remember { mutableStateOf(null) }
