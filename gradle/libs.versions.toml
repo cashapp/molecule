@@ -54,5 +54,5 @@ squareup-retrofit-client = { module = "com.squareup.retrofit2:retrofit", version
 squareup-retrofit-converter-scalars = { module = "com.squareup.retrofit2:converter-scalars", version.ref = "squareup-retrofit" }
 squareup-retrofit-converter-moshi = { module = "com.squareup.retrofit2:converter-moshi", version.ref = "squareup-retrofit" }
 
-assertk = "com.willowtreeapps.assertk:assertk:0.27.0"
+assertk = "com.willowtreeapps.assertk:assertk:0.28.0"
 turbine = { module = "app.cash.turbine:turbine", version = "1.0.0" }
