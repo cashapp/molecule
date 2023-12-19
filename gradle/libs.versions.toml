@@ -44,7 +44,7 @@ kotlinx-binaryCompatibilityValidator = "org.jetbrains.kotlinx:binary-compatibili
 ktlint-core = "com.pinterest.ktlint:ktlint-cli:1.0.1"
 ktlint-composeRules = "io.nlopez.compose.rules:ktlint:0.3.8"
 
-maven-publish-plugin = { module = "com.vanniktech:gradle-maven-publish-plugin", version = "0.25.3" }
+maven-publish-plugin = { module = "com.vanniktech:gradle-maven-publish-plugin", version = "0.26.0" }
 
 spotless-plugin = { module = "com.diffplug.spotless:spotless-plugin-gradle", version = "6.23.3" }
 
