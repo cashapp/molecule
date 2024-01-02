@@ -33,8 +33,8 @@ import app.cash.molecule.RecompositionMode.Immediate
 import assertk.assertFailure
 import assertk.assertThat
 import assertk.assertions.isEqualTo
-import assertk.assertions.isNotSameAs
-import assertk.assertions.isSameAs
+import assertk.assertions.isNotSameInstanceAs
+import assertk.assertions.isSameInstanceAs
 import kotlin.coroutines.CoroutineContext
 import kotlin.test.Test
 import kotlin.test.fail
@@ -107,7 +107,7 @@ class MoleculeTest {
       scope.launchMolecule(ContextClock, emitter = { fail() }) {
         throw runtimeException
       }
-    }.isSameAs(runtimeException)
+    }.isSameInstanceAs(runtimeException)
 
     scope.cancel()
   }
@@ -145,7 +145,7 @@ class MoleculeTest {
     runCurrent()
     clock.sendFrame(0)
     runCurrent()
-    assertThat(exceptionHandler.exceptions.single()).isSameAs(runtimeException)
+    assertThat(exceptionHandler.exceptions.single()).isSameInstanceAs(runtimeException)
 
     job.cancel()
   }
@@ -172,7 +172,7 @@ class MoleculeTest {
     advanceTimeBy(50)
     runCurrent()
     clock.sendFrame(0)
-    assertThat(exceptionHandler.exceptions.single()).isSameAs(runtimeException)
+    assertThat(exceptionHandler.exceptions.single()).isSameInstanceAs(runtimeException)
 
     job.cancel()
   }
@@ -187,7 +187,7 @@ class MoleculeTest {
       scope.launchMolecule(ContextClock, emitter = { throw runtimeException }) {
         0
       }
-    }.isSameAs(runtimeException)
+    }.isSameInstanceAs(runtimeException)
 
     scope.cancel()
   }
@@ -221,7 +221,7 @@ class MoleculeTest {
     runCurrent()
     clock.sendFrame(0)
     runCurrent()
-    assertThat(exceptionHandler.exceptions.single()).isSameAs(runtimeException)
+    assertThat(exceptionHandler.exceptions.single()).isSameInstanceAs(runtimeException)
 
     job.cancel()
   }
@@ -299,7 +299,7 @@ class MoleculeTest {
       moleculeFlow(mode = Immediate) {
         throw runtimeException
       }.collect()
-    }.isSameAs(runtimeException)
+    }.isSameInstanceAs(runtimeException)
   }
 
   @Test
@@ -320,7 +320,7 @@ class MoleculeTest {
           values.send(it)
         }
       }.exceptionOrNull()
-      assertThat(runtimeException).isSameAs(exception)
+      assertThat(runtimeException).isSameInstanceAs(exception)
     }
 
     assertThat(values.awaitValue()).isEqualTo(0)
@@ -347,7 +347,7 @@ class MoleculeTest {
           values.send(it)
         }
       }.exceptionOrNull()
-      assertThat(runtimeException).isSameAs(exception)
+      assertThat(runtimeException).isSameInstanceAs(exception)
     }
 
     assertThat(values.awaitValue()).isEqualTo(0)
@@ -400,7 +400,7 @@ class MoleculeTest {
     backgroundScope.launchMolecule(Immediate, myClock) {
       actualClock = rememberCoroutineScope().coroutineContext[MonotonicFrameClock]
     }
-    assertThat(actualClock).isNotSameAs(myClock)
+    assertThat(actualClock).isNotSameInstanceAs(myClock)
   }
 
   private suspend fun <T> Channel<T>.awaitValue(): T = withTimeout(1000) { receive() }

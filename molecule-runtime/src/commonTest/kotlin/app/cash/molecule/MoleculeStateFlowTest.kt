@@ -27,7 +27,7 @@ import app.cash.molecule.RecompositionMode.Immediate
 import assertk.assertFailure
 import assertk.assertThat
 import assertk.assertions.isEqualTo
-import assertk.assertions.isSameAs
+import assertk.assertions.isSameInstanceAs
 import kotlin.coroutines.CoroutineContext
 import kotlin.test.Test
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -98,7 +98,7 @@ class MoleculeStateFlowTest {
       scope.launchMolecule(ContextClock) {
         throw runtimeException
       }
-    }.isSameAs(runtimeException)
+    }.isSameInstanceAs(runtimeException)
 
     scope.cancel()
   }
@@ -136,7 +136,7 @@ class MoleculeStateFlowTest {
     runCurrent()
     clock.sendFrame(0)
     runCurrent()
-    assertThat(exceptionHandler.exceptions.single()).isSameAs(runtimeException)
+    assertThat(exceptionHandler.exceptions.single()).isSameInstanceAs(runtimeException)
 
     job.cancel()
   }
@@ -162,7 +162,7 @@ class MoleculeStateFlowTest {
     advanceTimeBy(50)
     runCurrent()
     clock.sendFrame(0)
-    assertThat(exceptionHandler.exceptions.single()).isSameAs(runtimeException)
+    assertThat(exceptionHandler.exceptions.single()).isSameInstanceAs(runtimeException)
 
     job.cancel()
   }
@@ -225,7 +225,7 @@ class MoleculeStateFlowTest {
 
       job.join()
 
-      assertThat(exceptionHandler.exceptions.single()).isSameAs(runtimeException)
+      assertThat(exceptionHandler.exceptions.single()).isSameInstanceAs(runtimeException)
     }
   }
 }
