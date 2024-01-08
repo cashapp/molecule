@@ -28,6 +28,7 @@ import kotlinx.coroutines.launch
  * While running, any request for a frame immediately succeeds. If stopped, requests for a frame wait until
  * the clock is set to run again.
  */
+@PublishedApi
 internal class GatedFrameClock(scope: CoroutineScope) : MonotonicFrameClock {
   private val frameSends = Channel<Unit>(CONFLATED)
 

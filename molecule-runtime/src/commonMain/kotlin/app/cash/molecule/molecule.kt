@@ -40,14 +40,15 @@ import kotlinx.coroutines.launch
  * Create a [Flow] which will continually recompose `body` to produce a stream of [T] values
  * when collected.
  */
-public fun <T> moleculeFlow(mode: RecompositionMode, body: @Composable () -> T): Flow<T> {
+public inline fun <T> moleculeFlow(mode: RecompositionMode, crossinline body: @Composable () -> T): Flow<T> {
   return when (mode) {
     RecompositionMode.ContextClock -> contextClockFlow(body)
     RecompositionMode.Immediate -> immediateClockFlow(body)
   }
 }
 
-private fun <T> contextClockFlow(body: @Composable () -> T) = channelFlow {
+@PublishedApi
+internal inline fun <T> contextClockFlow(crossinline body: @Composable () -> T): Flow<T> = channelFlow {
   launchMolecule(
     mode = RecompositionMode.ContextClock,
     emitter = {
@@ -57,7 +58,8 @@ private fun <T> contextClockFlow(body: @Composable () -> T) = channelFlow {
   )
 }
 
-private fun <T> immediateClockFlow(body: @Composable () -> T): Flow<T> = flow {
+@PublishedApi
+internal inline fun <T> immediateClockFlow(crossinline body: @Composable () -> T): Flow<T> = flow {
   coroutineScope {
     val clock = GatedFrameClock(this)
     val outputBuffer = Channel<T>(1)
@@ -114,10 +116,10 @@ public fun <T> CoroutineScope.launchMolecule(
  * The coroutine context is inherited from the [CoroutineScope].
  * Additional context elements can be specified with [context] argument.
  */
-public fun <T> CoroutineScope.launchMolecule(
+public inline fun <T> CoroutineScope.launchMolecule(
   mode: RecompositionMode,
   context: CoroutineContext = EmptyCoroutineContext,
-  body: @Composable () -> T,
+  crossinline body: @Composable () -> T,
 ): StateFlow<T> {
   var flow: MutableStateFlow<T>? = null
 
@@ -162,11 +164,20 @@ public fun <T> CoroutineScope.launchMolecule(
  * The coroutine context is inherited from the [CoroutineScope].
  * Additional context elements can be specified with [context] argument.
  */
-public fun <T> CoroutineScope.launchMolecule(
+public inline fun <T> CoroutineScope.launchMolecule(
   mode: RecompositionMode,
-  emitter: (value: T) -> Unit,
+  crossinline emitter: (value: T) -> Unit,
   context: CoroutineContext = EmptyCoroutineContext,
-  body: @Composable () -> T,
+  crossinline body: @Composable () -> T,
+) {
+  launchMolecule(mode, context) { emitter(body()) }
+}
+
+@PublishedApi
+internal fun CoroutineScope.launchMolecule(
+  mode: RecompositionMode,
+  context: CoroutineContext,
+  content: @Composable () -> Unit,
 ) {
   val clockContext = when (mode) {
     RecompositionMode.ContextClock -> EmptyCoroutineContext
@@ -197,9 +208,7 @@ public fun <T> CoroutineScope.launchMolecule(
     }
   }
 
-  composition.setContent {
-    emitter(body())
-  }
+  composition.setContent(content)
 }
 
 private object UnitApplier : AbstractApplier<Unit>(Unit) {
