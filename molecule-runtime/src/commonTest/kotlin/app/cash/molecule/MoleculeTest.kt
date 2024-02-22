@@ -35,10 +35,8 @@ import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isNotSameInstanceAs
 import assertk.assertions.isSameInstanceAs
-import kotlin.coroutines.CoroutineContext
 import kotlin.test.Test
 import kotlin.test.fail
-import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -110,15 +108,6 @@ class MoleculeTest {
     }.isSameInstanceAs(runtimeException)
 
     scope.cancel()
-  }
-
-  class RecordingExceptionHandler : CoroutineExceptionHandler {
-    private val _exceptions = mutableListOf<Throwable>()
-    val exceptions get() = _exceptions
-    override fun handleException(context: CoroutineContext, exception: Throwable) {
-      _exceptions += exception
-    }
-    override val key get() = CoroutineExceptionHandler
   }
 
   @Test fun errorDelayed() = runTest {
@@ -310,7 +299,7 @@ class MoleculeTest {
     val runtimeException = object : RuntimeException() {}
     var count by mutableStateOf(0)
     launch {
-      val exception = kotlin.runCatching {
+      val exception = runCatching {
         moleculeFlow(mode = Immediate) {
           if (count == 1) {
             throw runtimeException
@@ -336,7 +325,7 @@ class MoleculeTest {
     // Use a custom subtype to prevent coroutines from breaking referential equality.
     val runtimeException = object : RuntimeException() {}
     launch {
-      val exception = kotlin.runCatching {
+      val exception = runCatching {
         moleculeFlow(mode = Immediate) {
           LaunchedEffect(Unit) {
             delay(50)

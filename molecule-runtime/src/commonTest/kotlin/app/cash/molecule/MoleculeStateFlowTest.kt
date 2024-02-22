@@ -28,9 +28,7 @@ import assertk.assertFailure
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isSameInstanceAs
-import kotlin.coroutines.CoroutineContext
 import kotlin.test.Test
-import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -101,15 +99,6 @@ class MoleculeStateFlowTest {
     }.isSameInstanceAs(runtimeException)
 
     scope.cancel()
-  }
-
-  class RecordingExceptionHandler : CoroutineExceptionHandler {
-    private val _exceptions = mutableListOf<Throwable>()
-    val exceptions get() = _exceptions
-    override fun handleException(context: CoroutineContext, exception: Throwable) {
-      _exceptions += exception
-    }
-    override val key get() = CoroutineExceptionHandler
   }
 
   @Test fun errorDelayed() = runTest {
