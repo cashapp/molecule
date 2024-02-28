@@ -22,6 +22,7 @@ kotlin {
 
   jvm()
 
+  linuxArm64()
   linuxX64()
 
   macosArm64()
@@ -33,10 +34,16 @@ kotlin {
   tvosSimulatorArm64()
   tvosX64()
 
+  wasmJs {
+    browser()
+  }
+
   watchosArm32()
   watchosArm64()
   watchosSimulatorArm64()
   watchosX64()
+
+  applyDefaultHierarchyTemplate()
 
   sourceSets {
     configureEach {
@@ -64,6 +71,15 @@ kotlin {
       }
     }
 
+    // We use a common folder instead of a common source set because there is no commonizer
+    // which exposes the browser APIs across these two targets.
+    jsMain {
+      kotlin.srcDir('src/browserMain/kotlin')
+    }
+    wasmJsMain {
+      kotlin.srcDir('src/browserMain/kotlin')
+    }
+
     darwinMain {
       dependsOn(commonMain)
     }
@@ -78,21 +94,32 @@ kotlin {
     quartzCoreMain {
       dependsOn(displayLinkMain)
     }
+
+    iosMain {
+      dependsOn(quartzCoreMain)
+    }
+    iosTest {
+      // TODO Link against XCTest in order to get frame pulses on iOS.
+      // dependsOn(displayLinkTest)
+    }
+
+    tvosMain {
+      dependsOn(quartzCoreMain)
+    }
+    tvosTest {
+      // TODO Link against XCTest in order to get frame pulses on tvOS.
+      // dependsOn(displayLinkTest)
+    }
+
     macosMain {
       dependsOn(displayLinkMain)
     }
-  }
+    macosTest {
+      dependsOn(displayLinkTest)
+    }
 
-  targets.each { target ->
-    if (target.name.startsWith('ios') || target.name.startsWith('tvos')) {
-      target.compilations.main.defaultSourceSet.dependsOn(sourceSets.quartzCoreMain)
-      // TODO Link against XCTest in order to get frame pulses on iOS/tvOS.
-      // target.compilations.test.defaultSourceSet.dependsOn(sourceSets.displayLinkTest)
-    } else if (target.name.startsWith('macos')) {
-      target.compilations.main.defaultSourceSet.dependsOn(sourceSets.macosMain)
-      target.compilations.test.defaultSourceSet.dependsOn(sourceSets.displayLinkTest)
-    } else if (target.name.startsWith('watchos')) {
-      target.compilations.main.defaultSourceSet.dependsOn(sourceSets.darwinMain)
+    watchosMain {
+      dependsOn(darwinMain)
     }
   }
 }

@@ -2,6 +2,9 @@
 
 ## [Unreleased]
 
+New:
+- Support for `linuxArm64` and `wasmJs` targets.
+
 
 ## [1.4.0] - 2024-02-27
 
