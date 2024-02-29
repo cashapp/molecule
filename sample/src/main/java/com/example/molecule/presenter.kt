@@ -48,6 +48,7 @@ fun counterPresenter(
         is Change -> {
           count += event.delta
         }
+
         Randomize -> {
           loading = true
           launch {
