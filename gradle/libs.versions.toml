@@ -27,7 +27,7 @@ jetbrains-compose-compiler = "org.jetbrains.compose.compiler:compiler:1.5.8.1"
 jetbrains-compose-plugin = { module = "org.jetbrains.compose:compose-gradle-plugin", version.ref = "jetbrains-compose" }
 jetbrains-compose-runtime = { module = "org.jetbrains.compose.runtime:runtime", version.ref = "jetbrains-compose" }
 
-dokka-plugin = { module = "org.jetbrains.dokka:dokka-gradle-plugin", version = "1.9.10" }
+dokka-plugin = { module = "org.jetbrains.dokka:dokka-gradle-plugin", version = "1.9.20" }
 
 buildConfig-plugin = "com.github.gmazzo:gradle-buildconfig-plugin:3.1.0"
 
