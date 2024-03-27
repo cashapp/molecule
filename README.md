@@ -165,6 +165,8 @@ For more information see [the `moleculeFlow` documentation](https://cashapp.gith
 
 Add the buildscript dependency and apply the plugin to every module which wants to call `launchMolecule` or define `@Composable` functions for use with Molecule.
 
+##### Groovy
+
 ```groovy
 buildscript {
   repositories {
@@ -176,6 +178,21 @@ buildscript {
 }
 
 apply plugin: 'app.cash.molecule'
+```
+
+##### Kotlin
+
+```kotlin
+buildscript {
+  repositories {
+    mavenCentral()
+  }
+  dependencies {
+    classpath("app.cash.molecule:molecule-gradle-plugin:1.1.0")
+  }
+}
+
+apply(plugin = "app.cash.molecule")
 ```
 
 Since Kotlin compiler plugins are an unstable API, certain versions of Molecule only work with
@@ -204,6 +221,8 @@ certain versions of Kotlin.
 <summary>Snapshots of the development version are available in Sonatype's snapshots repository.</summary>
 <p>
 
+##### Groovy
+
 ```groovy
 buildscript {
   repositories {
@@ -218,6 +237,22 @@ buildscript {
 }
 
 apply plugin: 'app.cash.molecule'
+```
+
+##### Kotlin
+
+```kotlin
+buildscript {
+  repositories {
+    mavenCentral()
+    maven("https://oss.sonatype.org/content/repositories/snapshots/")
+  }
+  dependencies {
+    classpath("app.cash.molecule:molecule-gradle-plugin:1.2.0-SNAPSHOT")
+  }
+}
+
+apply(plugin = "app.cash.molecule")
 ```
 
 </p>
@@ -265,13 +300,27 @@ Use `moleculeFlow(mode = Immediate)` and test using [Turbine](https://github.com
 
 If you're unit testing Molecule on the JVM in an Android module, please set below in your project's AGP config.
 
-```gradle
+##### Groovy
+
+```groovy
 android {
-  ...
+  // ...
   testOptions {
     unitTests.returnDefaultValues = true
   }
-  ...
+  // ...
+}
+```
+
+##### Kotlin
+
+```kotlin
+android {
+  // ...
+  testOptions {
+    unitTests.isReturnDefaultValues = true
+  }
+  // ...
 }
 ```
 
@@ -282,6 +331,8 @@ a single version of Kotlin (see [version table](#usage) above). Newer versions o
 compiler or alternate Compose compilers can be specified using the Gradle extension.
 
 To use a new version of the JetBrains Compose compiler version:
+
+##### Groovy & Kotlin
 ```kotlin
 molecule {
   kotlinCompilerPlugin.set("1.4.8")
@@ -289,6 +340,7 @@ molecule {
 ```
 
 To use an alternate Compose compiler dependency:
+##### Groovy & Kotlin
 ```kotlin
 molecule {
   kotlinCompilerPlugin.set("com.example:custom-compose-compiler:1.0.0")
