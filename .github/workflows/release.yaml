@@ -15,7 +15,7 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: 20
-
+      - uses: gradle/actions/setup-gradle@v3
       - run: ./gradlew publish dokkaHtmlMultiModule
         env:
           ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.SONATYPE_NEXUS_USERNAME }}
