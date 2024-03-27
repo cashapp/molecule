@@ -3,13 +3,23 @@
 ## [Unreleased]
 
 New:
--
+- ...
+
+Changed:
+- ...
+
+Fixed:
+- ...
+
+
+## [1.4.2] - 2024-03-27
+New:
+- Support for Kotlin 1.9.23
 
 Changed:
 - Disable klib signature clash checks for JS compilations. These occasionally occur as a result of Compose compiler behavior, and are safe to disable (the first-party JetBrains Compose Gradle plugin also disables them).
 
-Fixed:
--
+This version works with Kotlin 1.9.23 by default.
 
 
 ## [1.4.1] - 2024-02-28
@@ -240,7 +250,8 @@ Initial release
 
 
 
-[Unreleased]: https://github.com/cashapp/molecule/compare/1.4.1...HEAD
+[Unreleased]: https://github.com/cashapp/molecule/compare/1.4.2...HEAD
+[1.4.2]: https://github.com/cashapp/molecule/releases/tag/1.4.2
 [1.4.1]: https://github.com/cashapp/molecule/releases/tag/1.4.1
 [1.4.0]: https://github.com/cashapp/molecule/releases/tag/1.4.0
 [1.3.2]: https://github.com/cashapp/molecule/releases/tag/1.3.2
