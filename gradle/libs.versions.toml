@@ -9,7 +9,7 @@ kotlin = "1.9.23"
 jetbrains-compose = "1.6.1"
 
 squareup-okhttp = "4.12.0"
-squareup-retrofit = "2.10.0"
+squareup-retrofit = "2.11.0"
 
 [libraries]
 android-plugin = { module = "com.android.tools.build:gradle", version = "8.3.1" }
