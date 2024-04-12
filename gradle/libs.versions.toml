@@ -42,7 +42,7 @@ kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-t
 kotlinx-binaryCompatibilityValidator = "org.jetbrains.kotlinx:binary-compatibility-validator:0.15.0-Beta.2"
 
 ktlint-core = "com.pinterest.ktlint:ktlint-cli:1.2.1"
-ktlint-composeRules = "io.nlopez.compose.rules:ktlint:0.3.13"
+ktlint-composeRules = "io.nlopez.compose.rules:ktlint:0.3.14"
 
 maven-publish-plugin = { module = "com.vanniktech:gradle-maven-publish-plugin", version = "0.28.0" }
 
