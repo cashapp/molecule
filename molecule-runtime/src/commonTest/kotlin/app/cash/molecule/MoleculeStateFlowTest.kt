@@ -18,7 +18,7 @@ package app.cash.molecule
 import androidx.compose.runtime.BroadcastFrameClock
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.Snapshot
@@ -52,7 +52,7 @@ class MoleculeStateFlowTest {
     val scope = CoroutineScope(coroutineContext + job + clock)
 
     val flow = scope.launchMolecule(ContextClock) {
-      var count by remember { mutableStateOf(0) }
+      var count by remember { mutableIntStateOf(0) }
       LaunchedEffect(Unit) {
         while (true) {
           delay(100)
@@ -109,7 +109,7 @@ class MoleculeStateFlowTest {
 
     // Use a custom subtype to prevent coroutines from breaking referential equality.
     val runtimeException = object : RuntimeException() {}
-    var count by mutableStateOf(0)
+    var count by mutableIntStateOf(0)
     val flow = scope.launchMolecule(ContextClock) {
       println("Sup $count")
       if (count == 1) {
@@ -162,7 +162,7 @@ class MoleculeStateFlowTest {
     val scope = this + job
 
     val flow = scope.launchMolecule(Immediate) {
-      var count by remember { mutableStateOf(0) }
+      var count by remember { mutableIntStateOf(0) }
       LaunchedEffect(Unit) {
         while (true) {
           delay(100)
@@ -195,7 +195,7 @@ class MoleculeStateFlowTest {
     val runtimeException = object : RuntimeException() {}
     val exceptionHandler = RecordingExceptionHandler()
 
-    var count by mutableStateOf(0)
+    var count by mutableIntStateOf(0)
     supervisorScope {
       var flow: StateFlow<Int>? = null
 

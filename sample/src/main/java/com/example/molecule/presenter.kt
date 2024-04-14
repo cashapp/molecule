@@ -18,6 +18,7 @@ package com.example.molecule
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -39,7 +40,7 @@ fun counterPresenter(
   events: Flow<CounterEvent>,
   randomService: RandomService,
 ): CounterModel {
-  var count by remember { mutableStateOf(0) }
+  var count by remember { mutableIntStateOf(0) }
   var loading by remember { mutableStateOf(false) }
 
   LaunchedEffect(Unit) {
