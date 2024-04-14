@@ -20,7 +20,7 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MonotonicFrameClock
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
@@ -61,7 +61,7 @@ class MoleculeTest {
     var value: Int? = null
 
     scope.launchMolecule(ContextClock, emitter = { value = it }) {
-      var count by remember { mutableStateOf(0) }
+      var count by remember { mutableIntStateOf(0) }
       LaunchedEffect(Unit) {
         while (true) {
           delay(100)
@@ -119,7 +119,7 @@ class MoleculeTest {
 
     // Use a custom subtype to prevent coroutines from breaking referential equality.
     val runtimeException = object : RuntimeException() {}
-    var count by mutableStateOf(0)
+    var count by mutableIntStateOf(0)
     scope.launchMolecule(ContextClock, emitter = { value = it }) {
       if (count == 1) {
         throw runtimeException
@@ -190,7 +190,7 @@ class MoleculeTest {
 
     // Use a custom subtype to prevent coroutines from breaking referential equality.
     val runtimeException = object : RuntimeException() {}
-    var count by mutableStateOf(0)
+    var count by mutableIntStateOf(0)
     scope.launchMolecule(
       ContextClock,
       emitter = {
@@ -247,7 +247,7 @@ class MoleculeTest {
 
     val job = launch {
       moleculeFlow(mode = Immediate) {
-        var count by remember { mutableStateOf(0) }
+        var count by remember { mutableIntStateOf(0) }
         LaunchedEffect(Unit) {
           while (true) {
             delay(100)
@@ -297,7 +297,7 @@ class MoleculeTest {
 
     // Use a custom subtype to prevent coroutines from breaking referential equality.
     val runtimeException = object : RuntimeException() {}
-    var count by mutableStateOf(0)
+    var count by mutableIntStateOf(0)
     launch {
       val exception = runCatching {
         moleculeFlow(mode = Immediate) {

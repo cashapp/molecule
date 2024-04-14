@@ -18,14 +18,14 @@ package com.example
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import kotlinx.coroutines.delay
 
 @Composable
 fun countToThree(): Int {
-  var count by remember { mutableStateOf(1) }
+  var count by remember { mutableIntStateOf(1) }
 
   LaunchedEffect(Unit) {
     delay(100)

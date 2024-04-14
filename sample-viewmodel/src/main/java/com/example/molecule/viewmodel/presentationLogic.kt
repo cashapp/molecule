@@ -18,6 +18,7 @@ package com.example.molecule.viewmodel
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -47,7 +48,7 @@ fun pupperPicsPresenter(events: Flow<Event>, service: PupperPicsService): Model 
   var breeds: List<String> by remember { mutableStateOf(emptyList()) }
   var currentBreed: String? by remember { mutableStateOf(null) }
   var currentUrl: String? by remember { mutableStateOf(null) }
-  var fetchId: Int by remember { mutableStateOf(0) }
+  var fetchId: Int by remember { mutableIntStateOf(0) }
 
   // Grab the list of breeds and sets the current selection to the first in the list.
   // Errors are ignored in this sample.
