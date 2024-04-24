@@ -32,6 +32,7 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
@@ -135,7 +136,7 @@ public fun <T> CoroutineScope.launchMolecule(
     body = body,
   )
 
-  return flow!!
+  return flow!!.asStateFlow()
 }
 
 @Deprecated("", level = HIDDEN) // For binary compatibility.
