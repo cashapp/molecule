@@ -3,16 +3,25 @@
 ## [Unreleased]
 
 New:
-- ...
+- Nothing yet!
 
 Changed:
-- ...
+- Nothing yet!
 
 Fixed:
-- ...
+- Nothing yet!
+
+
+## [1.4.3] - 2024-05-15
+
+New:
+- Support for Kotlin 1.9.24
+
+This version works with Kotlin 1.9.24 by default.
 
 
 ## [1.4.2] - 2024-03-27
+
 New:
 - Support for Kotlin 1.9.23
 
@@ -250,7 +259,8 @@ Initial release
 
 
 
-[Unreleased]: https://github.com/cashapp/molecule/compare/1.4.2...HEAD
+[Unreleased]: https://github.com/cashapp/molecule/compare/1.4.3...HEAD
+[1.4.3]: https://github.com/cashapp/molecule/releases/tag/1.4.3
 [1.4.2]: https://github.com/cashapp/molecule/releases/tag/1.4.2
 [1.4.1]: https://github.com/cashapp/molecule/releases/tag/1.4.1
 [1.4.0]: https://github.com/cashapp/molecule/releases/tag/1.4.0

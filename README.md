@@ -171,7 +171,7 @@ buildscript {
     mavenCentral()
   }
   dependencies {
-    classpath 'app.cash.molecule:molecule-gradle-plugin:1.4.2'
+    classpath 'app.cash.molecule:molecule-gradle-plugin:1.4.3'
   }
 }
 
@@ -183,6 +183,7 @@ certain versions of Kotlin.
 
 | Kotlin | Molecule       |
 |--------|----------------|
+| 1.9.24 | 1.4.3          |
 | 1.9.23 | 1.4.2          |
 | 1.9.22 | 1.3.2 - 1.4.1  |
 | 1.9.21 | 1.3.1          |
