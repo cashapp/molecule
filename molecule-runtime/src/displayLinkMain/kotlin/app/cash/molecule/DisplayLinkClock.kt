@@ -17,4 +17,6 @@ package app.cash.molecule
 
 import androidx.compose.runtime.MonotonicFrameClock
 
-public expect object DisplayLinkClock : MonotonicFrameClock
+public expect object DisplayLinkClock : MonotonicFrameClock {
+  override suspend fun <R> withFrameNanos(onFrame: (frameTimeNanos: Long) -> R): R
+}

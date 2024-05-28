@@ -6,6 +6,9 @@ build
 # Android
 local.properties
 
+# Kotlin
+.kotlin
+
 # IntelliJ
 /.idea
 *.iml

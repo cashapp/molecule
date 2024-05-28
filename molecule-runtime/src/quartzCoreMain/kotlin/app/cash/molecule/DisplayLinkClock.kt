@@ -36,7 +36,7 @@ public actual object DisplayLinkClock : MonotonicFrameClock {
     displayLink.addToRunLoop(NSRunLoop.currentRunLoop, NSRunLoop.currentRunLoop.currentMode)
   }
 
-  override suspend fun <R> withFrameNanos(onFrame: (frameTimeNanos: Long) -> R): R {
+  actual override suspend fun <R> withFrameNanos(onFrame: (frameTimeNanos: Long) -> R): R {
     return clock.withFrameNanos(onFrame)
   }
 

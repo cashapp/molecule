@@ -1,8 +1,9 @@
 apply plugin: 'com.android.application'
 apply plugin: 'org.jetbrains.kotlin.android'
-apply plugin: 'app.cash.molecule'
+apply plugin: 'org.jetbrains.kotlin.plugin.compose'
 
 dependencies {
+  implementation projects.moleculeRuntime
   implementation libs.squareup.retrofit.client
   implementation libs.squareup.retrofit.converter.scalars
   implementation libs.squareup.okhttp.client
@@ -23,13 +24,5 @@ android {
 
   testOptions {
     unitTests.returnDefaultValues = true
-  }
-}
-
-tasks.withType(org.jetbrains.kotlin.gradle.dsl.KotlinJvmCompile).configureEach { task ->
-  task.kotlinOptions {
-    freeCompilerArgs += [
-      '-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi',
-    ]
   }
 }
