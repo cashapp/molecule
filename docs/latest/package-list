@@ -1,6 +1,0 @@
-$dokka.format:html-v1
-$dokka.linkExtension:html
-$dokka.location:app.cash.molecule/WindowAnimationFrameClock///PointingToDeclaration/molecule-runtime/app.cash.molecule/[wasm-js]-window-animation-frame-clock/index.html
-$dokka.location:app.cash.molecule/WindowAnimationFrameClock/withFrameNanos/#kotlin.Function1[kotlin.Long,TypeParam(bounds=[kotlin.Any?])]/PointingToDeclaration/molecule-runtime/app.cash.molecule/[wasm-js]-window-animation-frame-clock/with-frame-nanos.html
-module:molecule-runtime
-app.cash.molecule
