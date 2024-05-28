@@ -16,8 +16,6 @@ buildscript {
   }
 }
 
-apply plugin: 'org.jetbrains.dokka'
-
 allprojects {
   version = property("VERSION_NAME") as String
 

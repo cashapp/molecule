@@ -16,7 +16,7 @@ jobs:
           distribution: 'zulu'
           java-version: 20
       - uses: gradle/actions/setup-gradle@v3
-      - run: ./gradlew publish dokkaHtmlMultiModule
+      - run: ./gradlew publish dokkaHtml
         env:
           ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.SONATYPE_NEXUS_USERNAME }}
           ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.SONATYPE_NEXUS_PASSWORD }}
@@ -38,6 +38,6 @@ jobs:
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           BRANCH: site
-          FOLDER: build/dokka/htmlMultiModule
-          TARGET_FOLDER: docs/1.x/
+          FOLDER: molecule-runtime/build/dokka/html
+          TARGET_FOLDER: docs/2.x/
           CLEAN: true
