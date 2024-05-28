@@ -3,13 +3,77 @@
 ## [Unreleased]
 
 New:
-- Nothing yet!
+- Support for Kotlin 2.0.0!
 
 Changed:
-- Nothing yet!
+- Remove our Gradle plugin in favor of JetBrains' (see below for more).
 
 Fixed:
-- Nothing yet!
+- Mac OS `DisplayLinkClock` was updated to correctly use a "static" function for pointer-passing to `CVDisplayLink`, as newly-enforced by Kotlin 2.0. This should not cause a behavior change.
+
+
+### Gradle plugin removed
+
+This version of Molecule removes the custom Gradle plugin in favor of [the official JetBrains Compose compiler plugin](https://www.jetbrains.com/help/kotlin-multiplatform-dev/compose-compiler.html) which ships as part of Kotlin itself.
+Each module in which you had previously applied the `app.cash.molecule` plugin should be changed to apply `org.jetbrains.kotlin.plugin.compose` instead.
+The Molecule runtime will no longer be added as a result of the plugin change, and so any module which references Molecule APIs like `launchMolecule` should apply the `app.cash.molecule:molecule-runtime` dependency.
+
+For posterity, the Kotlin version compatibility table and compiler version customization for our old Molecule Gradle plugin will be archived here:
+
+<details>
+<summary>Molecule 1.x Gradle plugin Kotlin compatibility table</summary>
+<p>
+
+Since Kotlin compiler plugins are an unstable API, certain versions of Molecule only work with
+certain versions of Kotlin.
+
+| Kotlin | Molecule       |
+|--------|----------------|
+| 1.9.24 | 1.4.3          |
+| 1.9.23 | 1.4.2          |
+| 1.9.22 | 1.3.2 - 1.4.1  |
+| 1.9.21 | 1.3.1          |
+| 1.9.20 | 1.3.0          |
+| 1.9.10 | 1.2.1          |
+| 1.9.0  | 1.1.0 - 1.2.0  |
+| 1.8.22 | 0.11.0 - 1.0.0 |
+| 1.8.21 | 0.10.0         |
+| 1.8.20 | 0.9.0          |
+| 1.8.10 | 0.8.0          |
+| 1.8.0  | 0.7.0 - 0.7.1  |
+| 1.7.20 | 0.6.0 - 0.6.1  |
+| 1.7.10 | 0.4.0 - 0.5.0  |
+| 1.7.0  | 0.3.0 - 0.3.1  |
+| 1.6.10 | 0.2.0          |
+| 1.5.31 | 0.1.0          |
+
+</p>
+</details>
+
+<details>
+<summary>Molecule 1.x Gradle plugin Compose compiler customization instructions</summary>
+<p>
+
+Each version of Molecule ships with a specific JetBrains Compose compiler version which works with
+a single version of Kotlin (see version table above). Newer versions of the Compose
+compiler or alternate Compose compilers can be specified using the Gradle extension.
+
+To use a new version of the JetBrains Compose compiler version:
+```kotlin
+molecule {
+  kotlinCompilerPlugin.set("1.4.8")
+}
+```
+
+To use an alternate Compose compiler dependency:
+```kotlin
+molecule {
+  kotlinCompilerPlugin.set("com.example:custom-compose-compiler:1.0.0")
+}
+```
+
+</p>
+</details>
 
 
 ## [1.4.3] - 2024-05-15

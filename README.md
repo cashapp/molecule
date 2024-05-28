@@ -163,62 +163,33 @@ For more information see [the `moleculeFlow` documentation](https://cashapp.gith
 
 ## Usage
 
-Add the buildscript dependency and apply the plugin to every module which wants to call `launchMolecule` or define `@Composable` functions for use with Molecule.
+Molecule is a library for Compose, and it relies on JetBrains' Kotlin Compose plugin to be present for use.
+Any module which wants to call `launchMolecule` or define `@Composable` functions for use with Molecule must have this plugin applied.
+For more information, see [the JetBrains Compose compiler documentation](https://www.jetbrains.com/help/kotlin-multiplatform-dev/compose-compiler.html).
+
+Molecule itself can then be added like any other dependency:
 
 ```groovy
-buildscript {
-  repositories {
-    mavenCentral()
-  }
-  dependencies {
-    classpath 'app.cash.molecule:molecule-gradle-plugin:1.4.3'
-  }
+dependencies {
+  implementation("app.cash.molecule:molecule-runtime:2.0.0")
 }
-
-apply plugin: 'app.cash.molecule'
 ```
-
-Since Kotlin compiler plugins are an unstable API, certain versions of Molecule only work with
-certain versions of Kotlin.
-
-| Kotlin | Molecule       |
-|--------|----------------|
-| 1.9.24 | 1.4.3          |
-| 1.9.23 | 1.4.2          |
-| 1.9.22 | 1.3.2 - 1.4.1  |
-| 1.9.21 | 1.3.1          |
-| 1.9.20 | 1.3.0          |
-| 1.9.10 | 1.2.1          |
-| 1.9.0  | 1.1.0 - 1.2.0  |
-| 1.8.22 | 0.11.0 - 1.0.0 |
-| 1.8.21 | 0.10.0         |
-| 1.8.20 | 0.9.0          |
-| 1.8.10 | 0.8.0          |
-| 1.8.0  | 0.7.0 - 0.7.1  |
-| 1.7.20 | 0.6.0 - 0.6.1  |
-| 1.7.10 | 0.4.0 - 0.5.0  |
-| 1.7.0  | 0.3.0 - 0.3.1  |
-| 1.6.10 | 0.2.0          |
-| 1.5.31 | 0.1.0          |
 
 <details>
 <summary>Snapshots of the development version are available in Sonatype's snapshots repository.</summary>
 <p>
 
 ```groovy
-buildscript {
-  repositories {
-    mavenCentral()
-    maven {
-      url 'https://oss.sonatype.org/content/repositories/snapshots/'
-    }
-  }
-  dependencies {
-    classpath 'app.cash.molecule:molecule-gradle-plugin:1.5.0-SNAPSHOT'
+repositories {
+  mavenCentral()
+  maven {
+    url "https://oss.sonatype.org/content/repositories/snapshots/"
   }
 }
 
-apply plugin: 'app.cash.molecule'
+dependencies {
+  implementation("app.cash.molecule:molecule-runtime:2.1.0-SNAPSHOT")
+}
 ```
 
 </p>
@@ -273,26 +244,6 @@ android {
     unitTests.returnDefaultValues = true
   }
   ...
-}
-```
-
-### Custom Compose Compiler
-
-Each version of Molecule ships with a specific JetBrains Compose compiler version which works with
-a single version of Kotlin (see [version table](#usage) above). Newer versions of the Compose
-compiler or alternate Compose compilers can be specified using the Gradle extension.
-
-To use a new version of the JetBrains Compose compiler version:
-```kotlin
-molecule {
-  kotlinCompilerPlugin.set("1.4.8")
-}
-```
-
-To use an alternate Compose compiler dependency:
-```kotlin
-molecule {
-  kotlinCompilerPlugin.set("com.example:custom-compose-compiler:1.0.0")
 }
 ```
 
