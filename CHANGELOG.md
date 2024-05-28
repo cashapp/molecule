@@ -3,6 +3,18 @@
 ## [Unreleased]
 
 New:
+- Nothing yet!
+
+Changed:
+- Nothing yet!
+
+Fixed:
+- Nothing yet!
+
+
+## [2.0.0] - 2024-05-28
+
+New:
 - Support for Kotlin 2.0.0!
 
 Changed:
@@ -10,6 +22,8 @@ Changed:
 
 Fixed:
 - Mac OS `DisplayLinkClock` was updated to correctly use a "static" function for pointer-passing to `CVDisplayLink`, as newly-enforced by Kotlin 2.0. This should not cause a behavior change.
+
+Note: This release is otherwise binary-compatible with the 1.x versions. The major version bump is due to the build change only.
 
 
 ### Gradle plugin removed
@@ -323,7 +337,8 @@ Initial release
 
 
 
-[Unreleased]: https://github.com/cashapp/molecule/compare/1.4.3...HEAD
+[Unreleased]: https://github.com/cashapp/molecule/compare/2.0.0...HEAD
+[2.0.0]: https://github.com/cashapp/molecule/releases/tag/2.0.0
 [1.4.3]: https://github.com/cashapp/molecule/releases/tag/1.4.3
 [1.4.2]: https://github.com/cashapp/molecule/releases/tag/1.4.2
 [1.4.1]: https://github.com/cashapp/molecule/releases/tag/1.4.1
