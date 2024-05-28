@@ -1,0 +1,27 @@
+$dokka.format:html-v1
+$dokka.linkExtension:html
+$dokka.location:app.cash.molecule////PointingToDeclaration/molecule-runtime/app.cash.molecule/index.html
+$dokka.location:app.cash.molecule//launchMolecule/kotlinx.coroutines.CoroutineScope#app.cash.molecule.RecompositionMode#kotlin.Function1[TypeParam(bounds=[kotlin.Any?]),kotlin.Unit]#kotlin.coroutines.CoroutineContext#kotlin.Function0[TypeParam(bounds=[kotlin.Any?])]/PointingToDeclaration/molecule-runtime/app.cash.molecule/launch-molecule.html
+$dokka.location:app.cash.molecule//launchMolecule/kotlinx.coroutines.CoroutineScope#app.cash.molecule.RecompositionMode#kotlin.coroutines.CoroutineContext#kotlin.Function0[TypeParam(bounds=[kotlin.Any?])]/PointingToDeclaration/molecule-runtime/app.cash.molecule/launch-molecule.html
+$dokka.location:app.cash.molecule//moleculeFlow/#app.cash.molecule.RecompositionMode#kotlin.Function0[TypeParam(bounds=[kotlin.Any?])]/PointingToDeclaration/molecule-runtime/app.cash.molecule/molecule-flow.html
+$dokka.location:app.cash.molecule/AndroidUiDispatcher.Companion///PointingToDeclaration/molecule-runtime/app.cash.molecule/-android-ui-dispatcher/-companion/index.html
+$dokka.location:app.cash.molecule/AndroidUiDispatcher.Companion/Main/#/PointingToDeclaration/molecule-runtime/app.cash.molecule/-android-ui-dispatcher/-companion/-main.html
+$dokka.location:app.cash.molecule/AndroidUiDispatcher///PointingToDeclaration/molecule-runtime/app.cash.molecule/-android-ui-dispatcher/index.html
+$dokka.location:app.cash.molecule/AndroidUiDispatcher/choreographer/#/PointingToDeclaration/molecule-runtime/app.cash.molecule/-android-ui-dispatcher/choreographer.html
+$dokka.location:app.cash.molecule/AndroidUiDispatcher/dispatch/#kotlin.coroutines.CoroutineContext#java.lang.Runnable/PointingToDeclaration/molecule-runtime/app.cash.molecule/-android-ui-dispatcher/dispatch.html
+$dokka.location:app.cash.molecule/AndroidUiDispatcher/frameClock/#/PointingToDeclaration/molecule-runtime/app.cash.molecule/-android-ui-dispatcher/frame-clock.html
+$dokka.location:app.cash.molecule/AndroidUiFrameClock///PointingToDeclaration/molecule-runtime/app.cash.molecule/-android-ui-frame-clock/index.html
+$dokka.location:app.cash.molecule/AndroidUiFrameClock/AndroidUiFrameClock/#android.view.Choreographer/PointingToDeclaration/molecule-runtime/app.cash.molecule/-android-ui-frame-clock/-android-ui-frame-clock.html
+$dokka.location:app.cash.molecule/AndroidUiFrameClock/withFrameNanos/#kotlin.Function1[kotlin.Long,TypeParam(bounds=[kotlin.Any?])]/PointingToDeclaration/molecule-runtime/app.cash.molecule/-android-ui-frame-clock/with-frame-nanos.html
+$dokka.location:app.cash.molecule/DisplayLinkClock///PointingToDeclaration/molecule-runtime/app.cash.molecule/-display-link-clock/index.html
+$dokka.location:app.cash.molecule/DisplayLinkClock/withFrameNanos/#kotlin.Function1[kotlin.Long,TypeParam(bounds=[kotlin.Any?])]/PointingToDeclaration/molecule-runtime/app.cash.molecule/-display-link-clock/with-frame-nanos.html
+$dokka.location:app.cash.molecule/RecompositionMode.ContextClock///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}molecule-runtime/app.cash.molecule/-recomposition-mode/-context-clock/index.html
+$dokka.location:app.cash.molecule/RecompositionMode.Immediate///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}molecule-runtime/app.cash.molecule/-recomposition-mode/-immediate/index.html
+$dokka.location:app.cash.molecule/RecompositionMode///PointingToDeclaration/molecule-runtime/app.cash.molecule/-recomposition-mode/index.html
+$dokka.location:app.cash.molecule/RecompositionMode/entries/#/PointingToDeclaration/molecule-runtime/app.cash.molecule/-recomposition-mode/entries.html
+$dokka.location:app.cash.molecule/RecompositionMode/valueOf/#kotlin.String/PointingToDeclaration/molecule-runtime/app.cash.molecule/-recomposition-mode/value-of.html
+$dokka.location:app.cash.molecule/RecompositionMode/values/#/PointingToDeclaration/molecule-runtime/app.cash.molecule/-recomposition-mode/values.html
+$dokka.location:app.cash.molecule/WindowAnimationFrameClock///PointingToDeclaration/molecule-runtime/app.cash.molecule/[wasm-js]-window-animation-frame-clock/index.html
+$dokka.location:app.cash.molecule/WindowAnimationFrameClock/withFrameNanos/#kotlin.Function1[kotlin.Long,TypeParam(bounds=[kotlin.Any?])]/PointingToDeclaration/molecule-runtime/app.cash.molecule/[wasm-js]-window-animation-frame-clock/with-frame-nanos.html
+app.cash.molecule
+
