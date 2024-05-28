@@ -9,6 +9,7 @@
 // - Show declarations: true
 
 // Library unique name: <molecule:molecule-runtime>
+final const val app.cash.molecule/app_cash_molecule_GatedFrameClock$stableprop // app.cash.molecule/app_cash_molecule_GatedFrameClock$stableprop|#static{}app_cash_molecule_GatedFrameClock$stableprop[0]
 final enum class app.cash.molecule/RecompositionMode : kotlin/Enum<app.cash.molecule/RecompositionMode> { // app.cash.molecule/RecompositionMode|null[0]
     enum entry ContextClock // app.cash.molecule/RecompositionMode.ContextClock|null[0]
     enum entry Immediate // app.cash.molecule/RecompositionMode.Immediate|null[0]
@@ -22,16 +23,15 @@ final fun <#A: kotlin/Any?> (kotlinx.coroutines/CoroutineScope).app.cash.molecul
 final fun <#A: kotlin/Any?> (kotlinx.coroutines/CoroutineScope).app.cash.molecule/launchMolecule(app.cash.molecule/RecompositionMode, kotlin/Function1<#A, kotlin/Unit>, kotlin/Function2<androidx.compose.runtime/Composer, kotlin/Int, #A>) // app.cash.molecule/launchMolecule|launchMolecule@kotlinx.coroutines.CoroutineScope(app.cash.molecule.RecompositionMode;kotlin.Function1<0:0,kotlin.Unit>;kotlin.Function2<androidx.compose.runtime.Composer,kotlin.Int,0:0>){0§<kotlin.Any?>}[0]
 final fun <#A: kotlin/Any?> (kotlinx.coroutines/CoroutineScope).app.cash.molecule/launchMolecule(app.cash.molecule/RecompositionMode, kotlin/Function2<androidx.compose.runtime/Composer, kotlin/Int, #A>): kotlinx.coroutines.flow/StateFlow<#A> // app.cash.molecule/launchMolecule|launchMolecule@kotlinx.coroutines.CoroutineScope(app.cash.molecule.RecompositionMode;kotlin.Function2<androidx.compose.runtime.Composer,kotlin.Int,0:0>){0§<kotlin.Any?>}[0]
 final fun <#A: kotlin/Any?> app.cash.molecule/moleculeFlow(app.cash.molecule/RecompositionMode, kotlin/Function2<androidx.compose.runtime/Composer, kotlin/Int, #A>): kotlinx.coroutines.flow/Flow<#A> // app.cash.molecule/moleculeFlow|moleculeFlow(app.cash.molecule.RecompositionMode;kotlin.Function2<androidx.compose.runtime.Composer,kotlin.Int,0:0>){0§<kotlin.Any?>}[0]
-final val app.cash.molecule/app_cash_molecule_GatedFrameClock$stableprop // app.cash.molecule/app_cash_molecule_GatedFrameClock$stableprop|#static{}app_cash_molecule_GatedFrameClock$stableprop[0]
+// Targets: [ios, macos, tvos]
+final const val app.cash.molecule/app_cash_molecule_DisplayLinkClock$stableprop // app.cash.molecule/app_cash_molecule_DisplayLinkClock$stableprop|#static{}app_cash_molecule_DisplayLinkClock$stableprop[0]
 // Targets: [ios, macos, tvos]
 final object app.cash.molecule/DisplayLinkClock : androidx.compose.runtime/MonotonicFrameClock { // app.cash.molecule/DisplayLinkClock|null[0]
     final suspend fun <#A1: kotlin/Any?> withFrameNanos(kotlin/Function1<kotlin/Long, #A1>): #A1 // app.cash.molecule/DisplayLinkClock.withFrameNanos|withFrameNanos(kotlin.Function1<kotlin.Long,0:0>){0§<kotlin.Any?>}[0]
 }
-// Targets: [ios, macos, tvos]
-final val app.cash.molecule/app_cash_molecule_DisplayLinkClock$stableprop // app.cash.molecule/app_cash_molecule_DisplayLinkClock$stableprop|#static{}app_cash_molecule_DisplayLinkClock$stableprop[0]
+// Targets: [js, wasmJs]
+final const val app.cash.molecule/app_cash_molecule_WindowAnimationFrameClock$stableprop // app.cash.molecule/app_cash_molecule_WindowAnimationFrameClock$stableprop|#static{}app_cash_molecule_WindowAnimationFrameClock$stableprop[0]
 // Targets: [js, wasmJs]
 final object app.cash.molecule/WindowAnimationFrameClock : androidx.compose.runtime/MonotonicFrameClock { // app.cash.molecule/WindowAnimationFrameClock|null[0]
     final suspend fun <#A1: kotlin/Any?> withFrameNanos(kotlin/Function1<kotlin/Long, #A1>): #A1 // app.cash.molecule/WindowAnimationFrameClock.withFrameNanos|withFrameNanos(kotlin.Function1<kotlin.Long,0:0>){0§<kotlin.Any?>}[0]
 }
-// Targets: [js, wasmJs]
-final val app.cash.molecule/app_cash_molecule_WindowAnimationFrameClock$stableprop // app.cash.molecule/app_cash_molecule_WindowAnimationFrameClock$stableprop|#static{}app_cash_molecule_WindowAnimationFrameClock$stableprop[0]

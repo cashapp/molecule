@@ -3,11 +3,8 @@ compileSdk = "34"
 minSdk = "21"
 
 coroutine = "1.8.1"
-
 kotlin = "2.0.0"
-
 jetbrains-compose = "1.6.10"
-
 squareup-okhttp = "4.12.0"
 squareup-retrofit = "2.11.0"
 
@@ -23,7 +20,6 @@ androidx-compose-material3 = { module = "androidx.compose.material3:material3" }
 
 coil-compose = "io.coil-kt:coil-compose:2.6.0"
 
-jetbrains-compose-plugin = { module = "org.jetbrains.compose:compose-gradle-plugin", version.ref = "jetbrains-compose" }
 jetbrains-compose-runtime = { module = "org.jetbrains.compose.runtime:runtime", version.ref = "jetbrains-compose" }
 
 dokka-plugin = { module = "org.jetbrains.dokka:dokka-gradle-plugin", version = "1.9.20" }
@@ -40,7 +36,7 @@ kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-t
 kotlinx-binaryCompatibilityValidator = "org.jetbrains.kotlinx:binary-compatibility-validator:0.15.0-Beta.2"
 
 ktlint-core = "com.pinterest.ktlint:ktlint-cli:1.2.1"
-ktlint-composeRules = "io.nlopez.compose.rules:ktlint:0.4.1"
+ktlint-composeRules = "io.nlopez.compose.rules:ktlint:0.4.3"
 
 maven-publish-plugin = { module = "com.vanniktech:gradle-maven-publish-plugin", version = "0.28.0" }
 
