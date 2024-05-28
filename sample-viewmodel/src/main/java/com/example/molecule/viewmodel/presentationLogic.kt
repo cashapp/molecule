@@ -26,7 +26,7 @@ import kotlinx.coroutines.flow.Flow
 
 sealed interface Event {
   data class SelectBreed(val breed: String) : Event
-  object FetchAgain : Event
+  data object FetchAgain : Event
 }
 
 data class Model(

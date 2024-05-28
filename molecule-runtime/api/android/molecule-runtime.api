@@ -1,7 +1,6 @@
 public final class app/cash/molecule/AndroidUiDispatcher : kotlinx/coroutines/CoroutineDispatcher {
 	public static final field $stable I
 	public static final field Companion Lapp/cash/molecule/AndroidUiDispatcher$Companion;
-	public synthetic fun <init> (Landroid/view/Choreographer;Landroid/os/Handler;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun dispatch (Lkotlin/coroutines/CoroutineContext;Ljava/lang/Runnable;)V
 	public final fun getChoreographer ()Landroid/view/Choreographer;
 	public final fun getFrameClock ()Landroidx/compose/runtime/MonotonicFrameClock;

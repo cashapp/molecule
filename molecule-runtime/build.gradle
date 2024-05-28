@@ -1,8 +1,8 @@
 apply plugin: 'com.android.library'
 apply plugin: 'org.jetbrains.kotlin.multiplatform'
+apply plugin: 'org.jetbrains.kotlin.plugin.compose'
 apply plugin: 'com.vanniktech.maven.publish'
 apply plugin: 'org.jetbrains.dokka'
-apply plugin: 'app.cash.molecule'
 apply plugin: 'org.jetbrains.kotlinx.binary-compatibility-validator'
 
 kotlin {

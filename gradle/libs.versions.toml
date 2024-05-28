@@ -3,11 +3,8 @@ compileSdk = "34"
 minSdk = "21"
 
 coroutine = "1.8.1"
-
-kotlin = "1.9.24"
-
+kotlin = "2.0.0"
 jetbrains-compose = "1.6.10"
-
 squareup-okhttp = "4.12.0"
 squareup-retrofit = "2.11.0"
 
@@ -23,17 +20,14 @@ androidx-compose-material3 = { module = "androidx.compose.material3:material3" }
 
 coil-compose = "io.coil-kt:coil-compose:2.6.0"
 
-jetbrains-compose-compiler = "org.jetbrains.compose.compiler:compiler:1.5.14"
-jetbrains-compose-plugin = { module = "org.jetbrains.compose:compose-gradle-plugin", version.ref = "jetbrains-compose" }
 jetbrains-compose-runtime = { module = "org.jetbrains.compose.runtime:runtime", version.ref = "jetbrains-compose" }
 
 dokka-plugin = { module = "org.jetbrains.dokka:dokka-gradle-plugin", version = "1.9.20" }
 
-buildConfig-plugin = "com.github.gmazzo:gradle-buildconfig-plugin:3.1.0"
-
 junit = { module = "junit:junit", version = "4.13.2" }
 
-kotlin-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
+kotlin-plugin-core = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
+kotlin-plugin-compose = { module = "org.jetbrains.kotlin:compose-compiler-gradle-plugin", version.ref = "kotlin" }
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutine" }

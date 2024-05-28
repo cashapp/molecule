@@ -1,16 +1,12 @@
 buildscript {
   dependencies {
     classpath libs.android.plugin
-    classpath libs.kotlin.plugin
+    classpath libs.kotlin.plugin.core
+    classpath libs.kotlin.plugin.compose
     classpath libs.maven.publish.plugin
     classpath libs.dokka.plugin
     classpath libs.spotless.plugin
-    classpath libs.buildConfig.plugin
     classpath libs.kotlinx.binaryCompatibilityValidator
-
-    // Normally you would declare a version here, but we use dependency substitution in
-    // settings.gradle to use the version built from inside the repo.
-    classpath 'app.cash.molecule:molecule-gradle-plugin'
   }
 
   repositories {

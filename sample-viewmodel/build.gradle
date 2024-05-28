@@ -1,8 +1,9 @@
 apply plugin: 'com.android.application'
 apply plugin: 'org.jetbrains.kotlin.android'
-apply plugin: 'app.cash.molecule'
+apply plugin: 'org.jetbrains.kotlin.plugin.compose'
 
 dependencies {
+  implementation projects.moleculeRuntime
   implementation platform(libs.androidx.compose.bom)
   implementation libs.androidx.activity.compose
   implementation libs.androidx.compose.material3

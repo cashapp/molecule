@@ -1,15 +1,8 @@
 rootProject.name = 'molecule'
 
-include ':molecule-gradle-plugin'
 include ':molecule-runtime'
 
 include ':sample'
 include ':sample-viewmodel'
 
 enableFeaturePreview('TYPESAFE_PROJECT_ACCESSORS')
-
-includeBuild('build-logic') {
-  dependencySubstitution {
-    substitute module('app.cash.molecule:molecule-gradle-plugin') using project(':molecule-gradle-plugin')
-  }
-}

@@ -28,7 +28,7 @@ import kotlinx.coroutines.launch
 
 sealed interface CounterEvent
 data class Change(val delta: Int) : CounterEvent
-object Randomize : CounterEvent
+data object Randomize : CounterEvent
 
 data class CounterModel(
   val value: Int,
