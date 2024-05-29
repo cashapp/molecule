@@ -1,6 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'org.jetbrains.kotlin.android'
 apply plugin: 'org.jetbrains.kotlin.plugin.compose'
+apply plugin: 'com.google.devtools.ksp'
 
 dependencies {
   implementation projects.moleculeRuntime
@@ -10,6 +11,8 @@ dependencies {
   implementation libs.coil.compose
   implementation libs.squareup.retrofit.client
   implementation libs.squareup.retrofit.converter.moshi
+
+  ksp libs.squareup.moshi.codegen
 
   testImplementation libs.junit
   testImplementation libs.kotlinx.coroutines.test

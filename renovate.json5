@@ -3,4 +3,14 @@
   "extends": [
     "config:base"
   ],
+  "packageRules": [
+    {
+      // KSP is tightly coupled to Kotlin version.
+      "groupName": "Kotlin/KSP",
+      "matchPackagePrefixes": [
+        "org.jetbrains.kotlin:kotlin",
+        "com.google.devtools.ksp",
+      ],
+    },
+  ],
 }
