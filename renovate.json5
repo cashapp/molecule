@@ -6,10 +6,11 @@
   "packageRules": [
     {
       // Compose compiler is tightly coupled to Kotlin version.
-      "groupName": "Kotlin/Compose",
+      "groupName": "Kotlin/KSP/Compose",
       "matchPackagePrefixes": [
         "org.jetbrains.compose.compiler",
         "org.jetbrains.kotlin:kotlin",
+        "com.google.devtools.ksp",
       ],
     },
   ],

@@ -15,6 +15,7 @@
  */
 package com.example.molecule.viewmodel
 
+import com.squareup.moshi.JsonClass
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.create
@@ -50,13 +51,16 @@ fun PupperPicsService(): PupperPicsService {
   }
 }
 
-private interface PupperPicsApi {
+interface PupperPicsApi {
   @GET("breeds/list/all")
   suspend fun listBreeds(): ListResponse
 
   @GET("breed/{breed}/images/random")
   suspend fun randomImageFor(@Path("breed", encoded = true) breed: String): ImageResponse
 
+  @JsonClass(generateAdapter = true)
   data class ListResponse(val message: Map<String, List<String>>)
+
+  @JsonClass(generateAdapter = true)
   data class ImageResponse(val message: String)
 }

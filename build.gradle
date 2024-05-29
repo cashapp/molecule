@@ -3,6 +3,7 @@ buildscript {
     classpath libs.android.plugin
     classpath libs.kotlin.plugin.core
     classpath libs.kotlin.plugin.compose
+    classpath libs.kotlin.ksp.plugin
     classpath libs.maven.publish.plugin
     classpath libs.dokka.plugin
     classpath libs.spotless.plugin
