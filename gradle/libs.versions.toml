@@ -4,7 +4,7 @@ minSdk = "21"
 
 coroutine = "1.8.1"
 kotlin = "2.0.0"
-jetbrains-compose = "1.6.10"
+jetbrains-compose = "1.6.11"
 squareup-okhttp = "4.12.0"
 squareup-retrofit = "2.11.0"
 
