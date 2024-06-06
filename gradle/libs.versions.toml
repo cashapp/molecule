@@ -29,7 +29,7 @@ junit = { module = "junit:junit", version = "4.13.2" }
 kotlin-plugin-core = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 kotlin-plugin-compose = { module = "org.jetbrains.kotlin:compose-compiler-gradle-plugin", version.ref = "kotlin" }
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
-kotlin-ksp-plugin = "com.google.devtools.ksp:com.google.devtools.ksp.gradle.plugin:2.0.0-1.0.21"
+kotlin-ksp-plugin = "com.google.devtools.ksp:com.google.devtools.ksp.gradle.plugin:2.0.0-1.0.22"
 
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutine" }
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutine" }
