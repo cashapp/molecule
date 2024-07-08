@@ -34,7 +34,7 @@ kotlin-ksp-plugin = "com.google.devtools.ksp:com.google.devtools.ksp.gradle.plug
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutine" }
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutine" }
 
-kotlinx-binaryCompatibilityValidator = "org.jetbrains.kotlinx:binary-compatibility-validator:0.15.0-Beta.3"
+kotlinx-binaryCompatibilityValidator = "org.jetbrains.kotlinx:binary-compatibility-validator:0.15.0"
 
 ktlint-core = "com.pinterest.ktlint:ktlint-cli:1.3.1"
 ktlint-composeRules = "io.nlopez.compose.rules:ktlint:0.4.5"
