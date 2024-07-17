@@ -18,7 +18,7 @@ androidx-compose-bom = { module = "androidx.compose:compose-bom", version = "202
 androidx-compose-compiler = "androidx.compose.compiler:compiler:1.5.14"
 androidx-compose-material3 = { module = "androidx.compose.material3:material3" }
 
-coil-compose = "io.coil-kt:coil-compose:2.6.0"
+coil-compose = "io.coil-kt:coil-compose:2.7.0"
 
 jetbrains-compose-runtime = { module = "org.jetbrains.compose.runtime:runtime", version.ref = "jetbrains-compose" }
 
