@@ -26,7 +26,7 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: 20
-      - uses: gradle/actions/setup-gradle@v3
+      - uses: gradle/actions/setup-gradle@v4
       - run: ./gradlew build assembleAndroidTest dokkaHtml
 
       - name: Run Tests
