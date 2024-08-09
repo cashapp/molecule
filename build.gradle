@@ -62,9 +62,6 @@ subprojects {
       checkDependencies true
       checkReleaseBuilds false // Full lint runs as part of 'build' task.
     }
-    android.composeOptions {
-      kotlinCompilerExtensionVersion = libs.androidx.compose.compiler.get().version
-    }
   }
 
   apply plugin: 'com.diffplug.spotless'
