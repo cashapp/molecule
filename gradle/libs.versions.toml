@@ -2,7 +2,7 @@
 compileSdk = "34"
 minSdk = "21"
 
-coroutine = "1.8.1"
+coroutine = "1.9.0"
 kotlin = "2.0.20"
 jetbrains-compose = "1.6.11"
 squareup-okhttp = "4.12.0"
