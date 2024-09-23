@@ -9,7 +9,7 @@ Changed:
 - Nothing yet!
 
 Fixed:
-- Nothing yet!
+- Correct calculation of frame nano time for native Windows and native Linux targets.
 
 
 ## [2.0.0] - 2024-05-28
