@@ -40,7 +40,7 @@ class MainActivity : ComponentActivity() {
     setContent {
       RootContainer {
         val model by viewModel.models.collectAsState()
-        PupperPicsScreen(model) { event -> viewModel.take(event) }
+        PupperPicsScreen(model, onEvent = { event -> viewModel.take(event) })
       }
     }
   }
