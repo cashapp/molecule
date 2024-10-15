@@ -65,7 +65,7 @@ import coil.compose.AsyncImage
 import coil.compose.AsyncImagePainter
 
 @Composable
-fun PupperPicsScreen(model: Model, modifier: Modifier = Modifier, onEvent: (Event) -> Unit) {
+fun PupperPicsScreen(model: Model, onEvent: (Event) -> Unit, modifier: Modifier = Modifier) {
   Box(
     modifier = modifier
       .fillMaxSize()
