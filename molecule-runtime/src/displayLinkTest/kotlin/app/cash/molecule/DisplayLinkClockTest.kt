@@ -19,11 +19,18 @@ import assertk.all
 import assertk.assertThat
 import assertk.assertions.isLessThan
 import assertk.assertions.isPositive
+import kotlin.experimental.ExperimentalNativeApi
 import kotlin.test.Test
 import kotlinx.coroutines.test.runTest
 
+@OptIn(ExperimentalNativeApi::class)
 class DisplayLinkClockTest {
   @Test fun ticksWithTime() = runTest {
+    if (Platform.osFamily == OsFamily.IOS || Platform.osFamily == OsFamily.TVOS) {
+      // TODO Link against XCTest in order to get frame pulses on iOS and tvOS.
+      return@runTest
+    }
+
     val frameTimeA = DisplayLinkClock.withFrameNanos { it }
     val frameTimeB = DisplayLinkClock.withFrameNanos { it }
     assertThat(frameTimeA).all {

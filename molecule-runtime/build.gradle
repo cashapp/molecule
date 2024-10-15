@@ -43,7 +43,20 @@ kotlin {
   watchosSimulatorArm64()
   watchosX64()
 
-  applyDefaultHierarchyTemplate()
+  applyDefaultHierarchyTemplate {
+    it.group("common") {
+      it.group("darwin") {
+        it.group("displayLink") {
+          it.group("quartzCore") {
+            it.group("ios") {}
+            it.group("tvos") {}
+          }
+          it.group("macos") {}
+        }
+        it.group("watchos") {}
+      }
+    }
+  }
 
   sourceSets {
     configureEach {
@@ -78,48 +91,6 @@ kotlin {
     }
     wasmJsMain {
       kotlin.srcDir('src/browserMain/kotlin')
-    }
-
-    darwinMain {
-      dependsOn(commonMain)
-    }
-
-    displayLinkMain {
-      dependsOn(darwinMain)
-    }
-    displayLinkTest {
-      dependsOn(commonTest)
-    }
-
-    quartzCoreMain {
-      dependsOn(displayLinkMain)
-    }
-
-    iosMain {
-      dependsOn(quartzCoreMain)
-    }
-    iosTest {
-      // TODO Link against XCTest in order to get frame pulses on iOS.
-      // dependsOn(displayLinkTest)
-    }
-
-    tvosMain {
-      dependsOn(quartzCoreMain)
-    }
-    tvosTest {
-      // TODO Link against XCTest in order to get frame pulses on tvOS.
-      // dependsOn(displayLinkTest)
-    }
-
-    macosMain {
-      dependsOn(displayLinkMain)
-    }
-    macosTest {
-      dependsOn(displayLinkTest)
-    }
-
-    watchosMain {
-      dependsOn(darwinMain)
     }
   }
 }
