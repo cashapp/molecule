@@ -15,7 +15,5 @@
  */
 package app.cash.molecule
 
-import kotlinx.browser.window
-
 @Suppress("NOTHING_TO_INLINE")
 internal actual inline fun nanoTime(): Long = window.performance.now().toLong() * 1_000_000

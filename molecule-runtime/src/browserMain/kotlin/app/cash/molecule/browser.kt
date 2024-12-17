@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 Square, Inc.
+ * Copyright (C) 2024 Square, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,19 +15,17 @@
  */
 package app.cash.molecule
 
-import androidx.compose.runtime.MonotonicFrameClock
-import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
+// This file contains a subset of browser APIs normally provided by the Kotlin stdlib.
+// However, these were recently removed in favor of kotlinx.browser which is not stable.
+// Thus, we duplicate them for both JS and Wasm JS since this is a shared source set.
 
-public object WindowAnimationFrameClock : MonotonicFrameClock {
-  override suspend fun <R> withFrameNanos(
-    onFrame: (Long) -> R,
-  ): R = suspendCoroutine { continuation ->
-    window.requestAnimationFrame {
-      val durationMillis = it.toLong()
-      val durationNanos = durationMillis * 1_000_000
-      val result = onFrame(durationNanos)
-      continuation.resume(result)
-    }
-  }
+internal external val window: Window
+
+internal external interface Window {
+  val performance: Performance
+  fun requestAnimationFrame(callback: (Double) -> Unit)
+}
+
+internal external interface Performance {
+  fun now(): Double
 }
