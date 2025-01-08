@@ -1,15 +1,14 @@
 {
-  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": [
-    "config:base"
+  $schema: 'https://docs.renovatebot.com/renovate-schema.json',
+  extends: [
+    'config:recommended',
   ],
-  "packageRules": [
+  packageRules: [
     {
-      // KSP is tightly coupled to Kotlin version.
-      "groupName": "Kotlin/KSP",
-      "matchPackagePrefixes": [
-        "org.jetbrains.kotlin:kotlin",
-        "com.google.devtools.ksp",
+      groupName: 'Kotlin/KSP',
+      matchPackageNames: [
+        'org.jetbrains.kotlin:kotlin{/,}**',
+        'com.google.devtools.ksp{/,}**',
       ],
     },
   ],
