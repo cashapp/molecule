@@ -4,6 +4,7 @@
     'config:recommended',
   ],
   packageRules: [
+    // KSP is tightly coupled to Kotlin version.
     {
       groupName: 'Kotlin/KSP',
       matchPackageNames: [
