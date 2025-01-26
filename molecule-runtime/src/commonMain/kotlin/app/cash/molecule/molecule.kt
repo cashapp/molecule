@@ -33,6 +33,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.channelFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 
@@ -121,15 +122,20 @@ public fun <T> CoroutineScope.launchMolecule(
 ): StateFlow<T> {
   var flow: MutableStateFlow<T>? = null
 
+  val isActiveFlow = MutableStateFlow(false)
+
   launchMolecule(
     context = context,
     mode = mode,
+    isActiveFlow = isActiveFlow,
     emitter = { value ->
       val outputFlow = flow
       if (outputFlow != null) {
         outputFlow.value = value
       } else {
-        flow = MutableStateFlow(value)
+        flow = MutableStateFlow(value).also { flow ->
+          launch { flow.subscriptionCount.collectLatest { isActiveFlow.value = it > 0 } }
+        }
       }
     },
     body = body,
@@ -161,18 +167,26 @@ public fun <T> CoroutineScope.launchMolecule(
  *
  * The coroutine context is inherited from the [CoroutineScope].
  * Additional context elements can be specified with [context] argument.
+ *
+ * @param isActiveFlow if this flow is present, flows and coroutines within the composition
+ * may be paused when it is false. See [collectAsStateWhileMoleculeActive],
+ * [repeatWhileMoleculeActive], [awaitMoleculeActive].
  */
 public fun <T> CoroutineScope.launchMolecule(
   mode: RecompositionMode,
   emitter: (value: T) -> Unit,
   context: CoroutineContext = EmptyCoroutineContext,
+  isActiveFlow: StateFlow<Boolean>? = null,
   body: @Composable () -> T,
 ) {
   val clockContext = when (mode) {
     RecompositionMode.ContextClock -> EmptyCoroutineContext
     RecompositionMode.Immediate -> GatedFrameClock(this)
   }
-  val finalContext = coroutineContext + context + clockContext
+
+  val finalContext = coroutineContext + context + clockContext + MoleculeActiveContextElement(
+    isActiveFlow ?: MutableStateFlow(true),
+  )
 
   val recomposer = Recomposer(finalContext)
   val composition = Composition(UnitApplier, recomposer)
