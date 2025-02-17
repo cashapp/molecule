@@ -47,6 +47,7 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.advanceTimeBy
 import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
@@ -97,7 +98,7 @@ class MoleculeTest {
 
   @Test fun errorImmediately() {
     val clock = BroadcastFrameClock()
-    val scope = CoroutineScope(clock)
+    val scope = CoroutineScope(UnconfinedTestDispatcher() + clock)
 
     // Use a custom subtype to prevent coroutines from breaking referential equality.
     val runtimeException = object : RuntimeException() {}
@@ -168,7 +169,7 @@ class MoleculeTest {
 
   @Test fun errorInEmitterImmediately() {
     val clock = BroadcastFrameClock()
-    val scope = CoroutineScope(clock)
+    val scope = CoroutineScope(UnconfinedTestDispatcher() + clock)
 
     // Use a custom subtype to prevent coroutines from breaking referential equality.
     val runtimeException = object : RuntimeException() {}
