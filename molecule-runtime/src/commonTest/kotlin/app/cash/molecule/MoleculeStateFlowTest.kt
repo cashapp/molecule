@@ -33,14 +33,13 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.cancel
+import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
 import kotlinx.coroutines.supervisorScope
-import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.advanceTimeBy
 import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
@@ -87,9 +86,10 @@ class MoleculeStateFlowTest {
     job.cancel()
   }
 
-  @Test fun errorImmediately() {
+  @Test fun errorImmediately() = runTest {
+    val job = Job()
     val clock = BroadcastFrameClock()
-    val scope = CoroutineScope(UnconfinedTestDispatcher() + clock)
+    val scope = CoroutineScope(coroutineContext + job + clock)
 
     // Use a custom subtype to prevent coroutines from breaking referential equality.
     val runtimeException = object : RuntimeException() {}
@@ -99,7 +99,7 @@ class MoleculeStateFlowTest {
       }
     }.isSameInstanceAs(runtimeException)
 
-    scope.cancel()
+    job.cancelAndJoin()
   }
 
   @Test fun errorDelayed() = runTest {
