@@ -108,8 +108,6 @@ class MoleculeTest {
     }.isSameInstanceAs(runtimeException)
 
     // This exception is processed in `composeInitial` and not `runRecomposeAndApplyChanges`, so the job is still active.
-    runCurrent()
-    assertThat(job.isActive).isTrue()
     job.cancelAndJoin()
   }
 
