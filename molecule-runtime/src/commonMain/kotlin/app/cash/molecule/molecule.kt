@@ -24,7 +24,6 @@ import androidx.compose.runtime.snapshots.Snapshot
 import kotlin.DeprecationLevel.HIDDEN
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
-import kotlin.coroutines.cancellation.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart.UNDISPATCHED
 import kotlinx.coroutines.channels.Channel
@@ -180,7 +179,7 @@ public fun <T> CoroutineScope.launchMolecule(
   launch(finalContext, start = UNDISPATCHED) {
     try {
       recomposer.runRecomposeAndApplyChanges()
-    } catch (e: CancellationException) {
+    } finally {
       composition.dispose()
       snapshotHandle?.dispose()
     }

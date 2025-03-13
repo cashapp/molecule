@@ -24,7 +24,6 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshots.Snapshot
 import app.cash.molecule.MoleculeTest.DisposableEffectState.DISPOSED
 import app.cash.molecule.MoleculeTest.DisposableEffectState.LAUNCHED
 import app.cash.molecule.MoleculeTest.DisposableEffectState.NOT_LAUNCHED
@@ -35,13 +34,13 @@ import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isNotSameInstanceAs
 import assertk.assertions.isSameInstanceAs
+import assertk.assertions.isTrue
 import kotlin.test.Test
 import kotlin.test.fail
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
@@ -92,12 +91,13 @@ class MoleculeTest {
     clock.sendFrame(0)
     assertThat(value).isEqualTo(2)
 
-    job.cancel()
+    job.cancelAndJoin()
   }
 
-  @Test fun errorImmediately() {
+  @Test fun errorImmediately() = runTest {
+    val job = Job()
     val clock = BroadcastFrameClock()
-    val scope = CoroutineScope(clock)
+    val scope = CoroutineScope(coroutineContext + job + clock)
 
     // Use a custom subtype to prevent coroutines from breaking referential equality.
     val runtimeException = object : RuntimeException() {}
@@ -107,7 +107,10 @@ class MoleculeTest {
       }
     }.isSameInstanceAs(runtimeException)
 
-    scope.cancel()
+    // This exception is processed in `composeInitial` and not `runRecomposeAndApplyChanges`, so the job is still active.
+    runCurrent()
+    assertThat(job.isActive).isTrue()
+    job.cancelAndJoin()
   }
 
   @Test fun errorDelayed() = runTest {
@@ -130,13 +133,13 @@ class MoleculeTest {
     assertThat(value).isEqualTo(0)
 
     count++
-    Snapshot.sendApplyNotifications() // Ensure external state mutation is observed.
     runCurrent()
     clock.sendFrame(0)
     runCurrent()
     assertThat(exceptionHandler.exceptions.single()).isSameInstanceAs(runtimeException)
 
-    job.cancel()
+    // Verify `runRecomposeAndApplyChanges` is no longer active.
+    assertThat(job.isCompleted).isTrue()
   }
 
   @Test fun errorInEffect() = runTest {
@@ -163,12 +166,14 @@ class MoleculeTest {
     clock.sendFrame(0)
     assertThat(exceptionHandler.exceptions.single()).isSameInstanceAs(runtimeException)
 
-    job.cancel()
+    // Verify `runRecomposeAndApplyChanges` is no longer active.
+    assertThat(job.isCompleted).isTrue()
   }
 
-  @Test fun errorInEmitterImmediately() {
+  @Test fun errorInEmitterImmediately() = runTest {
+    val job = Job()
     val clock = BroadcastFrameClock()
-    val scope = CoroutineScope(clock)
+    val scope = CoroutineScope(coroutineContext + job + clock)
 
     // Use a custom subtype to prevent coroutines from breaking referential equality.
     val runtimeException = object : RuntimeException() {}
@@ -178,7 +183,8 @@ class MoleculeTest {
       }
     }.isSameInstanceAs(runtimeException)
 
-    scope.cancel()
+    // This exception is processed in `composeInitial` and not `runRecomposeAndApplyChanges`, so the job is still active.
+    job.cancelAndJoin()
   }
 
   @Test fun errorInEmitterDelayed() = runTest {
@@ -206,13 +212,13 @@ class MoleculeTest {
     assertThat(value).isEqualTo(0)
 
     count++
-    Snapshot.sendApplyNotifications() // Ensure external state mutation is observed.
     runCurrent()
     clock.sendFrame(0)
     runCurrent()
     assertThat(exceptionHandler.exceptions.single()).isSameInstanceAs(runtimeException)
 
-    job.cancel()
+    // Verify `runRecomposeAndApplyChanges` is no longer active.
+    assertThat(job.isCompleted).isTrue()
   }
 
   enum class DisposableEffectState { NOT_LAUNCHED, LAUNCHED, DISPOSED }
@@ -236,8 +242,7 @@ class MoleculeTest {
 
     assertThat(state).isEqualTo(LAUNCHED)
 
-    job.cancel()
-    runCurrent()
+    job.cancelAndJoin()
     assertThat(state).isEqualTo(DISPOSED)
   }
 
@@ -277,7 +282,7 @@ class MoleculeTest {
     value = values.awaitValue()
     assertThat(value).isEqualTo(5)
 
-    job.cancel()
+    job.cancelAndJoin()
   }
 
   @Test
@@ -298,7 +303,7 @@ class MoleculeTest {
     // Use a custom subtype to prevent coroutines from breaking referential equality.
     val runtimeException = object : RuntimeException() {}
     var count by mutableIntStateOf(0)
-    launch {
+    val job = launch {
       val exception = runCatching {
         moleculeFlow(mode = Immediate) {
           if (count == 1) {
@@ -315,7 +320,9 @@ class MoleculeTest {
     assertThat(values.awaitValue()).isEqualTo(0)
 
     count++
-    Snapshot.sendApplyNotifications() // Ensure external state mutation is observed.
+    runCurrent()
+    // Verify `runRecomposeAndApplyChanges` is no longer active.
+    assertThat(job.isCompleted).isTrue()
   }
 
   @Test
@@ -324,7 +331,7 @@ class MoleculeTest {
 
     // Use a custom subtype to prevent coroutines from breaking referential equality.
     val runtimeException = object : RuntimeException() {}
-    launch {
+    val job = launch {
       val exception = runCatching {
         moleculeFlow(mode = Immediate) {
           LaunchedEffect(Unit) {
@@ -341,7 +348,10 @@ class MoleculeTest {
 
     assertThat(values.awaitValue()).isEqualTo(0)
 
-    Snapshot.sendApplyNotifications() // Ensure external state mutation is observed.
+    advanceTimeBy(50)
+    runCurrent()
+    // Verify `runRecomposeAndApplyChanges` is no longer active.
+    assertThat(job.isCompleted).isTrue()
   }
 
   @Test
@@ -373,23 +383,27 @@ class MoleculeTest {
   }
 
   @Test fun coroutineContextUsed() = runTest {
+    val job = Job()
     val expectedName = CoroutineName("test_key")
 
     var actualName: CoroutineName? = null
-    backgroundScope.launchMolecule(Immediate, expectedName) {
+    backgroundScope.launchMolecule(Immediate, job + expectedName) {
       actualName = rememberCoroutineScope().coroutineContext[CoroutineName]
     }
     assertThat(actualName).isEqualTo(expectedName)
+    job.cancelAndJoin()
   }
 
   @Test fun coroutineContextClockDoesNotOverrideImmediate() = runTest {
+    val job = Job()
     val myClock = BroadcastFrameClock()
 
     var actualClock: MonotonicFrameClock? = null
-    backgroundScope.launchMolecule(Immediate, myClock) {
+    backgroundScope.launchMolecule(Immediate, job + myClock) {
       actualClock = rememberCoroutineScope().coroutineContext[MonotonicFrameClock]
     }
     assertThat(actualClock).isNotSameInstanceAs(myClock)
+    job.cancelAndJoin()
   }
 
   private suspend fun <T> Channel<T>.awaitValue(): T = withTimeout(1000) { receive() }

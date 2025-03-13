@@ -21,19 +21,19 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshots.Snapshot
 import app.cash.molecule.RecompositionMode.ContextClock
 import app.cash.molecule.RecompositionMode.Immediate
 import assertk.assertFailure
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isSameInstanceAs
+import assertk.assertions.isTrue
 import kotlin.test.Test
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.cancel
+import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.job
@@ -83,12 +83,13 @@ class MoleculeStateFlowTest {
     clock.sendFrame(0)
     assertThat(flow.value).isEqualTo(2)
 
-    job.cancel()
+    job.cancelAndJoin()
   }
 
-  @Test fun errorImmediately() {
+  @Test fun errorImmediately() = runTest {
+    val job = Job()
     val clock = BroadcastFrameClock()
-    val scope = CoroutineScope(clock)
+    val scope = CoroutineScope(coroutineContext + job + clock)
 
     // Use a custom subtype to prevent coroutines from breaking referential equality.
     val runtimeException = object : RuntimeException() {}
@@ -98,7 +99,8 @@ class MoleculeStateFlowTest {
       }
     }.isSameInstanceAs(runtimeException)
 
-    scope.cancel()
+    // This exception is processed in `composeInitial` and not `runRecomposeAndApplyChanges`, so the job is still active.
+    job.cancelAndJoin()
   }
 
   @Test fun errorDelayed() = runTest {
@@ -121,13 +123,13 @@ class MoleculeStateFlowTest {
     assertThat(flow.value).isEqualTo(0)
 
     count++
-    Snapshot.sendApplyNotifications() // Ensure external state mutation is observed.
     runCurrent()
     clock.sendFrame(0)
     runCurrent()
     assertThat(exceptionHandler.exceptions.single()).isSameInstanceAs(runtimeException)
 
-    job.cancel()
+    // Verify `runRecomposeAndApplyChanges` is no longer active.
+    assertThat(job.isCompleted).isTrue()
   }
 
   @Test fun errorInEffect() = runTest {
@@ -153,7 +155,8 @@ class MoleculeStateFlowTest {
     clock.sendFrame(0)
     assertThat(exceptionHandler.exceptions.single()).isSameInstanceAs(runtimeException)
 
-    job.cancel()
+    // Verify `runRecomposeAndApplyChanges` is no longer active.
+    assertThat(job.isCompleted).isTrue()
   }
 
   @Test
@@ -187,7 +190,7 @@ class MoleculeStateFlowTest {
     runCurrent()
     assertThat(flow.value).isEqualTo(2)
 
-    job.cancel()
+    job.cancelAndJoin()
   }
 
   @Test fun errorDelayedImmediate() = runTest {
@@ -215,6 +218,8 @@ class MoleculeStateFlowTest {
       job.join()
 
       assertThat(exceptionHandler.exceptions.single()).isSameInstanceAs(runtimeException)
+      // Verify `runRecomposeAndApplyChanges` is no longer active.
+      assertThat(job.isCompleted).isTrue()
     }
   }
 }
