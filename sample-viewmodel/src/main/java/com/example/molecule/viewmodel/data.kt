@@ -15,9 +15,11 @@
  */
 package com.example.molecule.viewmodel
 
-import com.squareup.moshi.JsonClass
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.Json
+import okhttp3.MediaType.Companion.toMediaType
 import retrofit2.Retrofit
-import retrofit2.converter.moshi.MoshiConverterFactory
+import retrofit2.converter.kotlinx.serialization.asConverterFactory
 import retrofit2.create
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -28,9 +30,12 @@ interface PupperPicsService {
 }
 
 fun PupperPicsService(): PupperPicsService {
+  val json = Json {
+    ignoreUnknownKeys = true
+  }
   val api = Retrofit.Builder()
     .baseUrl("https://dog.ceo/api/")
-    .addConverterFactory(MoshiConverterFactory.create())
+    .addConverterFactory(json.asConverterFactory("application/json; charset=UTF8".toMediaType()))
     .build()
     .create<PupperPicsApi>()
 
@@ -58,9 +63,9 @@ interface PupperPicsApi {
   @GET("breed/{breed}/images/random")
   suspend fun randomImageFor(@Path("breed", encoded = true) breed: String): ImageResponse
 
-  @JsonClass(generateAdapter = true)
+  @Serializable
   data class ListResponse(val message: Map<String, List<String>>)
 
-  @JsonClass(generateAdapter = true)
+  @Serializable
   data class ImageResponse(val message: String)
 }
