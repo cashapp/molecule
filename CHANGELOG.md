@@ -6,7 +6,7 @@ New:
 - Nothing yet!
 
 Changed:
-- Nothing yet!
+- Any specified additional coroutine context elements will now be honored in the coroutine used internally with `RecompositionMode.Immediate` to send frames and cause recomposition to occur. This is observable, most notably, when a `CoroutineDispatcher` is included, as now recompositions which occur after the first, synchronous one will occur on that dispatcher.
 
 Fixed:
 - Correct calculation of frame nano time for native Windows and native Linux targets.

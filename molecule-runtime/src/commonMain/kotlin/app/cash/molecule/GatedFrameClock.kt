@@ -17,6 +17,7 @@ package app.cash.molecule
 
 import androidx.compose.runtime.BroadcastFrameClock
 import androidx.compose.runtime.MonotonicFrameClock
+import kotlin.coroutines.CoroutineContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.Channel.Factory.CONFLATED
@@ -28,11 +29,14 @@ import kotlinx.coroutines.launch
  * While running, any request for a frame immediately succeeds. If stopped, requests for a frame wait until
  * the clock is set to run again.
  */
-internal class GatedFrameClock(scope: CoroutineScope) : MonotonicFrameClock {
+internal class GatedFrameClock(
+  scope: CoroutineScope,
+  context: CoroutineContext,
+) : MonotonicFrameClock {
   private val frameSends = Channel<Unit>(CONFLATED)
 
   init {
-    scope.launch {
+    scope.launch(context) {
       for (send in frameSends) sendFrame()
     }
   }

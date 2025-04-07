@@ -25,12 +25,18 @@ public enum class RecompositionMode {
    * to determine when to run. If no clock is found in the context, an exception is thrown.
    *
    * Use this option to drive Molecule with a built-in frame clock or a custom one.
+   *
+   * After the initial, synchronous recomposition, future recompositions will run on a thread
+   * managed by the external clock.
    */
   ContextClock,
 
   /**
    * Run recomposition eagerly whenever one is needed.
    * Molecule will emit a new item every time the snapshot state is invalidated.
+   *
+   * After the initial, synchronous recomposition, future recompositions will run on a thread
+   * managed by the dispatcher from the coroutine context.
    */
   Immediate,
 }

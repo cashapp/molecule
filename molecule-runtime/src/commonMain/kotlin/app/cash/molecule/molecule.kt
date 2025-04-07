@@ -58,7 +58,7 @@ private fun <T> contextClockFlow(body: @Composable () -> T) = channelFlow {
 
 private fun <T> immediateClockFlow(body: @Composable () -> T): Flow<T> = flow {
   coroutineScope {
-    val clock = GatedFrameClock(this)
+    val clock = GatedFrameClock(this, EmptyCoroutineContext)
     val outputBuffer = Channel<T>(1)
 
     launch(clock, start = UNDISPATCHED) {
@@ -169,7 +169,7 @@ public fun <T> CoroutineScope.launchMolecule(
 ) {
   val clockContext = when (mode) {
     RecompositionMode.ContextClock -> EmptyCoroutineContext
-    RecompositionMode.Immediate -> GatedFrameClock(this)
+    RecompositionMode.Immediate -> GatedFrameClock(this, context)
   }
   val finalContext = coroutineContext + context + clockContext
 

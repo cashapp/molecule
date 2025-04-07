@@ -19,13 +19,14 @@ import assertk.all
 import assertk.assertThat
 import assertk.assertions.isLessThan
 import assertk.assertions.isPositive
+import kotlin.coroutines.EmptyCoroutineContext
 import kotlin.test.Test
 import kotlinx.coroutines.test.runTest
 
 class GatedFrameClockTest {
   @Test
   fun ticksWithTime() = runTest {
-    val frameClock = GatedFrameClock(backgroundScope)
+    val frameClock = GatedFrameClock(backgroundScope, EmptyCoroutineContext)
     val frameTimeA = frameClock.withFrameNanos { it }
     val frameTimeB = frameClock.withFrameNanos { it }
     assertThat(frameTimeA).all {
