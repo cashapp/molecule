@@ -24,11 +24,14 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshots.Snapshot
 import app.cash.molecule.MoleculeTest.DisposableEffectState.DISPOSED
 import app.cash.molecule.MoleculeTest.DisposableEffectState.LAUNCHED
 import app.cash.molecule.MoleculeTest.DisposableEffectState.NOT_LAUNCHED
 import app.cash.molecule.RecompositionMode.ContextClock
 import app.cash.molecule.RecompositionMode.Immediate
+import app.cash.molecule.SnapshotNotifier.External
+import app.cash.molecule.SnapshotNotifier.WhileActive
 import assertk.assertFailure
 import assertk.assertThat
 import assertk.assertions.isEqualTo
@@ -401,6 +404,58 @@ class MoleculeTest {
       actualClock = rememberCoroutineScope().coroutineContext[MonotonicFrameClock]
     }
     assertThat(actualClock).isNotSameInstanceAs(myClock)
+    job.cancelAndJoin()
+  }
+
+  @Test fun snapshotNotifierExternal() = runTest {
+    val job = Job()
+    val clock = BroadcastFrameClock()
+    val scope = CoroutineScope(coroutineContext + job + clock)
+    var value: Int? = null
+
+    var count by mutableIntStateOf(0)
+
+    scope.launchMolecule(ContextClock, emitter = { value = it }, snapshotNotifier = External) {
+      count
+    }
+
+    assertThat(value).isEqualTo(0)
+
+    // Ensure the composition is not automatically notified of state mutation.
+    count++
+    runCurrent()
+    clock.sendFrame(0)
+    assertThat(value).isEqualTo(0)
+
+    // But we reflect it once someone does the notification.
+    Snapshot.sendApplyNotifications()
+    runCurrent()
+    clock.sendFrame(0)
+    assertThat(value).isEqualTo(1)
+
+    job.cancelAndJoin()
+  }
+
+  @Test fun snapshotNotifierWhileActive() = runTest {
+    val job = Job()
+    val clock = BroadcastFrameClock()
+    val scope = CoroutineScope(coroutineContext + job + clock)
+    var value: Int? = null
+
+    var count by mutableIntStateOf(0)
+
+    scope.launchMolecule(ContextClock, emitter = { value = it }, snapshotNotifier = WhileActive) {
+      count
+    }
+
+    assertThat(value).isEqualTo(0)
+
+    // The composition is automatically notified of state mutation.
+    count++
+    runCurrent()
+    clock.sendFrame(0)
+    assertThat(value).isEqualTo(1)
+
     job.cancelAndJoin()
   }
 

@@ -35,20 +35,37 @@ import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 
+@Deprecated("", level = HIDDEN) // For binary compatibility.
+public fun <T> moleculeFlow(mode: RecompositionMode, body: @Composable () -> T): Flow<T> {
+  return moleculeFlow(
+    mode = mode,
+    snapshotNotifier = SnapshotNotifier.WhileActive,
+    body = body,
+  )
+}
+
 /**
  * Create a [Flow] which will continually recompose `body` to produce a stream of [T] values
  * when collected.
  */
-public fun <T> moleculeFlow(mode: RecompositionMode, body: @Composable () -> T): Flow<T> {
+public fun <T> moleculeFlow(
+  mode: RecompositionMode,
+  snapshotNotifier: SnapshotNotifier = SnapshotNotifier.WhileActive,
+  body: @Composable () -> T,
+): Flow<T> {
   return when (mode) {
-    RecompositionMode.ContextClock -> contextClockFlow(body)
-    RecompositionMode.Immediate -> immediateClockFlow(body)
+    RecompositionMode.ContextClock -> contextClockFlow(snapshotNotifier, body)
+    RecompositionMode.Immediate -> immediateClockFlow(snapshotNotifier, body)
   }
 }
 
-private fun <T> contextClockFlow(body: @Composable () -> T) = channelFlow {
+private fun <T> contextClockFlow(
+  snapshotNotifier: SnapshotNotifier,
+  body: @Composable () -> T,
+) = channelFlow {
   launchMolecule(
     mode = RecompositionMode.ContextClock,
+    snapshotNotifier = snapshotNotifier,
     emitter = {
       trySend(it).getOrThrow()
     },
@@ -56,7 +73,10 @@ private fun <T> contextClockFlow(body: @Composable () -> T) = channelFlow {
   )
 }
 
-private fun <T> immediateClockFlow(body: @Composable () -> T): Flow<T> = flow {
+private fun <T> immediateClockFlow(
+  snapshotNotifier: SnapshotNotifier,
+  body: @Composable () -> T,
+): Flow<T> = flow {
   coroutineScope {
     val clock = GatedFrameClock(this, EmptyCoroutineContext)
     val outputBuffer = Channel<T>(1)
@@ -64,6 +84,7 @@ private fun <T> immediateClockFlow(body: @Composable () -> T): Flow<T> = flow {
     launch(clock, start = UNDISPATCHED) {
       launchMolecule(
         mode = RecompositionMode.ContextClock,
+        snapshotNotifier = snapshotNotifier,
         emitter = {
           clock.isRunning = false
           outputBuffer.trySend(it).getOrThrow()
@@ -106,6 +127,20 @@ public fun <T> CoroutineScope.launchMolecule(
   body = body,
 )
 
+@Deprecated("", level = HIDDEN) // For binary compatibility.
+public fun <T> CoroutineScope.launchMolecule(
+  mode: RecompositionMode,
+  context: CoroutineContext = EmptyCoroutineContext,
+  body: @Composable () -> T,
+): StateFlow<T> {
+  return launchMolecule(
+    mode = mode,
+    context = context,
+    snapshotNotifier = SnapshotNotifier.WhileActive,
+    body = body,
+  )
+}
+
 /**
  * Launch a coroutine into this [CoroutineScope] which will continually recompose `body`
  * to produce a [StateFlow] stream of [T] values.
@@ -116,6 +151,7 @@ public fun <T> CoroutineScope.launchMolecule(
 public fun <T> CoroutineScope.launchMolecule(
   mode: RecompositionMode,
   context: CoroutineContext = EmptyCoroutineContext,
+  snapshotNotifier: SnapshotNotifier = SnapshotNotifier.WhileActive,
   body: @Composable () -> T,
 ): StateFlow<T> {
   var flow: MutableStateFlow<T>? = null
@@ -123,6 +159,7 @@ public fun <T> CoroutineScope.launchMolecule(
   launchMolecule(
     context = context,
     mode = mode,
+    snapshotNotifier = snapshotNotifier,
     emitter = { value ->
       val outputFlow = flow
       if (outputFlow != null) {
@@ -151,6 +188,22 @@ public fun <T> CoroutineScope.launchMolecule(
   )
 }
 
+@Deprecated("", level = HIDDEN) // For binary compatibility.
+public fun <T> CoroutineScope.launchMolecule(
+  mode: RecompositionMode,
+  emitter: (value: T) -> Unit,
+  context: CoroutineContext = EmptyCoroutineContext,
+  body: @Composable () -> T,
+) {
+  launchMolecule(
+    mode = mode,
+    emitter = emitter,
+    context = context,
+    snapshotNotifier = SnapshotNotifier.WhileActive,
+    body = body,
+  )
+}
+
 /**
  * Launch a coroutine into this [CoroutineScope] which will continually recompose `body`
  * in the optional [context] to invoke [emitter] with each returned [T] value.
@@ -165,6 +218,7 @@ public fun <T> CoroutineScope.launchMolecule(
   mode: RecompositionMode,
   emitter: (value: T) -> Unit,
   context: CoroutineContext = EmptyCoroutineContext,
+  snapshotNotifier: SnapshotNotifier = SnapshotNotifier.WhileActive,
   body: @Composable () -> T,
 ) {
   val clockContext = when (mode) {
@@ -175,6 +229,7 @@ public fun <T> CoroutineScope.launchMolecule(
 
   val recomposer = Recomposer(finalContext)
   val composition = Composition(UnitApplier, recomposer)
+
   var snapshotHandle: ObserverHandle? = null
   launch(finalContext, start = UNDISPATCHED) {
     try {
@@ -185,13 +240,18 @@ public fun <T> CoroutineScope.launchMolecule(
     }
   }
 
-  var applyScheduled = false
-  snapshotHandle = Snapshot.registerGlobalWriteObserver {
-    if (!applyScheduled) {
-      applyScheduled = true
-      launch(finalContext) {
-        applyScheduled = false
-        Snapshot.sendApplyNotifications()
+  when (snapshotNotifier) {
+    SnapshotNotifier.External -> {}
+    SnapshotNotifier.WhileActive -> {
+      var applyScheduled = false
+      snapshotHandle = Snapshot.registerGlobalWriteObserver {
+        if (!applyScheduled) {
+          applyScheduled = true
+          launch(finalContext) {
+            applyScheduled = false
+            Snapshot.sendApplyNotifications()
+          }
+        }
       }
     }
   }
