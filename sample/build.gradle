@@ -25,4 +25,10 @@ android {
   testOptions {
     unitTests.returnDefaultValues = true
   }
+
+  variantFilter { variant ->
+    if (variant.buildType.name == 'release') {
+      setIgnore(true)
+    }
+  }
 }
