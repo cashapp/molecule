@@ -55,6 +55,11 @@ kotlin {
         }
         it.group("watchos") {}
       }
+      it.group('nonJava') {
+        it.group('native') {}
+        it.withJs()
+        it.withWasmJs()
+      }
     }
   }
 
@@ -85,13 +90,16 @@ kotlin {
     }
 
     // We use a common folder instead of a common source set because there is no commonizer
+    // which exposes the Java APIs across these two targets.
+    androidMain { kotlin.srcDir('src/javaMain/kotlin') }
+    androidTest { kotlin.srcDir('src/javaTest/kotlin') }
+    jvmMain { kotlin.srcDir('src/javaMain/kotlin') }
+    jvmTest { kotlin.srcDir('src/javaTest/kotlin') }
+
+    // We use a common folder instead of a common source set because there is no commonizer
     // which exposes the browser APIs across these two targets.
-    jsMain {
-      kotlin.srcDir('src/browserMain/kotlin')
-    }
-    wasmJsMain {
-      kotlin.srcDir('src/browserMain/kotlin')
-    }
+    jsMain { kotlin.srcDir('src/browserMain/kotlin') }
+    wasmJsMain { kotlin.srcDir('src/browserMain/kotlin') }
   }
 }
 
@@ -118,6 +126,7 @@ android {
   sourceSets {
     androidTest {
       java.srcDirs += 'src/commonTest/kotlin'
+      java.srcDirs += 'src/javaTest/kotlin'
     }
   }
 

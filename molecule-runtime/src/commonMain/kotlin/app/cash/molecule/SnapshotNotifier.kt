@@ -15,6 +15,8 @@
  */
 package app.cash.molecule
 
+import app.cash.molecule.SnapshotNotifier.WhileActive
+
 /**
  * The different snapshot notification modes of Molecule.
  *
@@ -24,6 +26,10 @@ package app.cash.molecule
  * per process. Applications which use other Compose-based systems like Compose UI likely already
  * have one in place, whereas applications that only use Molecule need its automatic registering
  * of this notifier.
+ *
+ * On the JVM and Android, Molecule will read the `app.cash.molecule.snapshotNotifier` system
+ * property in order to determine the default mechanism. The value is parsed with [enumValueOf],
+ * or else defaults to [WhileActive] if not set or the property does not parse to a value.
  *
  * @see androidx.compose.runtime.snapshots.Snapshot.sendApplyNotifications
  */

@@ -3,7 +3,10 @@
 ## [Unreleased]
 
 New:
-- Add `SnapshotNotifier` enum to control whether Molecule automatically sends snapshot apply notifications. If you are using Molecule with another Compose-based library in a single application, you may want to disable our snapshot notification. See the enum for details on when that is appropriate.
+- Add `SnapshotNotifier` enum to control whether Molecule automatically sends snapshot apply notifications.
+  If you are using Molecule with another Compose-based library in a single application, you may want to disable our snapshot notification.
+  See the enum for details on when that is appropriate.
+  Additionally, the `app.cash.molecule.snapshotNotifier` system property can be set to one of the enum entry names to control the default process-wide.
 
 Changed:
 - Any specified additional coroutine context elements will now be honored in the coroutine used internally with `RecompositionMode.Immediate` to send frames and cause recomposition to occur. This is observable, most notably, when a `CoroutineDispatcher` is included, as now recompositions which occur after the first, synchronous one will occur on that dispatcher.

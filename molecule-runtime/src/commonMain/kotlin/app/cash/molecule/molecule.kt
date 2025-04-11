@@ -39,7 +39,7 @@ import kotlinx.coroutines.launch
 public fun <T> moleculeFlow(mode: RecompositionMode, body: @Composable () -> T): Flow<T> {
   return moleculeFlow(
     mode = mode,
-    snapshotNotifier = SnapshotNotifier.WhileActive,
+    snapshotNotifier = defaultSnapshotNotifier(),
     body = body,
   )
 }
@@ -50,7 +50,7 @@ public fun <T> moleculeFlow(mode: RecompositionMode, body: @Composable () -> T):
  */
 public fun <T> moleculeFlow(
   mode: RecompositionMode,
-  snapshotNotifier: SnapshotNotifier = SnapshotNotifier.WhileActive,
+  snapshotNotifier: SnapshotNotifier = defaultSnapshotNotifier(),
   body: @Composable () -> T,
 ): Flow<T> {
   return when (mode) {
@@ -136,7 +136,7 @@ public fun <T> CoroutineScope.launchMolecule(
   return launchMolecule(
     mode = mode,
     context = context,
-    snapshotNotifier = SnapshotNotifier.WhileActive,
+    snapshotNotifier = defaultSnapshotNotifier(),
     body = body,
   )
 }
@@ -151,7 +151,7 @@ public fun <T> CoroutineScope.launchMolecule(
 public fun <T> CoroutineScope.launchMolecule(
   mode: RecompositionMode,
   context: CoroutineContext = EmptyCoroutineContext,
-  snapshotNotifier: SnapshotNotifier = SnapshotNotifier.WhileActive,
+  snapshotNotifier: SnapshotNotifier = defaultSnapshotNotifier(),
   body: @Composable () -> T,
 ): StateFlow<T> {
   var flow: MutableStateFlow<T>? = null
@@ -199,7 +199,7 @@ public fun <T> CoroutineScope.launchMolecule(
     mode = mode,
     emitter = emitter,
     context = context,
-    snapshotNotifier = SnapshotNotifier.WhileActive,
+    snapshotNotifier = defaultSnapshotNotifier(),
     body = body,
   )
 }
@@ -218,7 +218,7 @@ public fun <T> CoroutineScope.launchMolecule(
   mode: RecompositionMode,
   emitter: (value: T) -> Unit,
   context: CoroutineContext = EmptyCoroutineContext,
-  snapshotNotifier: SnapshotNotifier = SnapshotNotifier.WhileActive,
+  snapshotNotifier: SnapshotNotifier = defaultSnapshotNotifier(),
   body: @Composable () -> T,
 ) {
   val clockContext = when (mode) {
