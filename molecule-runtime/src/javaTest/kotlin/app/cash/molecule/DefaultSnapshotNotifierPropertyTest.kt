@@ -24,11 +24,7 @@ import kotlin.test.Test
 // Note: We do not share this constant with the production code to verify its value doesn't change.
 private const val property = "app.cash.molecule.snapshotNotifier"
 
-class DefaultSnapshotNotifierTest {
-  @Test fun noProperty() {
-    assertThat(defaultSnapshotNotifier()).isEqualTo(WhileActive)
-  }
-
+class DefaultSnapshotNotifierPropertyTest {
   @Test fun propertyEmpty() {
     System.setProperty(property, "")
     try {

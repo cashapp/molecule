@@ -459,5 +459,9 @@ class MoleculeTest {
     job.cancelAndJoin()
   }
 
+  @Test fun defaultSnapshotNotifierChangeDetector() {
+    assertThat(defaultSnapshotNotifier()).isEqualTo(WhileActive)
+  }
+
   private suspend fun <T> Channel<T>.awaitValue(): T = withTimeout(1000) { receive() }
 }
