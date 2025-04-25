@@ -22,5 +22,5 @@
       // Only write the major version.
       extractVersionTemplate: '^(?<version>\\d+)',
     },
-  ]
+  ],
 }
