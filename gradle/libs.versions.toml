@@ -50,4 +50,4 @@ squareup-retrofit-converter-scalars = { module = "com.squareup.retrofit2:convert
 squareup-retrofit-converter-kotlinx-serialization = { module = "com.squareup.retrofit2:converter-kotlinx-serialization", version.ref = "squareup-retrofit" }
 
 assertk = "com.willowtreeapps.assertk:assertk:0.28.1"
-turbine = { module = "app.cash.turbine:turbine", version = "1.2.0" }
+turbine = { module = "app.cash.turbine:turbine", version = "1.2.1" }
