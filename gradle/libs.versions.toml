@@ -6,7 +6,7 @@ coroutine = "1.10.2"
 kotlin = "2.2.0"
 jetbrains-compose = "1.8.2"
 serialization = "1.9.0"
-squareup-okhttp = "5.0.0"
+squareup-okhttp = "5.1.0"
 squareup-retrofit = "3.0.0"
 
 [libraries]
