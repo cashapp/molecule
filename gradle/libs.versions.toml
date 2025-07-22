@@ -37,7 +37,7 @@ kotlinx-serialization = { module = "org.jetbrains.kotlinx:kotlinx-serialization-
 kotlinx-binaryCompatibilityValidator = "org.jetbrains.kotlinx:binary-compatibility-validator:0.18.1"
 
 ktlint-core = "com.pinterest.ktlint:ktlint-cli:1.7.1"
-ktlint-composeRules = "io.nlopez.compose.rules:ktlint:0.4.25"
+ktlint-composeRules = "io.nlopez.compose.rules:ktlint:0.4.26"
 
 maven-publish-plugin = { module = "com.vanniktech:gradle-maven-publish-plugin", version = "0.34.0" }
 
