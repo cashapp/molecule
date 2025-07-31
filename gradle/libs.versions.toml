@@ -12,7 +12,7 @@ squareup-retrofit = "3.0.0"
 [libraries]
 android-plugin = { module = "com.android.tools.build:gradle", version = "8.11.1" }
 androidx-core = { module = "androidx.core:core-ktx", version = "1.16.0" }
-androidx-test-runner = { module = "androidx.test:runner", version = "1.6.2" }
+androidx-test-runner = { module = "androidx.test:runner", version = "1.7.0" }
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version = "1.10.1" }
 
 androidx-compose-material3 = "androidx.compose.material3:material3:1.3.2"
