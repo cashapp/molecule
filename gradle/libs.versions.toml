@@ -3,7 +3,7 @@ compileSdk = "36"
 minSdk = "21"
 
 coroutine = "1.10.2"
-kotlin = "2.2.0"
+kotlin = "2.2.10"
 jetbrains-compose = "1.8.2"
 serialization = "1.9.0"
 squareup-okhttp = "5.1.0"
