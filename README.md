@@ -17,6 +17,16 @@ fun CoroutineScope.launchCounter(): StateFlow<Int> = launchMolecule(mode = Conte
 }
 ```
 
+Wait–I thought Jetpack Compose was a UI toolkit for Android?
+
+Compose is, at its core, a general-purpose compiler and runtime to do state tracking and tree node and property manipulation.
+This can be used on any platform supported by Kotlin for any kind of state or with any tree.
+It's an amazing piece of technology.
+
+Molecule "just" glues Compose's state management to kotlinx.coroutines' flows so that it can be used without the node tree.
+
+![molecule is not a framework, just a headless compose ui meme](./molecule_not_a_framework_sign.jpg)
+
 [^1]: …and NOT Jetpack Compose UI!
 
 
