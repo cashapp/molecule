@@ -1,6 +1,6 @@
 [versions]
 compileSdk = "36"
-minSdk = "21"
+minSdk = "23"
 
 coroutine = "1.10.2"
 kotlin = "2.2.10"
