@@ -4,6 +4,7 @@
 [Unreleased]: https://github.com/cashapp/molecule/compare/2.0.0...HEAD
 
 Changed:
+- Android variant now has a minimum SDK level of 23.
 - In-development snapshots are now published to the Central Portal Snapshots repository at https://central.sonatype.com/repository/maven-snapshots/.
 
 
