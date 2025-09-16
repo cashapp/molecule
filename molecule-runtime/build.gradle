@@ -71,7 +71,7 @@ kotlin {
 
     commonMain {
       dependencies {
-        api libs.jetbrains.compose.runtime
+        api libs.androidx.compose.runtime
         api libs.kotlinx.coroutines.core
       }
     }
@@ -116,6 +116,12 @@ dependencies {
     capabilities {
       requireCapability(
         "org.jetbrains.kotlin:kotlin-test-framework-junit:${libs.versions.kotlin.get()}")
+    }
+  }
+
+  constraints {
+    commonMainApi("org.jetbrains.compose.runtime:runtime:1.9.0") {
+      because('AndroidX publishes multiplatform runtime. The JetBrains artifact is now empty.')
     }
   }
 }

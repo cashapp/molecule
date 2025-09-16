@@ -4,6 +4,7 @@
 [Unreleased]: https://github.com/cashapp/molecule/compare/2.0.0...HEAD
 
 Changed:
+- Use the AndroidX Compose runtime which is now fully multiplatform. A dependency constraint to the JetBrains Compose runtime version 1.9.0 has been added, which is the first version that is empty and itself now points to AndroidX.
 - Android variant now has a minimum SDK level of 23.
 - In-development snapshots are now published to the Central Portal Snapshots repository at https://central.sonatype.com/repository/maven-snapshots/.
 
