@@ -7,27 +7,30 @@
    2. Add a link URL to ensure the header link works.
    3. Add a new `Unreleased` section to the top.
 
-3. Commit
+3. Update the `README.md` so the "Download" section reflects the new release version and the
+   snapshot section reflects the next "SNAPSHOT" version.
+
+4. Commit
 
    ```
    $ git commit -am "Prepare version X.Y.Z"
    ```
 
-4. Tag
+5. Tag
 
    ```
    $ git tag -am "Version X.Y.Z" X.Y.Z
    ```
 
-5. Update the `VERSION_NAME` in `gradle.properties` to the next "SNAPSHOT" version.
+6. Update the `VERSION_NAME` in `gradle.properties` to the next "SNAPSHOT" version.
 
-6. Commit
+7. Commit
 
    ```
    $ git commit -am "Prepare next development version"
    ```
 
-7. Push!
+8. Push!
 
    ```
    $ git push && git push --tags

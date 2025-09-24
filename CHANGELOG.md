@@ -1,7 +1,13 @@
 # Change Log
 
 ## [Unreleased]
-[Unreleased]: https://github.com/cashapp/molecule/compare/2.0.0...HEAD
+[Unreleased]: https://github.com/cashapp/molecule/compare/2.2.0...HEAD
+
+Nothing yet!
+
+
+## [2.2.0] - 2025-09-24
+[2.2.0]: https://github.com/cashapp/molecule/releases/tag/2.2.0
 
 Changed:
 - Use the AndroidX Compose runtime which is now fully multiplatform. A dependency constraint to the JetBrains Compose runtime version 1.9.0 has been added, which is the first version that is empty and itself now points to AndroidX.
