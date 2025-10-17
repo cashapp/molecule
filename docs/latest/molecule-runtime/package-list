@@ -27,6 +27,6 @@ $dokka.location:app.cash.molecule/SnapshotNotifier///PointingToDeclaration/mole
 $dokka.location:app.cash.molecule/SnapshotNotifier/entries/#/PointingToDeclaration/molecule-runtime/app.cash.molecule/-snapshot-notifier/entries.html
 $dokka.location:app.cash.molecule/SnapshotNotifier/valueOf/#kotlin.String/PointingToDeclaration/molecule-runtime/app.cash.molecule/-snapshot-notifier/value-of.html
 $dokka.location:app.cash.molecule/SnapshotNotifier/values/#/PointingToDeclaration/molecule-runtime/app.cash.molecule/-snapshot-notifier/values.html
-$dokka.location:app.cash.molecule/WindowAnimationFrameClock///PointingToDeclaration/molecule-runtime/app.cash.molecule/[wasm-js]-window-animation-frame-clock/index.html
-$dokka.location:app.cash.molecule/WindowAnimationFrameClock/withFrameNanos/#kotlin.Function1[kotlin.Long,TypeParam(bounds=[kotlin.Any?])]/PointingToDeclaration/molecule-runtime/app.cash.molecule/[wasm-js]-window-animation-frame-clock/with-frame-nanos.html
+$dokka.location:app.cash.molecule/WindowAnimationFrameClock///PointingToDeclaration/molecule-runtime/app.cash.molecule/-window-animation-frame-clock/index.html
+$dokka.location:app.cash.molecule/WindowAnimationFrameClock/withFrameNanos/#kotlin.Function1[kotlin.Long,TypeParam(bounds=[kotlin.Any?])]/PointingToDeclaration/molecule-runtime/app.cash.molecule/-window-animation-frame-clock/with-frame-nanos.html
 app.cash.molecule
