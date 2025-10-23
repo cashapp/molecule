@@ -3,7 +3,7 @@ compileSdk = "36"
 minSdk = "23"
 
 coroutine = "1.10.2"
-kotlin = "2.2.20"
+kotlin = "2.2.21"
 serialization = "1.9.0"
 squareup-okhttp = "5.2.1"
 squareup-retrofit = "3.0.0"
