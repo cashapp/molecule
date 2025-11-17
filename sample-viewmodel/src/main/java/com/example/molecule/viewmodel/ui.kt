@@ -43,8 +43,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.ArrowDropDown
 import androidx.compose.material3.Button
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -60,6 +58,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.compose.AsyncImagePainter
@@ -153,7 +153,7 @@ private fun CurrentBreedSelection(
         style = MaterialTheme.typography.titleMedium,
       )
       Icon(
-        imageVector = Icons.Rounded.ArrowDropDown,
+        imageVector = ImageVector.vectorResource(R.drawable.rounded_arrow_drop_down_24),
         contentDescription = null,
         modifier = Modifier.rotate(arrowRotation),
       )
