@@ -242,6 +242,7 @@ public fun <T> CoroutineScope.launchMolecule(
 
   when (snapshotNotifier) {
     SnapshotNotifier.External -> {}
+
     SnapshotNotifier.WhileActive -> {
       var applyScheduled = false
       snapshotHandle = Snapshot.registerGlobalWriteObserver {
