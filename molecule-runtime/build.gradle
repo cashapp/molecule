@@ -110,12 +110,6 @@ dependencies {
         "org.jetbrains.kotlin:kotlin-test-framework-junit:${libs.versions.kotlin.get()}")
     }
   }
-
-  constraints {
-    commonMainApi("org.jetbrains.compose.runtime:runtime:1.9.0") {
-      because('AndroidX publishes multiplatform runtime. The JetBrains artifact is now empty.')
-    }
-  }
 }
 
 android {
