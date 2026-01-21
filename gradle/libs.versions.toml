@@ -4,7 +4,7 @@ minSdk = "23"
 
 coroutine = "1.10.2"
 kotlin = "2.3.0"
-serialization = "1.9.0"
+serialization = "1.10.0"
 squareup-okhttp = "5.3.2"
 squareup-retrofit = "3.0.0"
 
