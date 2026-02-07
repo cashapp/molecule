@@ -29,19 +29,20 @@ import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelAndJoin
-import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.runBlocking
 
 // These tests are JVM only because they look at the current thread ID. It could be supported on
 // all platforms with threads, but all the code is common, so this just gets us coverage quickly.
 class MoleculeConcurrentTest {
-  @Test fun coroutineContextHonoredByImmediateClock() = runTest {
+  @Test
+  fun coroutineContextHonoredByImmediateClock() = runBlocking {
     val testThread = Thread.currentThread()
     var firstThread: Thread? = null
     var secondThread: Thread? = null
 
     val job = Job()
     val cancelLatch = CompletableDeferred<Unit>()
-    backgroundScope.launchMolecule(Immediate, job + Dispatchers.Default) {
+    launchMolecule(Immediate, job + Dispatchers.Default) {
       var count by remember { mutableIntStateOf(0) }
       when (count) {
         0 -> firstThread = Thread.currentThread()
