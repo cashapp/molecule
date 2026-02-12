@@ -41,25 +41,27 @@ class MoleculeConcurrentTest {
     var secondThread: Thread? = null
 
     val job = Job()
-    val cancelLatch = CompletableDeferred<Unit>()
-    launchMolecule(Immediate, job + Dispatchers.Default) {
-      var count by remember { mutableIntStateOf(0) }
-      when (count) {
-        0 -> firstThread = Thread.currentThread()
-        1 -> secondThread = Thread.currentThread()
+    try {
+      val cancelLatch = CompletableDeferred<Unit>()
+      launchMolecule(Immediate, job + Dispatchers.Default) {
+        var count by remember { mutableIntStateOf(0) }
+        when (count) {
+          0 -> firstThread = Thread.currentThread()
+          1 -> secondThread = Thread.currentThread()
+        }
+        if (count == 1) {
+          cancelLatch.complete(Unit)
+        }
+        SideEffect {
+          count++
+        }
       }
-      if (count == 1) {
-        cancelLatch.complete(Unit)
-      }
-      SideEffect {
-        count++
-      }
+      cancelLatch.await()
+
+      assertThat(firstThread).isSameInstanceAs(testThread)
+      assertThat(secondThread).isNotSameInstanceAs(testThread)
+    } finally {
+      job.cancelAndJoin()
     }
-    cancelLatch.await()
-
-    assertThat(firstThread).isSameInstanceAs(testThread)
-    assertThat(secondThread).isNotSameInstanceAs(testThread)
-
-    job.cancelAndJoin()
   }
 }
