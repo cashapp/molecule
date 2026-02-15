@@ -21,6 +21,10 @@ public final class app/cash/molecule/AndroidUiFrameClock : androidx/compose/runt
 	public fun withFrameNanos (Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
+public final class app/cash/molecule/DebounceKt {
+	public static final fun rememberDebounced-dWUq8MI (Ljava/lang/Object;JLandroidx/compose/runtime/Composer;I)Ljava/lang/Object;
+}
+
 public final class app/cash/molecule/MoleculeKt {
 	public static final fun launchMolecule (Lkotlinx/coroutines/CoroutineScope;Lapp/cash/molecule/RecompositionMode;Lkotlin/coroutines/CoroutineContext;Lapp/cash/molecule/SnapshotNotifier;Lkotlin/jvm/functions/Function2;)Lkotlinx/coroutines/flow/StateFlow;
 	public static final synthetic fun launchMolecule (Lkotlinx/coroutines/CoroutineScope;Lapp/cash/molecule/RecompositionMode;Lkotlin/coroutines/CoroutineContext;Lkotlin/jvm/functions/Function2;)Lkotlinx/coroutines/flow/StateFlow;
