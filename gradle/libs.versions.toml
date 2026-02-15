@@ -3,17 +3,17 @@ compileSdk = "36"
 minSdk = "23"
 
 coroutine = "1.10.2"
-kotlin = "2.3.0"
+kotlin = "2.3.10"
 serialization = "1.10.0"
 squareup-okhttp = "5.3.2"
 squareup-retrofit = "3.0.0"
 
 [libraries]
 android-plugin = { module = "com.android.tools.build:gradle", version = "8.13.2" }
-androidx-compose-runtime = "androidx.compose.runtime:runtime:1.10.2"
+androidx-compose-runtime = "androidx.compose.runtime:runtime:1.10.3"
 androidx-core = { module = "androidx.core:core-ktx", version = "1.17.0" }
 androidx-test-runner = { module = "androidx.test:runner", version = "1.7.0" }
-androidx-activity-compose = { module = "androidx.activity:activity-compose", version = "1.12.3" }
+androidx-activity-compose = { module = "androidx.activity:activity-compose", version = "1.12.4" }
 
 androidx-compose-material3 = "androidx.compose.material3:material3:1.4.0"
 
