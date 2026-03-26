@@ -19,7 +19,7 @@ androidx-compose-material3 = "androidx.compose.material3:material3:1.4.0"
 
 coil-compose = "io.coil-kt:coil-compose:2.7.0"
 
-dokka-plugin = { module = "org.jetbrains.dokka:dokka-gradle-plugin", version = "2.1.0" }
+dokka-plugin = { module = "org.jetbrains.dokka:dokka-gradle-plugin", version = "2.2.0" }
 
 junit = { module = "junit:junit", version = "4.13.2" }
 
