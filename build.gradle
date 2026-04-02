@@ -1,6 +1,9 @@
+import com.android.build.api.dsl.ApplicationExtension
+import com.android.build.api.dsl.KotlinMultiplatformAndroidLibraryTarget
+
 buildscript {
   dependencies {
-    classpath libs.android.plugin
+    classpath libs.android.plugin.api
     classpath libs.kotlin.plugin.core
     classpath libs.kotlin.plugin.compose
     classpath libs.kotlin.plugin.serialization
@@ -47,20 +50,29 @@ subprojects {
     }
   }
 
-  plugins.withType(com.android.build.gradle.BasePlugin).configureEach {
-    def android = extensions.getByName("android") as com.android.build.gradle.BaseExtension
-    android.compileSdkVersion libs.versions.compileSdk.get().toInteger()
+  pluginManager.withPlugin('com.android.application') {
+    def android = extensions.getByName("android") as ApplicationExtension
+    android.compileSdk = libs.versions.compileSdk.get().toInteger()
     android.defaultConfig {
-      minSdkVersion libs.versions.minSdk.get().toInteger()
-      targetSdkVersion libs.versions.compileSdk.get().toInteger()
+      minSdk = libs.versions.minSdk.get().toInteger()
+      targetSdk = libs.versions.compileSdk.get().toInteger()
     }
-    android.compileOptions {
-      sourceCompatibility JavaVersion.VERSION_11
-      targetCompatibility JavaVersion.VERSION_11
-    }
-    android.lintOptions {
+
+    android.lint {
       checkDependencies true
       checkReleaseBuilds false // Full lint runs as part of 'build' task.
+    }
+  }
+
+  pluginManager.withPlugin('org.jetbrains.kotlin.multiplatform') {
+    kotlin.targets.withType(KotlinMultiplatformAndroidLibraryTarget).configureEach {
+      compileSdk = libs.versions.compileSdk.get().toInteger()
+      minSdk = libs.versions.minSdk.get().toInteger()
+
+      lint {
+        checkDependencies = true
+        checkReleaseBuilds = false // Full lint runs as part of 'build' task.
+      }
     }
   }
 

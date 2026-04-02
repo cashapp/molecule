@@ -1,4 +1,4 @@
-apply plugin: 'com.android.library'
+apply plugin: 'com.android.kotlin.multiplatform.library'
 apply plugin: 'org.jetbrains.kotlin.multiplatform'
 apply plugin: 'org.jetbrains.kotlin.plugin.compose'
 apply plugin: 'com.vanniktech.maven.publish'
@@ -8,9 +8,25 @@ apply plugin: 'org.jetbrains.kotlinx.binary-compatibility-validator'
 kotlin {
   explicitApi()
 
-  androidTarget {
-    publishLibraryVariants('release')
+  android {
+    namespace 'app.cash.molecule'
+
+    withDeviceTestBuilder {
+      sourceSetTreeName = 'test'
+    }.configure {
+      instrumentationRunner = 'androidx.test.runner.AndroidJUnitRunner'
+    }
+
+    withHostTest {
+      returnDefaultValues = true
+    }
+
+    packaging.resources {
+      excludes += 'META-INF/AL2.0'
+      excludes += 'META-INF/LGPL2.1'
+    }
   }
+
 
   iosArm64()
   iosSimulatorArm64()
@@ -87,51 +103,34 @@ kotlin {
     }
 
     androidMain {
+      dependsOn(javaMain)
       dependencies {
         implementation libs.androidx.core
+      }
+    }
+
+    androidDeviceTest {
+      kotlin.srcDir('src/androidInstrumentedTest/kotlin')
+      dependencies {
+        implementation libs.androidx.test.runner
+        implementation libs.junit
+        implementation libs.assertk
+        implementation libs.kotlinx.coroutines.test
+        implementation libs.kotlin.test
       }
     }
   }
 }
 
 dependencies {
-  androidTestImplementation libs.androidx.test.runner
-  androidTestImplementation libs.junit
-  androidTestImplementation libs.assertk
-  androidTestImplementation libs.kotlinx.coroutines.test
-
   // The kotlin.test library provides JVM variants for multiple testing frameworks. When used
   // as a test dependency this selection is transparent. But since we are using from an Android
   // configuration we have to select the desired variant via an explicit capability.
-  add("androidTestImplementation", libs.kotlin.test) {
+  add("androidDeviceTestImplementation", libs.kotlin.test) {
     capabilities {
       requireCapability(
         "org.jetbrains.kotlin:kotlin-test-framework-junit:${libs.versions.kotlin.get()}")
     }
-  }
-}
-
-android {
-  namespace 'app.cash.molecule'
-
-  sourceSets {
-    androidTest {
-      java.srcDirs += 'src/commonTest/kotlin'
-      java.srcDirs += 'src/javaTest/kotlin'
-    }
-  }
-
-  defaultConfig {
-    testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
-  }
-
-  testOptions {
-    unitTests.returnDefaultValues = true
-  }
-
-  packagingOptions {
-    exclude 'META-INF/AL2.0'
-    exclude 'META-INF/LGPL2.1'
   }
 }
 

@@ -1,5 +1,4 @@
 apply plugin: 'com.android.application'
-apply plugin: 'org.jetbrains.kotlin.android'
 apply plugin: 'org.jetbrains.kotlin.plugin.compose'
 apply plugin: 'org.jetbrains.kotlin.plugin.serialization'
 
@@ -24,10 +23,10 @@ android {
   testOptions {
     unitTests.returnDefaultValues = true
   }
+}
 
-  variantFilter { variant ->
-    if (variant.buildType.name == 'release') {
-      setIgnore(true)
-    }
+androidComponents {
+  beforeVariants(selector().withBuildType('release')) { variant ->
+    variant.enable = false
   }
 }
