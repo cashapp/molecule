@@ -3,7 +3,7 @@ import com.android.build.api.dsl.KotlinMultiplatformAndroidLibraryTarget
 
 buildscript {
   dependencies {
-    classpath libs.android.plugin.api
+    classpath libs.android.plugin
     classpath libs.kotlin.plugin.core
     classpath libs.kotlin.plugin.compose
     classpath libs.kotlin.plugin.serialization

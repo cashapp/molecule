@@ -9,7 +9,7 @@ squareup-okhttp = "5.3.2"
 squareup-retrofit = "3.0.0"
 
 [libraries]
-android-plugin-api = { module = "com.android.tools.build:gradle-api", version = "9.1.0" }
+android-plugin = { module = "com.android.tools.build:gradle", version = "9.1.0" }
 androidx-compose-runtime = "androidx.compose.runtime:runtime:1.10.6"
 androidx-core = { module = "androidx.core:core-ktx", version = "1.18.0" }
 androidx-test-runner = { module = "androidx.test:runner", version = "1.7.0" }
