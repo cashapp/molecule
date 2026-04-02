@@ -27,7 +27,6 @@ kotlin {
     }
   }
 
-
   iosArm64()
   iosSimulatorArm64()
   iosX64()
@@ -116,7 +115,6 @@ kotlin {
         implementation libs.junit
         implementation libs.assertk
         implementation libs.kotlinx.coroutines.test
-        implementation libs.kotlin.test
       }
     }
   }
