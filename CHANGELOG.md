@@ -4,7 +4,7 @@
 [Unreleased]: https://github.com/cashapp/molecule/compare/2.2.0...HEAD
 
 Changed:
-- The deprecated `watchosX64` target has been removed.
+- The deprecated `iosX64`, `macosX64`, `tvosX64`, and `watchosX64` targets have been removed.
 
 
 ## [2.2.0] - 2025-09-24
