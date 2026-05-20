@@ -39,7 +39,9 @@ import assertk.assertions.isNotSameInstanceAs
 import assertk.assertions.isSameInstanceAs
 import assertk.assertions.isTrue
 import kotlin.test.Test
+import kotlin.test.assertFailsWith
 import kotlin.test.fail
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -112,6 +114,21 @@ class MoleculeTest {
 
     // This exception is processed in `composeInitial` and not `runRecomposeAndApplyChanges`, so the job is still active.
     job.cancelAndJoin()
+  }
+
+  @Test fun cancelledContextFailsBeforeComposing() = runTest {
+    for (mode in listOf(ContextClock, Immediate)) {
+      val job = Job()
+      val scope = CoroutineScope(coroutineContext + BroadcastFrameClock())
+
+      job.cancel()
+
+      assertFailsWith<CancellationException> {
+        scope.launchMolecule<Int>(mode, emitter = { fail() }, context = job) {
+          fail()
+        }
+      }
+    }
   }
 
   @Test fun errorDelayed() = runTest {

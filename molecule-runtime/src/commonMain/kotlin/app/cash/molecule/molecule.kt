@@ -28,6 +28,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart.UNDISPATCHED
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -231,13 +232,8 @@ public fun <T> CoroutineScope.launchMolecule(
   val composition = Composition(UnitApplier, recomposer)
 
   var snapshotHandle: ObserverHandle? = null
-  launch(finalContext, start = UNDISPATCHED) {
-    try {
-      recomposer.runRecomposeAndApplyChanges()
-    } finally {
-      composition.dispose()
-      snapshotHandle?.dispose()
-    }
+  val recomposerJob = launch(finalContext, start = UNDISPATCHED) {
+    recomposer.runRecomposeAndApplyChanges()
   }
 
   when (snapshotNotifier) {
@@ -257,8 +253,16 @@ public fun <T> CoroutineScope.launchMolecule(
     }
   }
 
-  composition.setContent {
-    emitter(body())
+  try {
+    finalContext.ensureActive()
+    composition.setContent {
+      emitter(body())
+    }
+  } finally {
+    recomposerJob.invokeOnCompletion {
+      composition.dispose()
+      snapshotHandle?.dispose()
+    }
   }
 }
 
