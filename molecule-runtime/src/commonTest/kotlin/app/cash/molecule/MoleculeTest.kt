@@ -34,14 +34,13 @@ import app.cash.molecule.SnapshotNotifier.External
 import app.cash.molecule.SnapshotNotifier.WhileActive
 import assertk.assertFailure
 import assertk.assertThat
+import assertk.assertions.isEmpty
 import assertk.assertions.isEqualTo
 import assertk.assertions.isNotSameInstanceAs
 import assertk.assertions.isSameInstanceAs
 import assertk.assertions.isTrue
 import kotlin.test.Test
-import kotlin.test.assertFailsWith
 import kotlin.test.fail
-import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -112,21 +111,20 @@ class MoleculeTest {
       }
     }.isSameInstanceAs(runtimeException)
 
-    // This exception is processed in `composeInitial` and not `runRecomposeAndApplyChanges`, so the job is still active.
+    runCurrent()
+    assertThat(job.children.toList()).isEmpty()
     job.cancelAndJoin()
   }
 
-  @Test fun cancelledContextFailsBeforeComposing() = runTest {
+  @Test fun cancelledContextReturnsBeforeComposing() = runTest {
     for (mode in listOf(ContextClock, Immediate)) {
       val job = Job()
       val scope = CoroutineScope(coroutineContext + BroadcastFrameClock())
 
       job.cancel()
 
-      assertFailsWith<CancellationException> {
-        scope.launchMolecule<Int>(mode, emitter = { fail() }, context = job) {
-          fail()
-        }
+      scope.launchMolecule<Int>(mode, emitter = { fail() }, context = job) {
+        fail()
       }
     }
   }
@@ -201,7 +199,8 @@ class MoleculeTest {
       }
     }.isSameInstanceAs(runtimeException)
 
-    // This exception is processed in `composeInitial` and not `runRecomposeAndApplyChanges`, so the job is still active.
+    runCurrent()
+    assertThat(job.children.toList()).isEmpty()
     job.cancelAndJoin()
   }
 

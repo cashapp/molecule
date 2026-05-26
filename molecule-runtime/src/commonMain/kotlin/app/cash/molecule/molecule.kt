@@ -24,16 +24,17 @@ import androidx.compose.runtime.snapshots.Snapshot
 import kotlin.DeprecationLevel.HIDDEN
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart.UNDISPATCHED
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
 @Deprecated("", level = HIDDEN) // For binary compatibility.
@@ -172,7 +173,7 @@ public fun <T> CoroutineScope.launchMolecule(
     body = body,
   )
 
-  return flow!!
+  return flow ?: throw CancellationException("launchMolecule was cancelled before producing an initial value")
 }
 
 @Deprecated("", level = HIDDEN) // For binary compatibility.
@@ -232,36 +233,50 @@ public fun <T> CoroutineScope.launchMolecule(
   val composition = Composition(UnitApplier, recomposer)
 
   var snapshotHandle: ObserverHandle? = null
+
   val recomposerJob = launch(finalContext, start = UNDISPATCHED) {
-    recomposer.runRecomposeAndApplyChanges()
+    try {
+      recomposer.runRecomposeAndApplyChanges()
+    } finally {
+      composition.dispose()
+      snapshotHandle?.dispose()
+      snapshotHandle = null
+    }
   }
 
-  when (snapshotNotifier) {
-    SnapshotNotifier.External -> {}
+  var startupCompleted = false
+  try {
+    if (!finalContext.isActive) return
 
-    SnapshotNotifier.WhileActive -> {
-      var applyScheduled = false
-      snapshotHandle = Snapshot.registerGlobalWriteObserver {
-        if (!applyScheduled) {
-          applyScheduled = true
-          launch(finalContext) {
-            applyScheduled = false
-            Snapshot.sendApplyNotifications()
+    when (snapshotNotifier) {
+      SnapshotNotifier.External -> {}
+
+      SnapshotNotifier.WhileActive -> {
+        var applyScheduled = false
+        snapshotHandle = Snapshot.registerGlobalWriteObserver {
+          if (!applyScheduled) {
+            applyScheduled = true
+            launch(finalContext) {
+              applyScheduled = false
+              Snapshot.sendApplyNotifications()
+            }
           }
         }
       }
     }
-  }
 
-  try {
-    finalContext.ensureActive()
+    if (!finalContext.isActive) return
+
     composition.setContent {
       emitter(body())
     }
+    startupCompleted = true
   } finally {
-    recomposerJob.invokeOnCompletion {
-      composition.dispose()
+    if (!startupCompleted) {
       snapshotHandle?.dispose()
+      snapshotHandle = null
+      recomposer.cancel()
+      recomposerJob.cancel()
     }
   }
 }
