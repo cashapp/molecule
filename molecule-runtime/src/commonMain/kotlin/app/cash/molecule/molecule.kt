@@ -223,11 +223,14 @@ public fun <T> CoroutineScope.launchMolecule(
   snapshotNotifier: SnapshotNotifier = defaultSnapshotNotifier(),
   body: @Composable () -> T,
 ) {
+  val baseContext = coroutineContext + context
+  if (!baseContext.isActive) return
+
   val clockContext = when (mode) {
     RecompositionMode.ContextClock -> EmptyCoroutineContext
     RecompositionMode.Immediate -> GatedFrameClock(this, context)
   }
-  val finalContext = coroutineContext + context + clockContext
+  val finalContext = baseContext + clockContext
 
   val recomposer = Recomposer(finalContext)
   val composition = Composition(UnitApplier, recomposer)
