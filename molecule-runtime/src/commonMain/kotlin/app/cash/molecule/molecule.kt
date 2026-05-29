@@ -24,9 +24,10 @@ import androidx.compose.runtime.snapshots.Snapshot
 import kotlin.DeprecationLevel.HIDDEN
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
-import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart.UNDISPATCHED
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
@@ -34,8 +35,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @Deprecated("", level = HIDDEN) // For binary compatibility.
 public fun <T> moleculeFlow(mode: RecompositionMode, body: @Composable () -> T): Flow<T> {
@@ -173,7 +174,7 @@ public fun <T> CoroutineScope.launchMolecule(
     body = body,
   )
 
-  return flow ?: throw CancellationException("launchMolecule was cancelled before producing an initial value")
+  return flow!!
 }
 
 @Deprecated("", level = HIDDEN) // For binary compatibility.
@@ -223,34 +224,32 @@ public fun <T> CoroutineScope.launchMolecule(
   snapshotNotifier: SnapshotNotifier = defaultSnapshotNotifier(),
   body: @Composable () -> T,
 ) {
-  val baseContext = coroutineContext + context
-  if (!baseContext.isActive) return
-
   val clockContext = when (mode) {
     RecompositionMode.ContextClock -> EmptyCoroutineContext
     RecompositionMode.Immediate -> GatedFrameClock(this, context)
   }
-  val finalContext = baseContext + clockContext
+  val finalContext = coroutineContext + context + clockContext
 
   val recomposer = Recomposer(finalContext)
   val composition = Composition(UnitApplier, recomposer)
 
   var snapshotHandle: ObserverHandle? = null
 
-  val recomposerJob = launch(finalContext, start = UNDISPATCHED) {
+  val initialComposition = Job()
+  val runRecompose = launch(finalContext, start = UNDISPATCHED) {
     try {
       recomposer.runRecomposeAndApplyChanges()
     } finally {
-      composition.dispose()
-      snapshotHandle?.dispose()
-      snapshotHandle = null
+      withContext(NonCancellable) {
+        initialComposition.join()
+        composition.dispose()
+        snapshotHandle?.dispose()
+        snapshotHandle = null
+      }
     }
   }
 
-  var startupCompleted = false
   try {
-    if (!finalContext.isActive) return
-
     when (snapshotNotifier) {
       SnapshotNotifier.External -> {}
 
@@ -268,19 +267,17 @@ public fun <T> CoroutineScope.launchMolecule(
       }
     }
 
-    if (!finalContext.isActive) return
-
     composition.setContent {
       emitter(body())
     }
-    startupCompleted = true
+  } catch (throwable: Throwable) {
+    snapshotHandle?.dispose()
+    snapshotHandle = null
+    recomposer.cancel()
+    runRecompose.cancel()
+    throw throwable
   } finally {
-    if (!startupCompleted) {
-      snapshotHandle?.dispose()
-      snapshotHandle = null
-      recomposer.cancel()
-      recomposerJob.cancel()
-    }
+    initialComposition.complete()
   }
 }
 

@@ -116,16 +116,21 @@ class MoleculeTest {
     job.cancelAndJoin()
   }
 
-  @Test fun cancelledContextReturnsBeforeComposing() = runTest {
+  @Test fun cancelledContextComposesInitialValueBeforeStopping() = runTest {
     for (mode in listOf(ContextClock, Immediate)) {
       val job = Job()
       val scope = CoroutineScope(coroutineContext + BroadcastFrameClock())
+      var value = 0
 
       job.cancel()
 
-      scope.launchMolecule<Int>(mode, emitter = { fail() }, context = job) {
-        fail()
+      scope.launchMolecule<Int>(mode, emitter = { value = it }, context = job) {
+        1
       }
+      runCurrent()
+
+      assertThat(value).isEqualTo(1)
+      assertThat(job.children.toList()).isEmpty()
     }
   }
 

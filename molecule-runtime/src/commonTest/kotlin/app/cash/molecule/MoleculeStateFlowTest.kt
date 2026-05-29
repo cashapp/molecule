@@ -30,9 +30,6 @@ import assertk.assertions.isEqualTo
 import assertk.assertions.isSameInstanceAs
 import assertk.assertions.isTrue
 import kotlin.test.Test
-import kotlin.test.assertFailsWith
-import kotlin.test.fail
-import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -108,18 +105,25 @@ class MoleculeStateFlowTest {
     job.cancelAndJoin()
   }
 
-  @Test fun cancelledContextFailsBeforeComposing() = runTest {
+  @Test fun cancelledContextComposesInitialValueBeforeStopping() = runTest {
     for (mode in listOf(ContextClock, Immediate)) {
       val job = Job()
       val scope = CoroutineScope(coroutineContext + BroadcastFrameClock())
+      var effectRan = false
 
       job.cancel()
 
-      assertFailsWith<CancellationException> {
-        scope.launchMolecule<Int>(mode, context = job) {
-          fail()
+      val flow = scope.launchMolecule<Int>(mode, context = job) {
+        LaunchedEffect(Unit) {
+          effectRan = true
         }
+        1
       }
+      runCurrent()
+
+      assertThat(flow.value).isEqualTo(1)
+      assertThat(effectRan).isEqualTo(false)
+      assertThat(job.children.toList()).isEmpty()
     }
   }
 
