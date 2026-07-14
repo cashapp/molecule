@@ -26,8 +26,6 @@ import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart.UNDISPATCHED
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
@@ -36,7 +34,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 @Deprecated("", level = HIDDEN) // For binary compatibility.
 public fun <T> moleculeFlow(mode: RecompositionMode, body: @Composable () -> T): Flow<T> {
@@ -234,19 +231,8 @@ public fun <T> CoroutineScope.launchMolecule(
   val composition = Composition(UnitApplier, recomposer)
 
   var snapshotHandle: ObserverHandle? = null
-
-  val initialComposition = Job()
-  val runRecompose = launch(finalContext, start = UNDISPATCHED) {
-    try {
-      recomposer.runRecomposeAndApplyChanges()
-    } finally {
-      withContext(NonCancellable) {
-        initialComposition.join()
-        composition.dispose()
-        snapshotHandle?.dispose()
-        snapshotHandle = null
-      }
-    }
+  val recomposerJob = launch(finalContext, start = UNDISPATCHED) {
+    recomposer.runRecomposeAndApplyChanges()
   }
 
   try {
@@ -271,13 +257,13 @@ public fun <T> CoroutineScope.launchMolecule(
       emitter(body())
     }
   } catch (throwable: Throwable) {
-    snapshotHandle?.dispose()
-    snapshotHandle = null
     recomposer.cancel()
-    runRecompose.cancel()
     throw throwable
   } finally {
-    initialComposition.complete()
+    recomposerJob.invokeOnCompletion {
+      composition.dispose()
+      snapshotHandle?.dispose()
+    }
   }
 }
 
