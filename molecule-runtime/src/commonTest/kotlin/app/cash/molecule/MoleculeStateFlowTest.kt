@@ -119,9 +119,9 @@ class MoleculeStateFlowTest {
         }
         1
       }
-      runCurrent()
-
       assertThat(flow.value).isEqualTo(1)
+
+      runCurrent()
       assertThat(effectRan).isEqualTo(false)
       assertThat(job.children.toList()).isEmpty()
     }
