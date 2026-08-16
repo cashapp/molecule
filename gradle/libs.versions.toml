@@ -1,11 +1,11 @@
 [versions]
-compileSdk = "36"
+compileSdk = "37"
 minSdk = "23"
 
 coroutine = "1.11.0"
 kotlin = "2.4.10"
 serialization = "1.11.0"
-squareup-okhttp = "5.4.0"
+squareup-okhttp = "5.5.0"
 squareup-retrofit = "3.0.0"
 
 [libraries]
