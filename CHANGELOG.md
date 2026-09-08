@@ -6,6 +6,9 @@
 Changed:
 - The deprecated `iosX64`, `macosX64`, `tvosX64`, and `watchosX64` targets have been removed.
 
+Fixed:
+- Cancelling a coroutine context during Molecule startup no longer causes `launchMolecule` to call `setContent` on a disposed composition.
+
 
 ## [2.2.0] - 2025-09-24
 [2.2.0]: https://github.com/cashapp/molecule/releases/tag/2.2.0
