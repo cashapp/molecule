@@ -6,6 +6,9 @@
 Changed:
 - The deprecated `iosX64`, `macosX64`, `tvosX64`, and `watchosX64` targets have been removed.
 
+Fixed:
+- Frame times on Linux and Windows no longer jump backwards once per second.
+
 
 ## [2.2.0] - 2025-09-24
 [2.2.0]: https://github.com/cashapp/molecule/releases/tag/2.2.0
