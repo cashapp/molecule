@@ -60,3 +60,14 @@ final val app.cash.molecule/app_cash_molecule_WindowAnimationFrameClock$stablepr
 
 // Targets: [js, wasmJs]
 final fun app.cash.molecule/app_cash_molecule_WindowAnimationFrameClock$stableprop_getter(): kotlin/Int // app.cash.molecule/app_cash_molecule_WindowAnimationFrameClock$stableprop_getter|app_cash_molecule_WindowAnimationFrameClock$stableprop_getter(){}[0]
+
+// Targets: [js]
+final object app.cash.molecule/NodeJsFrameClock : androidx.compose.runtime/MonotonicFrameClock { // app.cash.molecule/NodeJsFrameClock|null[0]
+    final suspend fun <#A1: kotlin/Any?> withFrameNanos(kotlin/Function1<kotlin/Long, #A1>): #A1 // app.cash.molecule/NodeJsFrameClock.withFrameNanos|withFrameNanos(kotlin.Function1<kotlin.Long,0:0>){0§<kotlin.Any?>}[0]
+}
+
+// Targets: [js]
+final val app.cash.molecule/app_cash_molecule_NodeJsFrameClock$stableprop // app.cash.molecule/app_cash_molecule_NodeJsFrameClock$stableprop|#static{}app_cash_molecule_NodeJsFrameClock$stableprop[0]
+
+// Targets: [js]
+final fun app.cash.molecule/app_cash_molecule_NodeJsFrameClock$stableprop_getter(): kotlin/Int // app.cash.molecule/app_cash_molecule_NodeJsFrameClock$stableprop_getter|app_cash_molecule_NodeJsFrameClock$stableprop_getter(){}[0]

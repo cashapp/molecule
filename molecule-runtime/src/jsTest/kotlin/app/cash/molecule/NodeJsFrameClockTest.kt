@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2023 Square, Inc.
+ * Copyright (C) 2024 Square, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,5 +15,23 @@
  */
 package app.cash.molecule
 
-@Suppress("NOTHING_TO_INLINE")
-internal actual inline fun nanoTime(): Long = (performance.now() * 1_000_000).toLong()
+import assertk.all
+import assertk.assertThat
+import assertk.assertions.isLessThan
+import assertk.assertions.isPositive
+import kotlin.test.Test
+import kotlinx.coroutines.test.runTest
+
+class NodeJsFrameClockTest {
+  @Test fun ticksWithTime() = runTest {
+    if (js("typeof window !== 'undefined'")) {
+      return@runTest
+    }
+    val frameTimeA = NodeJsFrameClock.withFrameNanos { it }
+    val frameTimeB = NodeJsFrameClock.withFrameNanos { it }
+    assertThat(frameTimeA).all {
+      isPositive()
+      isLessThan(frameTimeB)
+    }
+  }
+}
