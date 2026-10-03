@@ -3,6 +3,9 @@
 ## [Unreleased]
 [Unreleased]: https://github.com/cashapp/molecule/compare/2.2.0...HEAD
 
+New:
+- Add `NodeJsFrameClock` for Kotlin/JS Node.js runtime.
+
 Changed:
 - The deprecated `iosX64`, `macosX64`, `tvosX64`, and `watchosX64` targets have been removed.
 
