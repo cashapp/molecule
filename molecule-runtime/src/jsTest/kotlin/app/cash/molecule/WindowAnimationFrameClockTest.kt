@@ -24,6 +24,9 @@ import kotlinx.coroutines.test.runTest
 
 class WindowAnimationFrameClockTest {
   @Test fun ticksWithTime() = runTest {
+    if (js("typeof window === 'undefined'")) {
+      return@runTest
+    }
     val frameTimeA = WindowAnimationFrameClock.withFrameNanos { it }
     val frameTimeB = WindowAnimationFrameClock.withFrameNanos { it }
     assertThat(frameTimeA).all {

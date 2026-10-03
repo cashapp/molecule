@@ -26,6 +26,8 @@ internal external interface Window {
   fun requestAnimationFrame(callback: (Double) -> Unit)
 }
 
+internal external val performance: Performance
+
 internal external interface Performance {
   fun now(): Double
 }
