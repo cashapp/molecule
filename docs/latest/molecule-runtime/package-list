@@ -15,6 +15,8 @@ $dokka.location:app.cash.molecule/AndroidUiFrameClock/AndroidUiFrameClock/#andro
 $dokka.location:app.cash.molecule/AndroidUiFrameClock/withFrameNanos/#kotlin.Function1[kotlin.Long,TypeParam(bounds=[kotlin.Any?])]/PointingToDeclaration/molecule-runtime/app.cash.molecule/-android-ui-frame-clock/with-frame-nanos.html
 $dokka.location:app.cash.molecule/DisplayLinkClock///PointingToDeclaration/molecule-runtime/app.cash.molecule/-display-link-clock/index.html
 $dokka.location:app.cash.molecule/DisplayLinkClock/withFrameNanos/#kotlin.Function1[kotlin.Long,TypeParam(bounds=[kotlin.Any?])]/PointingToDeclaration/molecule-runtime/app.cash.molecule/-display-link-clock/with-frame-nanos.html
+$dokka.location:app.cash.molecule/NodeJsFrameClock///PointingToDeclaration/molecule-runtime/app.cash.molecule/-node-js-frame-clock/index.html
+$dokka.location:app.cash.molecule/NodeJsFrameClock/withFrameNanos/#kotlin.Function1[kotlin.Long,TypeParam(bounds=[kotlin.Any?])]/PointingToDeclaration/molecule-runtime/app.cash.molecule/-node-js-frame-clock/with-frame-nanos.html
 $dokka.location:app.cash.molecule/RecompositionMode.ContextClock///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}molecule-runtime/app.cash.molecule/-recomposition-mode/-context-clock/index.html
 $dokka.location:app.cash.molecule/RecompositionMode.Immediate///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}molecule-runtime/app.cash.molecule/-recomposition-mode/-immediate/index.html
 $dokka.location:app.cash.molecule/RecompositionMode///PointingToDeclaration/molecule-runtime/app.cash.molecule/-recomposition-mode/index.html
