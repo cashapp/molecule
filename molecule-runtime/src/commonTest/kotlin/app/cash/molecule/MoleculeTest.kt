@@ -42,6 +42,7 @@ import kotlin.test.Test
 import kotlin.test.fail
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelAndJoin
@@ -461,6 +462,28 @@ class MoleculeTest {
 
   @Test fun defaultSnapshotNotifierChangeDetector() {
     assertThat(defaultSnapshotNotifier()).isEqualTo(WhileActive)
+  }
+
+  @Test fun snapshotNotifierWhileActiveWithImmediateDispatcher() = runTest {
+    val job = Job()
+    val clock = BroadcastFrameClock()
+    val scope = CoroutineScope(coroutineContext + job + clock + Dispatchers.Unconfined)
+    var value: Int? = null
+
+    var count by mutableIntStateOf(0)
+
+    scope.launchMolecule(ContextClock, emitter = { value = it }, snapshotNotifier = WhileActive) {
+      count
+    }
+
+    assertThat(value).isEqualTo(0)
+
+    count++
+    runCurrent()
+    clock.sendFrame(0)
+    assertThat(value).isEqualTo(1)
+
+    job.cancelAndJoin()
   }
 
   private suspend fun <T> Channel<T>.awaitValue(): T = withTimeout(1000) { receive() }
