@@ -10,6 +10,7 @@ Changed:
 - The deprecated `iosX64`, `macosX64`, `tvosX64`, and `watchosX64` targets have been removed.
 
 Fixed:
+- Prevent lock inversion deadlock in active snapshot notification dispatch.
 - Frame times on Linux and Windows no longer jump backwards once per second.
 
 
