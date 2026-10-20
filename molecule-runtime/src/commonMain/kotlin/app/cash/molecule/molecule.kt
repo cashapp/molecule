@@ -34,6 +34,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.yield
 
 @Deprecated("", level = HIDDEN) // For binary compatibility.
 public fun <T> moleculeFlow(mode: RecompositionMode, body: @Composable () -> T): Flow<T> {
@@ -249,6 +250,7 @@ public fun <T> CoroutineScope.launchMolecule(
         if (!applyScheduled) {
           applyScheduled = true
           launch(finalContext) {
+            yield()
             applyScheduled = false
             Snapshot.sendApplyNotifications()
           }
