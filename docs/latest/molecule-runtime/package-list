@@ -20,15 +20,15 @@ $dokka.location:app.cash.molecule/NodeJsFrameClock/withFrameNanos/#kotlin.Functi
 $dokka.location:app.cash.molecule/RecompositionMode.ContextClock///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}molecule-runtime/app.cash.molecule/-recomposition-mode/-context-clock/index.html
 $dokka.location:app.cash.molecule/RecompositionMode.Immediate///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}molecule-runtime/app.cash.molecule/-recomposition-mode/-immediate/index.html
 $dokka.location:app.cash.molecule/RecompositionMode///PointingToDeclaration/molecule-runtime/app.cash.molecule/-recomposition-mode/index.html
-$dokka.location:app.cash.molecule/RecompositionMode/entries/#/PointingToDeclaration/molecule-runtime/app.cash.molecule/-recomposition-mode/entries.html
-$dokka.location:app.cash.molecule/RecompositionMode/valueOf/#kotlin.String/PointingToDeclaration/molecule-runtime/app.cash.molecule/-recomposition-mode/value-of.html
-$dokka.location:app.cash.molecule/RecompositionMode/values/#/PointingToDeclaration/molecule-runtime/app.cash.molecule/-recomposition-mode/values.html
+$dokka.location:app.cash.molecule/RecompositionMode/entries/#/companion/PointingToDeclaration/molecule-runtime/app.cash.molecule/-recomposition-mode/entries.html
+$dokka.location:app.cash.molecule/RecompositionMode/valueOf/#kotlin.String/companion/PointingToDeclaration/molecule-runtime/app.cash.molecule/-recomposition-mode/value-of.html
+$dokka.location:app.cash.molecule/RecompositionMode/values/#/companion/PointingToDeclaration/molecule-runtime/app.cash.molecule/-recomposition-mode/values.html
 $dokka.location:app.cash.molecule/SnapshotNotifier.External///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}molecule-runtime/app.cash.molecule/-snapshot-notifier/-external/index.html
 $dokka.location:app.cash.molecule/SnapshotNotifier.WhileActive///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}molecule-runtime/app.cash.molecule/-snapshot-notifier/-while-active/index.html
 $dokka.location:app.cash.molecule/SnapshotNotifier///PointingToDeclaration/molecule-runtime/app.cash.molecule/-snapshot-notifier/index.html
-$dokka.location:app.cash.molecule/SnapshotNotifier/entries/#/PointingToDeclaration/molecule-runtime/app.cash.molecule/-snapshot-notifier/entries.html
-$dokka.location:app.cash.molecule/SnapshotNotifier/valueOf/#kotlin.String/PointingToDeclaration/molecule-runtime/app.cash.molecule/-snapshot-notifier/value-of.html
-$dokka.location:app.cash.molecule/SnapshotNotifier/values/#/PointingToDeclaration/molecule-runtime/app.cash.molecule/-snapshot-notifier/values.html
+$dokka.location:app.cash.molecule/SnapshotNotifier/entries/#/companion/PointingToDeclaration/molecule-runtime/app.cash.molecule/-snapshot-notifier/entries.html
+$dokka.location:app.cash.molecule/SnapshotNotifier/valueOf/#kotlin.String/companion/PointingToDeclaration/molecule-runtime/app.cash.molecule/-snapshot-notifier/value-of.html
+$dokka.location:app.cash.molecule/SnapshotNotifier/values/#/companion/PointingToDeclaration/molecule-runtime/app.cash.molecule/-snapshot-notifier/values.html
 $dokka.location:app.cash.molecule/WindowAnimationFrameClock///PointingToDeclaration/molecule-runtime/app.cash.molecule/-window-animation-frame-clock/index.html
 $dokka.location:app.cash.molecule/WindowAnimationFrameClock/withFrameNanos/#kotlin.Function1[kotlin.Long,TypeParam(bounds=[kotlin.Any?])]/PointingToDeclaration/molecule-runtime/app.cash.molecule/-window-animation-frame-clock/with-frame-nanos.html
 app.cash.molecule
