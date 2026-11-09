@@ -11,6 +11,7 @@ Changed:
 
 Fixed:
 - Frame times on Linux and Windows no longer jump backwards once per second.
+- `launchMolecule` no longer throws "The composition is disposed" when its context is cancelled during startup. It now emits the initial value and then stops.
 
 
 ## [2.2.0] - 2025-09-24

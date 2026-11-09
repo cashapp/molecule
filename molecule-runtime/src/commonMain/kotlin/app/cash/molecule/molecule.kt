@@ -26,6 +26,7 @@ import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart.UNDISPATCHED
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
@@ -231,34 +232,58 @@ public fun <T> CoroutineScope.launchMolecule(
   val composition = Composition(UnitApplier, recomposer)
 
   var snapshotHandle: ObserverHandle? = null
+  // Startup and the recomposer coroutine both complete this job when they finish. Only the first
+  // call succeeds, so the side that finishes last sees `false` and disposes.
+  val firstToFinish = Job()
   launch(finalContext, start = UNDISPATCHED) {
     try {
       recomposer.runRecomposeAndApplyChanges()
     } finally {
-      composition.dispose()
-      snapshotHandle?.dispose()
-    }
-  }
-
-  when (snapshotNotifier) {
-    SnapshotNotifier.External -> {}
-
-    SnapshotNotifier.WhileActive -> {
-      var applyScheduled = false
-      snapshotHandle = Snapshot.registerGlobalWriteObserver {
-        if (!applyScheduled) {
-          applyScheduled = true
-          launch(finalContext) {
-            applyScheduled = false
-            Snapshot.sendApplyNotifications()
-          }
-        }
+      // Stop effects, including when the recomposer failed before it started.
+      recomposer.cancel()
+      if (!firstToFinish.complete()) {
+        disposeMolecule(composition, snapshotHandle)
       }
     }
   }
 
-  composition.setContent {
-    emitter(body())
+  try {
+    when (snapshotNotifier) {
+      SnapshotNotifier.External -> {}
+
+      SnapshotNotifier.WhileActive -> {
+        var applyScheduled = false
+        snapshotHandle = Snapshot.registerGlobalWriteObserver {
+          if (!applyScheduled) {
+            applyScheduled = true
+            launch(finalContext) {
+              applyScheduled = false
+              Snapshot.sendApplyNotifications()
+            }
+          }
+        }
+      }
+    }
+
+    composition.setContent {
+      emitter(body())
+    }
+  } catch (t: Throwable) {
+    // Stop the recomposer so that it disposes the composition and the snapshot observer.
+    recomposer.cancel()
+    throw t
+  } finally {
+    if (!firstToFinish.complete()) {
+      disposeMolecule(composition, snapshotHandle)
+    }
+  }
+}
+
+private fun disposeMolecule(composition: Composition, snapshotHandle: ObserverHandle?) {
+  try {
+    composition.dispose()
+  } finally {
+    snapshotHandle?.dispose()
   }
 }
 

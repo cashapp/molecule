@@ -25,6 +25,7 @@ import app.cash.molecule.RecompositionMode.ContextClock
 import app.cash.molecule.RecompositionMode.Immediate
 import assertk.assertFailure
 import assertk.assertThat
+import assertk.assertions.isEmpty
 import assertk.assertions.isEqualTo
 import assertk.assertions.isSameInstanceAs
 import assertk.assertions.isTrue
@@ -99,8 +100,22 @@ class MoleculeStateFlowTest {
       }
     }.isSameInstanceAs(runtimeException)
 
-    // This exception is processed in `composeInitial` and not `runRecomposeAndApplyChanges`, so the job is still active.
+    // The failed startup stops the recomposer, but the job itself is still active.
+    runCurrent()
+    assertThat(job.children.toList()).isEmpty()
     job.cancelAndJoin()
+  }
+
+  @Test fun cancelledContextReturnsInitialValue() = runTest {
+    for (mode in listOf(ContextClock, Immediate)) {
+      val job = Job().apply { cancel() }
+      val scope = CoroutineScope(coroutineContext + job + BroadcastFrameClock())
+
+      val flow = scope.launchMolecule(mode) { 1 }
+      runCurrent()
+
+      assertThat(flow.value).isEqualTo(1)
+    }
   }
 
   @Test fun errorDelayed() = runTest {
