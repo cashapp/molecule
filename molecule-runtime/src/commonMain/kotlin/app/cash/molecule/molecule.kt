@@ -22,12 +22,11 @@ import androidx.compose.runtime.Recomposer
 import androidx.compose.runtime.snapshots.ObserverHandle
 import androidx.compose.runtime.snapshots.Snapshot
 import kotlin.DeprecationLevel.HIDDEN
-import kotlin.concurrent.atomics.AtomicInt
-import kotlin.concurrent.atomics.ExperimentalAtomicApi
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart.UNDISPATCHED
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
@@ -216,7 +215,6 @@ public fun <T> CoroutineScope.launchMolecule(
  * The coroutine context is inherited from the [CoroutineScope].
  * Additional context elements can be specified with [context] argument.
  */
-@OptIn(ExperimentalAtomicApi::class)
 public fun <T> CoroutineScope.launchMolecule(
   mode: RecompositionMode,
   emitter: (value: T) -> Unit,
@@ -234,15 +232,16 @@ public fun <T> CoroutineScope.launchMolecule(
   val composition = Composition(UnitApplier, recomposer)
 
   var snapshotHandle: ObserverHandle? = null
-  val startup = AtomicInt(STARTUP_RUNNING)
+  // Startup and the recomposer coroutine both complete this job when they finish. Only the first
+  // call succeeds, so the side that finishes last sees `false` and disposes.
+  val firstToFinish = Job()
   launch(finalContext, start = UNDISPATCHED) {
     try {
       recomposer.runRecomposeAndApplyChanges()
     } finally {
       // Stop effects, including when the recomposer failed before it started.
       recomposer.cancel()
-      // If startup is still running, it disposes once the initial composition returns.
-      if (!startup.compareAndSet(STARTUP_RUNNING, STARTUP_RECOMPOSER_FINISHED)) {
+      if (!firstToFinish.complete()) {
         disposeMolecule(composition, snapshotHandle)
       }
     }
@@ -274,16 +273,11 @@ public fun <T> CoroutineScope.launchMolecule(
     recomposer.cancel()
     throw t
   } finally {
-    if (!startup.compareAndSet(STARTUP_RUNNING, STARTUP_DONE)) {
-      // The recomposer finished during startup and left the disposal to us.
+    if (!firstToFinish.complete()) {
       disposeMolecule(composition, snapshotHandle)
     }
   }
 }
-
-private const val STARTUP_RUNNING = 0
-private const val STARTUP_DONE = 1
-private const val STARTUP_RECOMPOSER_FINISHED = 2
 
 private fun disposeMolecule(composition: Composition, snapshotHandle: ObserverHandle?) {
   try {
