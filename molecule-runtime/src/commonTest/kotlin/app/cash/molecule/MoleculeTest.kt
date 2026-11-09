@@ -34,7 +34,10 @@ import app.cash.molecule.SnapshotNotifier.External
 import app.cash.molecule.SnapshotNotifier.WhileActive
 import assertk.assertFailure
 import assertk.assertThat
+import assertk.assertions.isEmpty
 import assertk.assertions.isEqualTo
+import assertk.assertions.isFalse
+import assertk.assertions.isInstanceOf
 import assertk.assertions.isNotSameInstanceAs
 import assertk.assertions.isSameInstanceAs
 import assertk.assertions.isTrue
@@ -44,6 +47,7 @@ import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
@@ -110,7 +114,9 @@ class MoleculeTest {
       }
     }.isSameInstanceAs(runtimeException)
 
-    // This exception is processed in `composeInitial` and not `runRecomposeAndApplyChanges`, so the job is still active.
+    // The failed startup stops the recomposer, but the job itself is still active.
+    runCurrent()
+    assertThat(job.children.toList()).isEmpty()
     job.cancelAndJoin()
   }
 
@@ -184,7 +190,9 @@ class MoleculeTest {
       }
     }.isSameInstanceAs(runtimeException)
 
-    // This exception is processed in `composeInitial` and not `runRecomposeAndApplyChanges`, so the job is still active.
+    // The failed startup stops the recomposer, but the job itself is still active.
+    runCurrent()
+    assertThat(job.children.toList()).isEmpty()
     job.cancelAndJoin()
   }
 
@@ -220,6 +228,106 @@ class MoleculeTest {
 
     // Verify `runRecomposeAndApplyChanges` is no longer active.
     assertThat(job.isCompleted).isTrue()
+  }
+
+  @Test fun errorImmediatelyDisposesSnapshotObserver() = runTest {
+    val job = Job()
+    val clock = BroadcastFrameClock()
+    val scope = CoroutineScope(coroutineContext + job + clock)
+
+    // Use a custom subtype to prevent coroutines from breaking referential equality.
+    val runtimeException = object : RuntimeException() {}
+    assertFailure {
+      scope.launchMolecule(ContextClock, emitter = { fail() }, snapshotNotifier = WhileActive) {
+        throw runtimeException
+      }
+    }.isSameInstanceAs(runtimeException)
+
+    // Let the cancelled recomposer run its cleanup.
+    runCurrent()
+
+    // A registered write observer would launch a child to send apply notifications.
+    var count by mutableIntStateOf(0)
+    count++
+    assertThat(job.children.toList()).isEmpty()
+
+    job.cancelAndJoin()
+  }
+
+  @Test fun cancelledContextComposesOnceAndDisposes() = runTest {
+    for (mode in listOf(ContextClock, Immediate)) {
+      for (snapshotNotifier in listOf(External, WhileActive)) {
+        val job = Job().apply { cancel() }
+        val scope = CoroutineScope(coroutineContext + job + BroadcastFrameClock())
+        var value: Int? = null
+        var state = NOT_LAUNCHED
+        var effectRan = false
+
+        scope.launchMolecule(mode, emitter = { value = it }, snapshotNotifier = snapshotNotifier) {
+          DisposableEffect(Unit) {
+            state = LAUNCHED
+            onDispose { state = DISPOSED }
+          }
+          LaunchedEffect(Unit) {
+            effectRan = true
+          }
+          1
+        }
+        runCurrent()
+
+        assertThat(value).isEqualTo(1)
+        assertThat(state).isEqualTo(DISPOSED)
+        assertThat(effectRan).isFalse()
+
+        // Neither the snapshot write observer nor the recomposer schedules more work.
+        var count by mutableIntStateOf(0)
+        count++
+        assertThat(job.children.toList()).isEmpty()
+      }
+    }
+  }
+
+  @Test fun missingFrameClockStopsEffects() = runTest {
+    val job = SupervisorJob()
+    val exceptionHandler = RecordingExceptionHandler()
+    val scope = CoroutineScope(coroutineContext + job + exceptionHandler)
+    var value: Int? = null
+    var effectRan = false
+
+    scope.launchMolecule(ContextClock, emitter = { value = it }) {
+      LaunchedEffect(Unit) {
+        effectRan = true
+      }
+      1
+    }
+    runCurrent()
+
+    assertThat(value).isEqualTo(1)
+    assertThat(exceptionHandler.exceptions.single()).isInstanceOf<IllegalStateException>()
+    assertThat(effectRan).isFalse()
+    assertThat(job.children.toList()).isEmpty()
+
+    job.cancelAndJoin()
+  }
+
+  @Test fun errorInDisposeFailsMoleculeCoroutine() = runTest {
+    val job = Job()
+    val exceptionHandler = RecordingExceptionHandler()
+    val scope = CoroutineScope(coroutineContext + job + BroadcastFrameClock() + exceptionHandler)
+
+    // Use a custom subtype to prevent coroutines from breaking referential equality.
+    val runtimeException = object : RuntimeException() {}
+    scope.launchMolecule(ContextClock, emitter = {}) {
+      DisposableEffect(Unit) {
+        onDispose { throw runtimeException }
+      }
+    }
+
+    job.cancel()
+    runCurrent()
+
+    // The cleanup failure fails the coroutine instead of being reported as a completion handler failure.
+    assertThat(exceptionHandler.exceptions.single()).isSameInstanceAs(runtimeException)
   }
 
   enum class DisposableEffectState { NOT_LAUNCHED, LAUNCHED, DISPOSED }

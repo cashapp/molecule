@@ -22,6 +22,8 @@ import androidx.compose.runtime.Recomposer
 import androidx.compose.runtime.snapshots.ObserverHandle
 import androidx.compose.runtime.snapshots.Snapshot
 import kotlin.DeprecationLevel.HIDDEN
+import kotlin.concurrent.atomics.AtomicInt
+import kotlin.concurrent.atomics.ExperimentalAtomicApi
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
 import kotlinx.coroutines.CoroutineScope
@@ -214,6 +216,7 @@ public fun <T> CoroutineScope.launchMolecule(
  * The coroutine context is inherited from the [CoroutineScope].
  * Additional context elements can be specified with [context] argument.
  */
+@OptIn(ExperimentalAtomicApi::class)
 public fun <T> CoroutineScope.launchMolecule(
   mode: RecompositionMode,
   emitter: (value: T) -> Unit,
@@ -231,34 +234,62 @@ public fun <T> CoroutineScope.launchMolecule(
   val composition = Composition(UnitApplier, recomposer)
 
   var snapshotHandle: ObserverHandle? = null
+  val startup = AtomicInt(STARTUP_RUNNING)
   launch(finalContext, start = UNDISPATCHED) {
     try {
       recomposer.runRecomposeAndApplyChanges()
     } finally {
-      composition.dispose()
-      snapshotHandle?.dispose()
-    }
-  }
-
-  when (snapshotNotifier) {
-    SnapshotNotifier.External -> {}
-
-    SnapshotNotifier.WhileActive -> {
-      var applyScheduled = false
-      snapshotHandle = Snapshot.registerGlobalWriteObserver {
-        if (!applyScheduled) {
-          applyScheduled = true
-          launch(finalContext) {
-            applyScheduled = false
-            Snapshot.sendApplyNotifications()
-          }
-        }
+      // Stop effects, including when the recomposer failed before it started.
+      recomposer.cancel()
+      // If startup is still running, it disposes once the initial composition returns.
+      if (!startup.compareAndSet(STARTUP_RUNNING, STARTUP_RECOMPOSER_FINISHED)) {
+        disposeMolecule(composition, snapshotHandle)
       }
     }
   }
 
-  composition.setContent {
-    emitter(body())
+  try {
+    when (snapshotNotifier) {
+      SnapshotNotifier.External -> {}
+
+      SnapshotNotifier.WhileActive -> {
+        var applyScheduled = false
+        snapshotHandle = Snapshot.registerGlobalWriteObserver {
+          if (!applyScheduled) {
+            applyScheduled = true
+            launch(finalContext) {
+              applyScheduled = false
+              Snapshot.sendApplyNotifications()
+            }
+          }
+        }
+      }
+    }
+
+    composition.setContent {
+      emitter(body())
+    }
+  } catch (t: Throwable) {
+    // Stop the recomposer so that it disposes the composition and the snapshot observer.
+    recomposer.cancel()
+    throw t
+  } finally {
+    if (!startup.compareAndSet(STARTUP_RUNNING, STARTUP_DONE)) {
+      // The recomposer finished during startup and left the disposal to us.
+      disposeMolecule(composition, snapshotHandle)
+    }
+  }
+}
+
+private const val STARTUP_RUNNING = 0
+private const val STARTUP_DONE = 1
+private const val STARTUP_RECOMPOSER_FINISHED = 2
+
+private fun disposeMolecule(composition: Composition, snapshotHandle: ObserverHandle?) {
+  try {
+    composition.dispose()
+  } finally {
+    snapshotHandle?.dispose()
   }
 }
 
