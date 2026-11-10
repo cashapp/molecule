@@ -16,6 +16,7 @@
 package app.cash.molecule
 
 import app.cash.molecule.SnapshotNotifier.WhileActive
+import kotlinx.coroutines.Dispatchers
 
 /**
  * The different snapshot notification modes of Molecule.
@@ -60,6 +61,10 @@ public enum class SnapshotNotifier {
    * Register a global snapshot write observer and send apply notifications when new writes occur
    * using a coroutine launched on the same scope as the composition. This coroutine will be
    * canceled and observer unregistered when that scope is canceled.
+   *
+   * Note: [Dispatchers.Unconfined] is not safe to use with [WhileActive] because unconfined
+   * execution does not suspend on yield when the queue is empty, so snapshot apply notifications
+   * will still execute synchronously from within the write observer.
    */
   WhileActive,
 }
