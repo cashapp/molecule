@@ -41,12 +41,15 @@ import assertk.assertions.isInstanceOf
 import assertk.assertions.isNotSameInstanceAs
 import assertk.assertions.isSameInstanceAs
 import assertk.assertions.isTrue
+import kotlin.coroutines.CoroutineContext
 import kotlin.test.Test
 import kotlin.test.fail
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.Runnable
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.channels.Channel
@@ -569,6 +572,48 @@ class MoleculeTest {
 
   @Test fun defaultSnapshotNotifierChangeDetector() {
     assertThat(defaultSnapshotNotifier()).isEqualTo(WhileActive)
+  }
+
+  @Test fun snapshotNotifierWhileActiveWithImmediateDispatcher() = runTest {
+    val dispatcher = ImmediateDispatcher()
+    val job = Job()
+    val clock = BroadcastFrameClock()
+    val scope = CoroutineScope(coroutineContext + job + clock + dispatcher)
+    var value: Int? = null
+
+    var count by mutableIntStateOf(0)
+
+    scope.launchMolecule(ContextClock, emitter = { value = it }, snapshotNotifier = WhileActive) {
+      count
+    }
+
+    assertThat(value).isEqualTo(0)
+
+    count++
+    clock.sendFrame(0)
+    assertThat(value).isEqualTo(0)
+
+    dispatcher.drain()
+    clock.sendFrame(0)
+    assertThat(value).isEqualTo(1)
+
+    job.cancelAndJoin()
+  }
+
+  private class ImmediateDispatcher : CoroutineDispatcher() {
+    private val queue = ArrayDeque<Runnable>()
+
+    override fun isDispatchNeeded(context: CoroutineContext): Boolean = false
+
+    override fun dispatch(context: CoroutineContext, block: Runnable) {
+      queue.add(block)
+    }
+
+    fun drain() {
+      while (queue.isNotEmpty()) {
+        queue.removeFirst().run()
+      }
+    }
   }
 
   private suspend fun <T> Channel<T>.awaitValue(): T = withTimeout(1000) { receive() }

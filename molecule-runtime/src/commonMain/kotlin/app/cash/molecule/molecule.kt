@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@file:OptIn(ExperimentalStdlibApi::class)
+
 package app.cash.molecule
 
 import androidx.compose.runtime.AbstractApplier
@@ -24,6 +26,7 @@ import androidx.compose.runtime.snapshots.Snapshot
 import kotlin.DeprecationLevel.HIDDEN
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart.UNDISPATCHED
 import kotlinx.coroutines.Job
@@ -35,6 +38,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.yield
 
 @Deprecated("", level = HIDDEN) // For binary compatibility.
 public fun <T> moleculeFlow(mode: RecompositionMode, body: @Composable () -> T): Flow<T> {
@@ -257,6 +261,14 @@ public fun <T> CoroutineScope.launchMolecule(
           if (!applyScheduled) {
             applyScheduled = true
             launch(finalContext) {
+              val dispatcher = finalContext[CoroutineDispatcher]
+              if (dispatcher != null && !dispatcher.isDispatchNeeded(finalContext)) {
+                // Yield to avoid running sendApplyNotifications inline when using immediate
+                // dispatchers (such as Dispatchers.Main.immediate). Running inline from within the
+                // snapshot write observer can cause a lock inversion deadlock while Compose holds
+                // the global snapshot lock (#794).
+                yield()
+              }
               applyScheduled = false
               Snapshot.sendApplyNotifications()
             }
